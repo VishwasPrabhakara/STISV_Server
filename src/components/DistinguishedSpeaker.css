@@ -1,0 +1,213 @@
+/* ================================
+   Distinguished Speakers Styling
+================================ */
+
+.distinguished-speakers-container {
+  padding: 2rem 1rem;
+  background-color: #f9fafc;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  margin-top: -2rem;
+}
+
+/* ================================
+   Section Titles
+================================ */
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #003566;
+  border-bottom: 3px solid #0077b6;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ================================
+   Static Scroll (Plenary Section)
+================================ */
+.static-scroll {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.static-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ================================
+   Embla Carousel Container
+================================ */
+.invited-box {
+  position: relative;
+  padding: 0 3rem;
+}
+
+.embla {
+  overflow: hidden;
+  position: relative;
+}
+
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla__container {
+  display: flex;
+  gap: 2rem;
+  padding: 10px 0;
+}
+
+.embla__slide {
+  flex: 0 0 250px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ================================
+   Navigation Buttons
+================================ */
+.embla__prev,
+.embla__next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #0077b6;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.embla__prev:hover,
+.embla__next:hover {
+  color: #003566;
+}
+
+.embla__prev {
+  left: 0.2rem;
+}
+
+.embla__next {
+  right: 0.2rem;
+}
+
+/* ================================
+   Speaker Card Styling
+================================ */
+.speaker-card {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 250px;
+  height: 340px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  text-decoration: none !important;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.speaker-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #0077b6;
+}
+
+.speaker-avatar img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.speaker-info {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.speaker-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.3rem;
+  color: #003566;
+}
+
+.speaker-info p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* ================================
+   Responsive Design - Tablet
+================================ */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .speaker-card {
+    width: 200px;
+    height: 300px;
+  }
+
+  .speaker-avatar img {
+    height: 180px;
+  }
+
+  .speaker-info h4 {
+    font-size: 0.95rem;
+  }
+
+  .speaker-info p {
+    font-size: 0.85rem;
+  }
+
+  .embla__prev,
+  .embla__next {
+    font-size: 1.8rem;
+  }
+}
+
+/* ================================
+   Responsive Design - Phones
+================================ */
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .speaker-card {
+    width: 160px;
+    height: 270px;
+  }
+
+  .speaker-avatar img {
+    height: 150px;
+  }
+
+  .speaker-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .speaker-info p {
+    font-size: 0.8rem;
+  }
+
+  .invited-box {
+    padding: 0 1.5rem;
+  }
+}

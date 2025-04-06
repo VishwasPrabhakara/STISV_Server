@@ -1,0 +1,159 @@
+/* === General Page Layout === */
+.programme-container {
+    font-family: 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+    background-color: #ffffff;
+  }
+  
+  /* === Hero Section === */
+  .programme-hero {
+    background: linear-gradient(135deg, #003566, #0077b6);
+    color: white;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: .5rem;
+    margin-top: -4rem;
+  }
+  
+  .programme-hero-overlay {
+    max-width: 800px;
+    padding: 1rem;
+  }
+  
+  .programme-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    
+  }
+  
+  .programme-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: #e0e0e0;
+;
+  }
+  
+  /* === Important Dates Section === */
+  .important-dates-section {
+    padding: 4rem 1rem;
+    background-color: #f9f9fb;
+    text-align: center;
+  }
+  
+  .important-dates-heading {
+    font-size: 2rem;
+    color: #003566;
+    margin-bottom: 2rem;
+    margin-top: -2rem;
+  }
+  
+  /* === Date Cards Grid === */
+  .dates-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .date-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 6px solid #0077b6;
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
+  
+  .date-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .date-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+  
+  .date-card p {
+    font-size: 1rem;
+    color: #0077b6;
+  }
+  
+  /* ================================
+   Responsive — Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+  .programme-hero {
+    height: auto;
+    padding: 3rem 1.5rem;
+  }
+
+  .programme-title {
+    font-size: 2.2rem;
+  }
+
+  .programme-subtitle {
+    font-size: 1.05rem;
+  }
+
+  .important-dates-heading {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .date-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .date-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .date-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* ================================
+   Responsive — Phones (≤480px)
+================================ */
+@media (max-width: 480px) {
+  .programme-title {
+    font-size: 1.8rem;
+  }
+
+  .programme-subtitle {
+    font-size: 1rem;
+  }
+
+  .important-dates-heading {
+    font-size: 1.5rem;
+  }
+
+  .dates-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .date-card {
+    padding: 1.2rem 1rem;
+  }
+
+  .date-card h3 {
+    font-size: 1rem;
+  }
+
+  .date-card p {
+    font-size: 0.9rem;
+  }
+}
+
+  
+  

@@ -1,0 +1,186 @@
+/* === Container === */
+.committee-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: #1a1a1a;
+  }
+  
+  /* === Page Heading === */
+  .committee-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    margin-top: -2rem;
+    color: #003566;
+    font-weight: 700;
+    letter-spacing: 1px;
+    
+    position: relative;
+  }
+  
+  .committee-heading::after {
+    content: "";
+    display: block;
+    margin: 10px auto 0;
+    width: 60px;
+    height: 4px;
+    background: #0077b6;
+    border-radius: 2px;
+  }
+
+  .committee-subtext{
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+    color: #333;
+    font-weight: 400;
+  }
+  
+  /* === Collapsible Section Header === */
+  .committee-subheading {
+    background: linear-gradient(90deg, #003566 0%, #0077b6 100%);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1.8rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .committee-subheading:hover {
+    background: linear-gradient(90deg, #00254d 0%, #00598d 100%);
+  }
+  
+  /* === Toggle Icon ( + / - ) === */
+  .toggle-icon {
+    font-size: 1.4rem;
+    font-weight: 800;
+    transition: transform 0.3s ease;
+  }
+  
+  /* === Card Layout === */
+  .committee-cards {
+    margin-top: 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 0 5px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .committee-card {
+    background: #ffffff;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid #0077b6;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    font-size: 0.96rem;
+    line-height: 1.6;
+    transition: all 0.3s ease;
+  }
+  
+  .committee-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .subcommittee-title {
+    font-weight: bold;
+    margin: 1.2rem 0 0.6rem;
+    font-size: 1.1rem;
+    color: #004080;
+    padding-left: 8px;
+  }
+  
+  .subcommittee-block {
+    margin-bottom: 2rem;
+  }
+  
+  
+  /* === Animations === */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
+  /* ========================
+   Responsive Design
+======================== */
+@media (max-width: 768px) {
+  .committee-container {
+    padding: 40px 15px;
+  }
+
+  .committee-heading {
+    font-size: 1.6rem;
+  }
+
+  .committee-subtext {
+    font-size: 1.15rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .committee-subheading {
+    font-size: 1.1rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .committee-card {
+    font-size: 0.95rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .subcommittee-title {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .committee-heading {
+    font-size: 1.4rem;
+  }
+
+  .committee-subtext {
+    font-size: 1rem;
+  }
+
+  .committee-subheading {
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .toggle-icon {
+    font-size: 1.2rem;
+  }
+
+  .committee-cards {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .committee-card {
+    padding: 0.85rem 1rem;
+  }
+
+  .subcommittee-title {
+    font-size: 0.95rem;
+  }
+}

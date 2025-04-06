@@ -1,0 +1,201 @@
+/* Wrapper */
+.sponsors-wrapper {
+  padding: 4rem 2rem;
+  background-color: #f4f7fa;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+/* Header Section */
+.sponsors-header h1 {
+  font-size: 2.4rem;
+  color: #003566;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.sponsors-header p {
+  font-size: 1rem;
+  color: #444;
+  max-width: 700px;
+  margin: 0 auto 2.5rem auto;
+  line-height: 1.6;
+}
+
+/* Cards Row (NEW) */
+.sponsor-cards-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Sponsor Card Layout */
+.sponsor-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Sponsor Logo */
+.sponsor-logo img {
+  width: 180px;
+  height: 220px;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+}
+
+/* Fallback */
+.fallback-image {
+  width: 180px;
+  height: 100px;
+  background-color: #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+}
+
+/* Sponsor Info */
+.sponsor-details h3 {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
+}
+
+.sponsor-location {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.2rem;
+}
+
+/* CTA Button */
+.visit-button {
+  display: inline-block;
+  background-color: #0077b6;
+  color: #ffffff !important;
+  padding: 0.6rem 1.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.visit-button:hover {
+  background-color: white;
+  color: #0077b6 !important;
+  border: 2px solid #0077b6;
+  transform: scale(1.05);
+}
+
+/* Arrow (optional) */
+.visit-button .arrow {
+  margin-left: 8px;
+  font-weight: bold;
+  transition: margin-left 0.2s ease;
+}
+
+.visit-button:hover .arrow {
+  margin-left: 12px;
+}
+
+/* ================================
+   Responsive — Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+  .sponsors-wrapper {
+    padding: 3rem 1.5rem;
+  }
+
+  .sponsors-header h1 {
+    font-size: 2rem;
+  }
+
+  .sponsors-header p {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+
+  .sponsor-cards-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .sponsor-card {
+    padding: 1.8rem;
+    max-width: 90%;
+  }
+
+  .sponsor-logo img,
+  .fallback-image {
+    width: 150px;
+  }
+
+  .sponsor-details h3 {
+    font-size: 1.1rem;
+  }
+
+  .sponsor-location {
+    font-size: 0.9rem;
+  }
+
+  .visit-button {
+    font-size: 0.9rem;
+    padding: 0.55rem 1.2rem;
+  }
+}
+
+/* ================================
+   Responsive — Phones (≤480px)
+================================ */
+@media (max-width: 480px) {
+  .sponsors-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .sponsors-header p {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .sponsor-card {
+    padding: 1.5rem;
+  }
+
+  .sponsor-logo img,
+  .fallback-image {
+    width: 130px;
+    height: auto;
+  }
+
+  .sponsor-details h3 {
+    font-size: 1rem;
+  }
+
+  .sponsor-location {
+    font-size: 0.85rem;
+  }
+
+  .visit-button {
+    font-size: 0.85rem;
+    padding: 0.5rem 1.1rem;
+  }
+
+  .visit-button .arrow {
+    margin-left: 6px;
+  }
+}

@@ -1,0 +1,245 @@
+/* =============================
+   NAVBAR - STIS-V 2025
+   ============================= */
+
+   .navbar {
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  /* === Top Line: Brand & Auth === */
+  .navbar-top {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+  }
+  
+  .navbar-brand img.brand-icon {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .navbar-brand span {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #003566;
+    letter-spacing: 0.5px;
+  }
+  
+  .navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navbar-auth a,
+  .navbar-top {
+    text-decoration: none;
+  }
+  
+  .navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .user-badge {
+    background: #003566;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .logout-btn {
+    background: none;
+    color: #d62828;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    color: #000;
+  }
+  
+  /* === Second Line: Navigation Menu === */
+  .navbar-menu {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .navbar-menu a,
+  .navbar-menu .dropdown-toggle {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    background: none;
+    border: none;
+    padding: 8px 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .navbar-menu a:hover,
+  .navbar-menu .dropdown-toggle:hover {
+    color: #0077b6;
+    text-decoration: none;
+  }
+  
+  /* === Dropdown Styling === */
+  .navbar-dropdown {
+    position: relative;
+  }
+  
+  .dropdown-toggle::after {
+    content: " ▼";
+    font-size: 0.7rem;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    padding: 0.5rem 0;
+    display: none;
+    flex-direction: column;
+    min-width: 220px;
+    z-index: 999;
+  }
+  
+  .navbar-dropdown:hover .dropdown-menu {
+    display: flex;
+  }
+  
+  .dropdown-menu a {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    color: #333;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dropdown-menu a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* === Mobile Toggle Button === */
+  .navbar-toggle {
+    display: none;
+    font-size: 1.6rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* =============================
+     Mobile Responsive Styles
+  ============================= */
+  @media (max-width: 1024px) {
+    .navbar-toggle {
+      display: block;
+    }
+  
+    .navbar-menu {
+      flex-direction: column;
+      align-items: flex-start;
+      background: #ffffff;
+      width: 100%;
+      padding: 1rem;
+      display: none;
+    }
+  
+    .navbar-menu.active {
+      display: flex;
+    }
+  
+    .dropdown-menu {
+      position: static;
+      box-shadow: none;
+      padding-left: 1rem;
+    }
+  
+    .dropdown-menu a {
+      padding: 8px 0;
+    }
+  
+    .navbar-auth {
+      display: none; /* Hide top auth buttons on mobile */
+    }
+  
+    .navbar-auth-mobile {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 1rem;
+      width: 100%;
+      gap: 0.4rem;
+    }
+  
+    .navbar-auth-mobile a {
+      color: #003566;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 0.3rem 0;
+    }
+  
+    .navbar-auth-mobile .logout-btn {
+      background: none;
+      color: #d62828;
+      border: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      padding: 0.3rem 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .navbar-brand span {
+      font-size: 1.1rem;
+    }
+  
+    .user-badge {
+      font-size: 0.8rem;
+      padding: 5px 10px;
+    }
+  
+    .logout-btn {
+      font-size: 0.85rem;
+    }
+  }
+  
+  

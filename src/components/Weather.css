@@ -1,0 +1,271 @@
+/* ========== General Layout ========== */
+.weather-page {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: #1e1e1e;
+    padding: 2rem;
+    background: #f8f9fa;
+  }
+  
+  /* ========== Hero Section ========== */
+  .weather-hero {
+    background: linear-gradient(135deg, #0077b6, #0096c7);
+    color: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .weather-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .weather-header p {
+    font-size: 1.1rem;
+    color: white;
+  }
+  
+  /* ========== Tabs ========== */
+  .weather-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .tab-button {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #0077b6;
+  }
+  
+  .tab-button.active {
+    background-color: #0077b6;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .tab-button:hover {
+    background-color: #0096c7;
+    color: white;
+  }
+  
+  /* ========== Current Weather ========== */
+  .weather-content {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .weather-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    animation: fadeInUp 0.8s ease;
+  }
+  
+  .main-temp {
+    font-size: 3.5rem;
+    color: #0077b6;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .weather-meta p {
+    margin: 0.4rem 0;
+    font-size: 1rem;
+  }
+  
+  /* ========== Forecast Section ========== */
+  .forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .forecast-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    text-align: center;
+    animation: fadeInUp 0.8s ease;
+  }
+  
+  .forecast-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #0077b6;
+  }
+  
+  .temp-range {
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  /* ========== Tip Section ========== */
+  .local-tip {
+    background-color: #eef6fb;
+    padding: 1.5rem;
+    border-left: 4px solid #0077b6;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+  
+  .tip-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #0077b6;
+  }
+  
+  .tip-text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* ========== Call-to-Action Button ========== */
+  .weather-cta {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .weather-cta button {
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .weather-cta button:hover {
+    background-color: #0096c7;
+  }
+  
+  /* ========== Animations ========== */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* ================================
+   Responsive Design – Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+    .weather-page {
+      padding: 1.5rem;
+    }
+  
+    .weather-header h1 {
+      font-size: 2rem;
+    }
+  
+    .weather-header p {
+      font-size: 1rem;
+    }
+  
+    .tab-button {
+      font-size: 0.95rem;
+      padding: 0.5rem 1.2rem;
+    }
+  
+    .main-temp {
+      font-size: 3rem;
+    }
+  
+    .forecast-card h3 {
+      font-size: 1.1rem;
+    }
+  
+    .temp-range {
+      font-size: 0.9rem;
+    }
+  
+    .weather-cta button {
+      font-size: 0.95rem;
+      padding: 0.6rem 1.6rem;
+    }
+  }
+  
+  /* ================================
+     Responsive Design – Phones (≤480px)
+  ================================ */
+  @media (max-width: 480px) {
+    .weather-header h1 {
+      font-size: 1.75rem;
+    }
+  
+    .weather-header p {
+      font-size: 0.95rem;
+    }
+  
+    .tab-button {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+  
+    .weather-card {
+      padding: 1.5rem;
+    }
+  
+    .main-temp {
+      font-size: 2.5rem;
+    }
+  
+    .forecast-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .forecast-card {
+      padding: 1.2rem;
+    }
+  
+    .local-tip {
+      padding: 1.2rem;
+    }
+  
+    .tip-header {
+      font-size: 1rem;
+    }
+  
+    .tip-text {
+      font-size: 0.95rem;
+    }
+  
+    .weather-cta button {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.4rem;
+    }
+  }
+  

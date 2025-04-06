@@ -1,0 +1,252 @@
+.international-travel-container {
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .main-title {
+    font-size: 2.8rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 50px;
+    font-weight: 700;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+  }
+  
+  .info-card {
+    background: #fff;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
+  
+  .info-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .info-card h2 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  
+  .info-card p,
+  .info-card ul {
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.7;
+  }
+  
+  /* ✅ AIRLINES GRID */
+  .airlines-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* Force 3 items per row */
+    gap: 16px 24px;
+    padding-left: 0;
+    list-style: none;
+    margin-top: 20px;
+    justify-items: center;
+  }
+  
+  .airlines-list li {
+    background-color: #f1f5f9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    text-align: center;
+    width: 100%;
+    max-width: 220px;
+  }
+  
+  .airlines-list li:hover {
+    transform: translateY(-2px);
+    background-color: #e8f4ff;
+  }
+  
+  
+  .recommendation {
+    background-color: #f0f8ff;
+    padding: 15px;
+    border-left: 4px solid #3498db;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-weight: 500;
+    color: #2c3e50;
+  }
+  
+  .city-connections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .city-card {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-left: 5px solid #3498db;
+    flex: 1 1 300px;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .city-card:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .city-card h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #2c3e50;
+    font-weight: 600;
+  }
+  
+  .city-card p {
+    margin: 8px 0;
+    font-size: 0.98rem;
+    color: #555;
+  }
+  
+  .city-card .highlight {
+    font-weight: bold;
+    color: #2d8bba;
+  }
+  
+  ul.tips-list {
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  ul.tips-list li {
+    margin-bottom: 8px;
+  }
+  
+  a {
+    color: #0077cc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .useful-links {
+    margin-top: 50px;
+  }
+  
+  .useful-links h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  .links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .links-grid a {
+    background-color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    flex: 1 1 220px;
+    text-align: center;
+    color: #0077cc;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+  
+  .links-grid a:hover {
+    background-color: #f2f9ff;
+  }
+  
+ /* =============================
+   Responsive Design - Tablets
+============================= */
+@media (max-width: 768px) {
+    .main-title {
+      font-size: 2rem;
+    }
+  
+    .info-card h2 {
+      font-size: 1.5rem;
+    }
+  
+    .info-card p,
+    .info-card ul {
+      font-size: 1rem;
+    }
+  
+    .airlines-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .city-connections {
+      flex-direction: column;
+    }
+  
+    .links-grid a {
+      flex: 1 1 45%;
+    }
+  }
+  
+  
+  /* =============================
+     Responsive Design - Phones
+  ============================= */
+  @media (max-width: 480px) {
+    .main-title {
+      font-size: 1.6rem;
+    }
+  
+    .info-card {
+      padding: 20px;
+    }
+  
+    .info-card h2 {
+      font-size: 1.3rem;
+    }
+  
+    .airlines-list {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  
+    .city-card {
+      padding: 15px;
+    }
+  
+    .city-card h3 {
+      font-size: 1.1rem;
+    }
+  
+    .city-card p {
+      font-size: 0.9rem;
+    }
+  
+    .links-grid a {
+      flex: 1 1 100%;
+      font-size: 0.95rem;
+    }
+  
+    .useful-links h2 {
+      font-size: 1.4rem;
+    }
+  }
+  

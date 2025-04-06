@@ -1,0 +1,323 @@
+/* ========= Reset Within This Page Only ========= */
+.member-access-page * {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+/* ========= Base Layout ========= */
+.member-access-page .member-access-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 60px;
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #2c3e50;
+  position: relative;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Optional divider between boxes (desktop only) */
+@media screen and (min-width: 769px) {
+  .member-access-page .member-access-container::before {
+    content: "";
+    width: 1px;
+    background: #e0e0e0;
+    position: absolute;
+    height: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* ========= Login & Register Boxes ========= */
+.member-access-page .login-box,
+.member-access-page .register-box {
+  flex: 1 1 45%;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+  min-width: 300px;
+  z-index: 1;
+}
+
+.member-access-page .login-box:hover,
+.member-access-page .register-box:hover {
+  transform: translateY(-4px);
+}
+
+.member-access-page .login-box h2,
+.member-access-page .register-box h2 {
+  font-size: 1.75rem;
+  margin-bottom: 25px;
+  color: #003366;
+}
+
+.member-access-page .login-box h2{
+  text-align: center;
+}
+/* ========= Form Fields ========= */
+.member-access-page .form-field {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.member-access-page .form-field input[type="email"],
+.member-access-page .form-field input[type="password"],
+.member-access-page .form-field input[type="text"] {
+  width: 100%;
+  padding: 16px 14px 18px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-access-page .form-field input:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 0 4px rgba(0, 119, 204, 0.1);
+}
+
+.member-access-page .form-field label {
+  position: absolute;
+  top: 35%!important;
+  left: 14px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+  background-color: white;
+  padding: 0 6px;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.member-access-page .form-field input:focus + label,
+.member-access-page .form-field input:not(:placeholder-shown) + label {
+  top: -8px!important;
+  left: 10px;
+  font-size: 0.75rem;
+  color: #0077cc;
+}
+
+/* ========= Password Toggle ========= */
+.member-access-page .password-toggle {
+  position: absolute;
+  right: 65px!important;
+  top: 35%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1rem;
+  color: #888;
+  z-index: 2;
+}
+
+
+
+/* ========= Actions & Links ========= */
+.member-access-page .login-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -30px;
+  margin-bottom: 20px;
+}
+
+.member-access-page .forgot-link {
+  color: #0077cc;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-right: 60px;
+}
+
+.member-access-page .forgot-link:hover {
+  color: #005b99;
+}
+
+/* ========= Buttons ========= */
+.member-access-page .login-btn,
+.member-access-page .register-btn {
+  width: 60%;
+  margin-left: 100px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.member-access-page .login-btn {
+  background-color: #0077cc;
+}
+
+.member-access-page .login-btn:hover {
+  background-color: #fff;
+  color: #0077cc;
+  border: 2px solid #0077cc;
+}
+
+.member-access-page .register-btn {
+  background-color: #28a745;
+}
+
+.member-access-page .register-btn:hover {
+  background-color: #fff;
+  color: #28a745;
+  border: 2px solid #28a745;
+}
+
+.member-access-page .login-btn:focus,
+.member-access-page .register-btn:focus {
+  outline: 3px solid rgba(0, 119, 204, 0.4);
+  outline-offset: 2px;
+}
+
+/* ========= Info Text ========= */
+.member-access-page .register-box p {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.member-access-page .login-error-message {
+  margin-top: 16px;
+  color: #d33c52;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ========= Overlay Spinner ========= */
+.member-access-page .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-access-page .loader {
+  border: 4px solid #fff;
+  border-top: 4px solid #d33c52;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================
+   Responsive - Tablets (max 768px)
+============================= */
+@media (max-width: 768px) {
+    .member-access-page .member-access-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 60px 16px;
+    }
+  
+    .member-access-page .login-box,
+    .member-access-page .register-box {
+      width: 100%;
+      padding: 30px 20px;
+    }
+  
+    .member-access-page .login-box h2,
+    .member-access-page .register-box h2 {
+      font-size: 1.6rem;
+    }
+  
+    .member-access-page .form-field input {
+      font-size: 0.95rem;
+      padding: 14px 12px 16px;
+    }
+  
+    .member-access-page .form-field label {
+      font-size: 0.9rem;
+    }
+  
+    .member-access-page .login-btn,
+    .member-access-page .register-btn {
+      font-size: 0.95rem;
+      padding: 10px 16px;
+    }
+  }
+  
+  
+  /* =============================
+     Responsive - Phones (max 480px)
+  ============================= */
+  @media (max-width: 480px) {
+    .member-access-page .member-access-container {
+      padding: 40px 12px;
+    }
+  
+    .member-access-page .login-box,
+    .member-access-page .register-box {
+      padding: 24px 16px;
+    }
+  
+    .member-access-page .login-box h2,
+    .member-access-page .register-box h2 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+  
+    .member-access-page .form-field input {
+      font-size: 0.9rem;
+      padding: 12px 10px;
+    }
+  
+    .member-access-page .form-field label {
+      font-size: 0.8rem;
+      top: 30% !important;
+    }
+  
+    .member-access-page .password-toggle {
+      right: 25px;
+      font-size: 0.95rem;
+    }
+  
+    .member-access-page .login-btn,
+    .member-access-page .register-btn {
+      font-size: 0.9rem;
+      padding: 10px 14px;
+    }
+  
+    .member-access-page .register-box p {
+      font-size: 0.9rem;
+    }
+  
+    .member-access-page .login-error-message {
+      font-size: 0.9rem;
+    }
+  }
+  

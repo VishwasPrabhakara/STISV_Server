@@ -1,0 +1,193 @@
+.transport-container {
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  }
+  
+  .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .main-title {
+    font-size: 2.6rem;
+    color: #2c3e50;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 50px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+  }
+  
+  .info-section {
+    background-color: #fff;
+    padding: 30px;
+    margin-bottom: 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .info-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+  }
+  
+  .info-section h2 {
+    font-size: 1.75rem;
+    margin-bottom: 15px;
+    color: #1a1a1a;
+    font-weight: 600;
+    border-left: 4px solid #3498db;
+    padding-left: 12px;
+  }
+  
+  .info-section h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .info-section p {
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  
+  .service-list,
+  .highlight-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 8px;
+  }
+  
+  .service-list li,
+  .highlight-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    color: #2e2e2e;
+  }
+  
+  .service-list li::before,
+  .highlight-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: #3498db;
+    font-weight: bold;
+  }
+  
+  a {
+    color: #0077cc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #005b99;
+  }
+  
+  .ticket-info {
+    margin-top: 25px;
+    font-size: 1rem;
+    background-color: #f0f8ff;
+    border-left: 4px solid #3498db;
+    padding: 16px;
+    border-radius: 8px;
+    color: #2c3e50;
+  }
+  
+  /* Fade-in animation */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.7s ease forwards;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+ /* ===============================
+   Responsive Design - Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+    .transport-container {
+      padding: 50px 16px;
+    }
+  
+    .main-title {
+      font-size: 2.2rem;
+      padding-bottom: 8px;
+      margin-bottom: 40px;
+    }
+  
+    .info-section {
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+  
+    .info-section h2 {
+      font-size: 1.6rem;
+      padding-left: 10px;
+    }
+  
+    .info-section h3 {
+      font-size: 1.2rem;
+    }
+  
+    .info-section p,
+    .service-list li,
+    .highlight-list li {
+      font-size: 1rem;
+    }
+  
+    .ticket-info {
+      font-size: 0.98rem;
+      padding: 14px;
+    }
+  }
+  
+  /* ===============================
+     Responsive Design - Phones (≤480px)
+  ================================ */
+  @media (max-width: 480px) {
+    .main-title {
+      font-size: 1.8rem;
+      padding-bottom: 6px;
+      margin-bottom: 30px;
+    }
+  
+    .info-section {
+      padding: 20px;
+    }
+  
+    .info-section h2 {
+      font-size: 1.4rem;
+    }
+  
+    .info-section h3 {
+      font-size: 1.1rem;
+    }
+  
+    .info-section p,
+    .service-list li,
+    .highlight-list li {
+      font-size: 0.95rem;
+    }
+  
+    .ticket-info {
+      font-size: 0.92rem;
+      padding: 12px;
+    }
+  }
+  

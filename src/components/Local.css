@@ -1,0 +1,210 @@
+/* Container and Layout */
+.local-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  /* Header */
+  .local-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .page-title {
+    font-size: 2.6rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .intro {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  /* Search Bar */
+  .search-wrapper {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .search-input {
+    width: 100%;
+    max-width: 450px;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.2s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  }
+  
+  /* Accordion Styles */
+  .accordion {
+    margin-top: 40px;
+  }
+  
+  .accordion-item {
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .accordion-item.active {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .accordion-header {
+    width: 100%;
+    padding: 20px 24px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #eaeaea;
+    transition: background 0.2s ease;
+  }
+  
+  .accordion-header:hover {
+    background-color: #f5faff;
+  }
+  
+  .accordion-title {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  
+  .toggle-icon {
+    font-size: 1.4rem;
+    color: #3498db;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+  }
+  
+  .accordion-content {
+    padding: 20px 24px;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.7;
+    background-color: #fcfcfc;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  /* Paragraphs in Content */
+  .accordion-content p {
+    margin-bottom: 10px;
+  }
+  
+  /* No results */
+  .no-results {
+    text-align: center;
+    color: #888;
+    font-size: 1.1rem;
+    margin-top: 30px;
+  }
+  
+ 
+  /* =============================
+   Responsive Design - Tablets
+============================= */
+@media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+    }
+  
+    .intro {
+      font-size: 1rem;
+      padding: 0 10px;
+    }
+  
+    .accordion-header {
+      padding: 16px 20px;
+      font-size: 1.1rem;
+    }
+  
+    .accordion-title {
+      font-size: 1.1rem;
+    }
+  
+    .accordion-content {
+      padding: 16px 20px;
+      font-size: 0.98rem;
+    }
+  
+    .search-input {
+      max-width: 100%;
+      font-size: 0.95rem;
+      padding: 10px 14px;
+    }
+  }
+  
+  
+  /* =============================
+     Responsive Design - Phones
+  ============================= */
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 1.7rem;
+    }
+  
+    .intro {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  
+    .accordion-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 16px;
+      font-size: 1rem;
+    }
+  
+    .accordion-title {
+      font-size: 1rem;
+    }
+  
+    .toggle-icon {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+  
+    .accordion-content {
+      padding: 14px 16px;
+      font-size: 0.95rem;
+    }
+  
+    .search-wrapper {
+      padding: 0 10px;
+    }
+  
+    .search-input {
+      font-size: 0.9rem;
+      padding: 10px 12px;
+    }
+  
+    .no-results {
+      font-size: 1rem;
+      padding: 0 10px;
+    }
+  }
+  

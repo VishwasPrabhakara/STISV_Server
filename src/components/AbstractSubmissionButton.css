@@ -1,0 +1,316 @@
+/* === Abstract Submission Form Scoped CSS === */
+
+.abstract-form-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: #fff;
+}
+
+/* === Title === */
+.abstract-form-wrapper .form-main-title {
+  font-size: 2.6rem;
+  text-align: center;
+  color: #002244;
+  margin-bottom: 3.5rem;
+  margin-top: -1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* === Floating Input Fields === */
+.abstract-form-wrapper .floating-group {
+  position: relative;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.abstract-form-wrapper .floating-group input
+ {
+  width: 80%;
+  padding: 1.1rem 0.75rem;
+  font-size: 1rem;
+  border: 1.8px solid #ccd6dd;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.abstract-form-wrapper .floating-group textarea{
+  width: 80%;
+  padding: 1.1rem 0.75rem;
+  font-size: 1rem;
+  border: 1.8px solid #ccd6dd;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+ 
+}
+
+.abstract-form-wrapper .floating-group select {
+  width: 83%;
+  
+  padding: 1.1rem 0.75rem;
+  font-size: 1rem;
+
+  border: 1.8px solid #ccd6dd;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+}
+
+.abstract-form-wrapper .floating-group textarea + label {
+  position: absolute;
+  left: 1rem;
+  top: 15%!important;
+  padding: 0 0.35rem;
+  background: #fff;
+  color: #666;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.abstract-form-wrapper .floating-group textarea {
+  min-height: 130px;
+  width: 80%;
+  resize: vertical;
+  padding-top: 1.25rem;
+}
+
+.abstract-form-wrapper .floating-group select {
+  min-height: 48px;
+  font-size: 0.95rem;
+  
+}
+
+.abstract-form-wrapper .floating-group label {
+  position: absolute;
+  left: 0.9rem;
+  top: 35%!important;
+  padding: 0 0.35rem;
+  background: #fff;
+  color: #666;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.abstract-form-wrapper .floating-group.filled label,
+.abstract-form-wrapper .floating-group input:focus + label,
+
+.abstract-form-wrapper .floating-group select:focus + label {
+  top: -15%!important;
+  left: 0.6rem;
+  font-size: 0.78rem;
+  color: #005b94;
+  background-color: #fff;
+}
+
+
+.abstract-form-wrapper .abstract-file-group:focus label{
+  top: -10px!important;
+}
+
+.abstract-form-wrapper .floating-group textarea:focus + label{
+  top: -10%!important;
+  left: 0.6rem;
+  font-size: 0.78rem;
+  color: #005b94;
+  background-color: #fff;
+}
+
+/* === Fieldsets === */
+.abstract-form-wrapper .form-section {
+  border: none;
+  border-left: 6px solid #0077b6;
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 2.2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.abstract-form-wrapper .form-section legend {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #003566;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* === Input Rows === */
+.abstract-form-wrapper .input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  width: 100%;
+}
+
+.abstract-form-wrapper .input-row .floating-group {
+  flex: 1 1 45%;
+}
+
+/* === Other Authors === */
+.abstract-form-wrapper .add-author-btn-wrapper {
+  margin-top: 1rem;
+}
+
+.abstract-form-wrapper .add-author-btn {
+  background-color: #0077b6;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.abstract-form-wrapper .add-author-btn:hover {
+  background-color: #005b94;
+}
+
+/* === Word Counter === */
+.abstract-form-wrapper .word-counter {
+  text-align: right;
+  margin-right: 100px;
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.3rem;
+}
+
+.abstract-form-wrapper .word-counter.exceeded {
+  color: red;
+  font-weight: bold;
+}
+
+/* === File Upload === */
+.abstract-form-wrapper input[type="file"] + label {
+  margin-top: -3.8rem;
+  font-size: 1rem;
+  padding: 0.7rem 0.75rem;
+  
+  border-radius: 6px;
+
+  transition: border-color 0.3s ease;
+  font-size: 0.78rem;
+  color: #005b94;
+  
+}
+
+
+
+/* === Submit Button === */
+.abstract-form-wrapper .form-buttons {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.abstract-form-wrapper .btn-submit {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.6rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.abstract-form-wrapper .btn-submit:hover {
+  background-color: white;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+}
+
+/* === Success Popup === */
+.abstract-form-wrapper .success-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 119, 182, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.abstract-form-wrapper .success-popup {
+  background: white;
+  padding: 2rem 3rem;
+  border: 2px solid #0077b6;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.abstract-form-wrapper .success-popup h2 {
+  color: #0077b6;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+/* === Messages === */
+.abstract-form-wrapper .error {
+  color: #d90429;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.abstract-form-wrapper .submission-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #0077b6;
+  margin-top: 1.25rem;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  .abstract-form-wrapper .input-row {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .abstract-form-wrapper .form-main-title {
+    font-size: 2.1rem;
+  }
+
+  .abstract-form-wrapper .btn-submit {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .abstract-form-wrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .abstract-form-wrapper .form-main-title {
+    font-size: 1.8rem;
+  }
+
+  .abstract-form-wrapper .form-section {
+    padding: 1.2rem 1rem;
+  }
+
+  .abstract-form-wrapper .btn-submit {
+    font-size: 1rem;
+    padding: 0.7rem 2rem;
+  }
+}

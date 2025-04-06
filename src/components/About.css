@@ -1,0 +1,160 @@
+/* ===================== General Page Layout ===================== */
+.about-page {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  line-height: 1.6;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===================== Hero Section ===================== */
+.about-page .about-hero-static {
+  background: url('/public/assets/about.jpg') no-repeat center center/cover;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.about-page .about-hero-overlay {
+  background-color: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.about-page .about-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* ===================== New Content Section ===================== */
+.about-page .about-content {
+  padding: 4rem 1rem;
+  background-color: #ffffff;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-page .about-text-block {
+  margin-bottom: 3rem;
+}
+
+.about-page .about-text-block h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #003566;
+  margin-bottom: 1rem;
+}
+
+.about-page .about-text-block p {
+  font-size: 1.05rem;
+  color: #333333;
+  line-height: 1.75;
+}
+
+/* ===================== Parallax Section ===================== */
+.about-page .about-parallax {
+  background-image: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/IISc_Ansuman.png?raw=true');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  color: #ffffff;
+  padding: 4rem 1rem;
+  overflow: hidden;
+}
+
+.about-page .about-parallax::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.about-page .parallax-text {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.about-page .parallax-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.about-page .parallax-text p {
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+/* ===================== Responsive Media Queries ===================== */
+@media (max-width: 768px) {
+  .about-page .about-title {
+    font-size: 2rem;
+  }
+
+  .about-page .about-content {
+    padding: 3rem 1rem;
+  }
+
+  .about-page .about-text-block h2 {
+    font-size: 1.5rem;
+  }
+
+  .about-page .about-text-block p {
+    font-size: 1rem;
+  }
+
+  .about-page .parallax-text h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-page .parallax-text p {
+    font-size: 1rem;
+  }
+
+  .about-page .about-parallax {
+    background-attachment: fixed; /* fallback for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .about-page .about-title {
+    font-size: 1.6rem;
+  }
+
+  .about-page .about-content {
+    padding: 2.5rem 1rem;
+  }
+
+  .about-page .about-text-block h2 {
+    font-size: 1.3rem;
+  }
+
+  .about-page .about-text-block p {
+    font-size: 0.95rem;
+  }
+
+  .about-page .parallax-text h2 {
+    font-size: 1.3rem;
+  }
+
+  .about-page .parallax-text p {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,243 @@
+/* ===== Wrapper & Banner ===== */
+.venue-wrapper {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #1a1a1a;
+  padding-bottom: 50px;
+  background-color: #f9f9f9;
+}
+
+.venue-banner {
+  background: url('/public/JN-Tata-Auditorium-1.jpg') no-repeat center center/cover;
+  padding: 100px 20px 60px;
+  color: white;
+  text-align: center;
+}
+
+.travel-card a:hover {text-decoration: none;}
+.venue-heading {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  animation: fadeInDown 1s ease-out;
+  background: rgba(0, 0,0, 0.2);
+}
+
+.venue-tagline {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f7f7f7;
+  animation: fadeInUp 1.2s ease-out;
+  background: rgba(0, 0,0, 0.2);
+}
+
+/* ===== Venue Info Section ===== */
+.venue-info-section {
+  padding: 60px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.venue-intro h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #003566;
+}
+
+.venue-intro p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+/* ===== Venue Cards Grid ===== */
+.venue-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.venue-card {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.venue-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.venue-card h3 {
+  color: #003566;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+.campus-map-download {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f7f9fc;
+  border-left: 5px solid #0077b6;
+  border-radius: 10px;
+  text-align: left;
+}
+
+
+.download-map-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 20px;
+  background-color: #0077b6;
+  color: white;
+  margin-left: 140px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.download-map-button:hover {
+  background-color: white;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+}
+.venue-split-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.map-section,
+.in-campus-travel-section {
+  flex: 1 1 500px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.map-section:hover,
+.in-campus-travel-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ===== Animations ===== */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   Responsive Design - Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+  .venue-banner {
+    padding: 80px 16px 40px;
+  }
+
+  .venue-heading {
+    font-size: 2.2rem;
+  }
+
+  .venue-tagline {
+    font-size: 1rem;
+  }
+
+  .venue-intro h2 {
+    font-size: 1.6rem;
+  }
+
+  .venue-intro p {
+    font-size: 1rem;
+  }
+
+  .download-map-button {
+    margin-left: 0;
+    display: block;
+    width: fit-content;
+  }
+
+  .venue-split-section {
+    flex-direction: column;
+    gap: 30px;
+    padding: 40px 16px;
+  }
+
+  .map-section,
+  .in-campus-travel-section {
+    padding: 24px;
+  }
+}
+
+/* ================================
+   Responsive Design - Phones (≤480px)
+================================ */
+@media (max-width: 480px) {
+  .venue-banner {
+    padding: 60px 12px 30px;
+  }
+
+  .venue-heading {
+    font-size: 1.8rem;
+  }
+
+  .venue-tagline {
+    font-size: 0.95rem;
+  }
+
+  .venue-intro h2 {
+    font-size: 1.4rem;
+  }
+
+  .venue-intro p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .venue-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .campus-map-download {
+    padding: 16px;
+  }
+
+  .download-map-button {
+    font-size: 0.95rem;
+    padding: 10px 16px;
+    margin-left: 50px;
+  }
+  
+  .in-campus-travel-section a{
+    margin-left: 90px;
+  }
+  .map-section,
+  .in-campus-travel-section {
+    padding: 20px;
+  }
+}

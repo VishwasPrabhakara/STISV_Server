@@ -1,0 +1,101 @@
+/* === Wrapper === */
+.chairman-message-wrapper {
+  max-width: 960px;
+  margin: 4rem auto;
+  padding: 2rem 1.5rem;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  line-height: 1.8;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === Header Section === */
+.message-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.message-header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #003566;
+  margin-bottom: 0.3rem;
+  margin-top: -2rem;
+}
+
+.message-header .underline {
+  width: 80px;
+  height: 4px;
+  background-color: #0077b6;
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* === Body Content === */
+.message-body p {
+  font-size: 1.1rem;
+  margin-bottom: 1.8rem;
+  text-align: justify;
+  color: #333;
+}
+
+/* === Signature === */
+.chair-signature {
+  margin-top: 2.5rem;
+  text-align: right;
+  font-style: italic;
+  color: #003566;
+  font-weight: 500;
+}
+
+.chair-signature p {
+  margin: 0;
+}
+
+/* === Responsive === */
+
+@media (max-width: 768px) {
+  .chairman-message-wrapper {
+    margin: 2.5rem 1rem;
+    padding: 1.8rem 1.2rem;
+  }
+
+  .message-header h1 {
+    font-size: 2rem;
+  }
+
+  .message-body p {
+    font-size: 1rem;
+  }
+
+  .chair-signature {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chairman-message-wrapper {
+    margin: 2rem 0.8rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .message-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .message-body p {
+    font-size: 0.95rem;
+    margin-bottom: 1.4rem;
+    letter-spacing: 0.5px;
+    text-align: justify;
+  }
+
+  .chair-signature {
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+}

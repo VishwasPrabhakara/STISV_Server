@@ -1,0 +1,418 @@
+/* ========== Scoped General Layout ========== */
+.registration-page {
+  padding: 60px 20px;
+  max-width: 720px;
+  margin: auto;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  color: #2c3e50;
+  background-color: #f5f7fa;
+}
+
+.registration-page .page-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #003366;
+  font-weight: 600;
+}
+
+.registration-page .page-subtext {
+  text-align: center;
+  color: #555;
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+}
+
+.registration-page .registration-container {
+  background: #ffffff;
+  padding: 36px 28px;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== Form Fields & Floating Labels ========== */
+.registration-page .floating-group {
+  position: relative;
+  margin-bottom: 30px;
+  width: 80%;
+  max-width: 500px;
+  margin-left: 50px;
+}
+
+.registration-page input,
+.registration-page .react-tel-input .form-control {
+  width: 100% !important;
+  height: 48px !important;
+  padding: 14px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.registration-page input:focus,
+.registration-page .react-tel-input .form-control:focus {
+  border-color: #0077cc;
+}
+
+.registration-page input::placeholder {
+  opacity: 0;
+}
+
+.registration-page .floating-group label {
+  position: absolute;
+  top: 30% !important;
+  left: 14px !important;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #999;
+  background-color: white;
+  padding: 0 6px;
+  transition: 0.2s ease all;
+  pointer-events: none;
+}
+
+.registration-page input:focus + label,
+.registration-page input:not(:placeholder-shown) + label {
+  top: -13px !important;
+  left: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0077cc;
+}
+
+/* ========== Static Labels (Phone + Country) ========== */
+.registration-page .static-label {
+  font-size: 0.9rem!important;
+  color: #0077cc!important;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+  position: relative;
+  padding-left: 6px;
+  margin-left: 10px;
+  margin-top: -30px;
+  z-index: 2;
+  background: #fff;
+}
+
+
+/* ========== Phone Input Styling ========== */
+.registration-page .phone-group .react-tel-input {
+  width: 100% !important;
+  position: relative;
+}
+
+.registration-page .phone-group .react-tel-input .form-control {
+  padding-left: 58px !important;
+  padding-right: 14px;
+  height: 48px !important;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.registration-page .phone-group .react-tel-input .flag-dropdown {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100% !important;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.registration-page .phone-group .react-tel-input .selected-flag {
+  height: 100% !important;
+  padding: 0 12px;
+}
+
+
+/* ========== React Select Country Dropdown ========== */
+.registration-page .react-select-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+.registration-page .country-select__control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-height: 48px;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.registration-page .country-select__control--is-focused {
+  border-color: #0077cc;
+  box-shadow: 0 0 0 1px #0077cc;
+}
+
+.registration-page .country-select__placeholder {
+  color: #999;
+  font-size: 1rem;
+}
+
+.registration-page .country-select__single-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #111;
+}
+
+.registration-page .country-select__menu {
+  font-size: 1rem;
+  z-index: 1000;
+}
+
+.registration-page .country-select__option {
+  padding: 10px 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.registration-page .country-select__option--is-focused {
+  background-color: #f1f9ff;
+}
+
+.registration-page .country-select__option--is-selected {
+  background-color: #e6f3ff;
+  font-weight: bold;
+  color: #003366;
+}
+
+/* ========== Password Validation ========== */
+.registration-page .password-validation {
+  font-size: 0.85rem;
+  color: #555;
+  background: #f9f9f9;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  margin-left: .5rem;
+  border-left: 4px solid #007bff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.registration-page .password-validation ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.registration-page .password-validation li {
+  margin-bottom: 0.25rem;
+}
+
+.registration-page .password-validation li.valid {
+  color: green;
+}
+
+.registration-page .password-validation li.invalid {
+  color: #c0392b;
+}
+
+/* ========== Checkmarks ========== */
+.registration-page .success-check {
+  color: green;
+  font-size: 1.2rem;
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.registration-page .floating-group.valid-input input {
+  border: 2px solid green;
+  padding-right: 2.2rem;
+  background-color: #f3fff3;
+}
+
+/* ========== Password Toggle ========== */
+.registration-page .password-group {
+  position: relative;
+}
+
+.registration-page .password-toggle {
+  position: absolute;
+  top: 45%;
+  right: 16px;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: #888;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== Buttons ========== */
+.registration-page .button-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.registration-page .submit-btn,
+.registration-page .return-btn {
+  width: 60%;
+  max-width: 500px;
+  margin-left: -60px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registration-page .submit-btn {
+  background-color: #a7288a !important;
+  color: #fff;
+}
+
+.registration-page .submit-btn:hover {
+  background-color: white !important;
+  color: #28A745 !important;
+  border: 2px solid #28A745 !important;
+}
+
+.registration-page .return-btn {
+  background-color: #28A745 !important;
+  color: #fff;
+}
+
+.registration-page .return-btn:hover {
+  background-color: white !important;
+  color: #a7288a !important;
+  border: 2px solid #a7288a !important;
+}
+
+/* ========== Messages and Loader ========== */
+.registration-page .message {
+  text-align: center;
+  color: #d33c52;
+  font-size: 0.95rem;
+  margin-top: 10px;
+}
+
+.registration-page .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.registration-page .loader {
+  border: 4px solid #fff;
+  border-top: 4px solid #d33c52;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .registration-page {
+    padding: 40px 16px;
+  }
+
+  .registration-page .page-title {
+    font-size: 1.8rem;
+  }
+
+  .registration-page .registration-container {
+    padding: 28px 20px;
+  }
+
+  .registration-page input,
+  .registration-page .react-tel-input .form-control {
+    font-size: 0.95rem;
+    padding: 14px 12px;
+  }
+
+  .registration-page .floating-group label {
+    font-size: 0.9rem;
+    top: 36% !important;
+  }
+
+  .registration-page .submit-btn,
+  .registration-page .return-btn {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+
+  .registration-page .button-row {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-page {
+    padding: 30px 12px;
+  }
+
+  .registration-page .page-title {
+    font-size: 1.5rem;
+  }
+
+  .registration-page .page-subtext {
+    font-size: 0.95rem;
+  }
+
+  .registration-page .registration-container {
+    padding: 24px 16px;
+  }
+
+  .registration-page input,
+  .registration-page .react-tel-input .form-control {
+    font-size: 0.9rem;
+    padding: 12px 10px;
+  }
+
+  .registration-page .floating-group label {
+    font-size: 0.85rem;
+    top: 38% !important;
+  }
+
+  .registration-page .submit-btn,
+  .registration-page .return-btn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .registration-page .loader {
+    width: 36px;
+    height: 36px;
+    border-width: 3px;
+  }
+
+  .registration-page .message {
+    font-size: 0.9rem;
+  }
+}

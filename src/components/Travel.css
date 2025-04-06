@@ -1,0 +1,186 @@
+/* Travel Container */
+.travel-container {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
+  }
+  
+  /* Hero Section */
+  .travel-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 1s ease-out;
+  }
+  
+  .travel-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #003566;
+    margin-bottom: 0.5rem;
+  }
+  
+  .travel-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  /* Section Headings */
+  .travel-section {
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+  }
+  
+  .section-heading {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #00509d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    border-left: 4px solid #0077b6;
+    padding-left: 0.75rem;
+  }
+  
+  /* Travel Links */
+  .travel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .travel-list li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .travel-link {
+    font-size: 1.1rem;
+    color: #0077b6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .travel-link:hover {
+    color: #023e8a;
+    text-decoration: underline;
+  }
+  
+  /* External Links */
+  .external-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 1.05rem;
+    color: #0077b6;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .external-link:hover {
+    color: #023e8a;
+    border-color: #023e8a;
+  }
+  
+  /* Paragraphs */
+  .travel-text {
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.8;
+    max-width: 900px;
+  }
+  
+  /* Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ===============================
+   Responsive Design - Tablets (≤768px)
+================================ */
+@media (max-width: 768px) {
+    .travel-container {
+      padding: 3rem 1.5rem;
+    }
+  
+    .travel-title {
+      font-size: 2.2rem;
+    }
+  
+    .travel-subtitle {
+      font-size: 1.05rem;
+    }
+  
+    .section-heading {
+      font-size: 1.5rem;
+    }
+  
+    .travel-text {
+      font-size: 1rem;
+    }
+  
+    .travel-link {
+      font-size: 1rem;
+    }
+  
+    .external-link {
+      font-size: 1rem;
+    }
+  }
+  
+  
+  /* ===============================
+     Responsive Design - Phones (≤480px)
+  ================================ */
+  @media (max-width: 480px) {
+    .travel-container {
+      padding: 2.5rem 1rem;
+    }
+  
+    .travel-title {
+      font-size: 1.8rem;
+    }
+  
+    .travel-subtitle {
+      font-size: 1rem;
+    }
+  
+    .section-heading {
+      font-size: 1.3rem;
+      padding-left: 0.5rem;
+    }
+  
+    .travel-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+  
+    .travel-link,
+    .external-link {
+      font-size: 0.95rem;
+    }
+  }
+  

@@ -1,0 +1,68 @@
+/* ================== Conference Registration Coming Soon ================== */
+.registration-coming-soon {
+  max-width: 720px;
+  margin: 5rem auto 3rem auto;
+  padding: 2.5rem 2rem;
+  background-color: #ffffff;
+  border-left: 6px solid #1a73e8;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.coming-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.3px;
+}
+
+.coming-text {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.coming-note {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a73e8;
+  margin-top: 1.25rem;
+}
+
+/* ================== Responsive Design ================== */
+@media (max-width: 768px) {
+  .registration-coming-soon {
+    padding: 2rem 1.5rem;
+    margin: 4rem 1rem 2rem 1rem;
+  }
+
+  .coming-title {
+    font-size: 1.7rem;
+  }
+
+  .coming-text,
+  .coming-note {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-coming-soon {
+    padding: 1.75rem 1.25rem;
+    margin: 3rem 1rem 2rem 1rem;
+  }
+
+  .coming-title {
+    font-size: 1.5rem;
+  }
+
+  .coming-text,
+  .coming-note {
+    font-size: 0.95rem;
+  }
+}

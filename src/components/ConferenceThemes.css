@@ -1,0 +1,211 @@
+/* Base Page Styling */
+.conference-themes-page {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+  
+  /* =========================
+     Hero Banner
+  =========================== */
+  .themes-hero {
+    background: linear-gradient(135deg, #003566, #0077b6);
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .themes-hero-overlay {
+    padding: 2rem;
+  }
+  
+  .themes-main-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .themes-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: #e0e0e0;
+  }
+  
+  /* =========================
+     Intro Section
+  =========================== */
+  .themes-intro {
+    padding: 3rem 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .themes-intro p {
+    margin-bottom: 1.2rem;
+    font-size: 1.05rem;
+    color: #333;
+  }
+  
+  /* =========================
+     Conference Topics Section
+  =========================== */
+  .themes-list-section {
+    background-color: #f8f9fc;
+    padding: 3rem 1rem;
+  }
+  
+  .themes-section-heading {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #003566;
+  }
+  
+  /* Grid Layout */
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  /* Individual Card */
+  .theme-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem 1.2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  
+  .theme-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    outline: #003566 solid 2px;
+  }
+  
+  /* Number Style */
+  .theme-number {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #0077b6;
+    background-color: #e6f2f9;
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+  
+  .theme-card p {
+    margin-left: 2rem;
+    font-size: 1rem;
+    color: #333;
+    padding-left: 10px;
+  }
+  
+  /* =========================
+     Custom Placement for 13 & 14
+  =========================== */
+  .custom-last-row {
+    display: flex;
+    justify-content: center;
+    gap: 5rem; /* adjust based on how far apart you want them */
+    margin-top: 2rem;
+  }
+  
+  .theme-card-custom {
+    width: 320px;
+  }
+  
+  
+  /* =========================
+     Utilities
+  =========================== */
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* =============================
+   Responsive Design
+============================= */
+@media (max-width: 768px) {
+  .themes-hero {
+    height: auto;
+    padding: 3rem 1rem;
+    text-align: center;
+  }
+
+  .themes-main-title {
+    font-size: 2.2rem;
+  }
+
+  .themes-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .themes-intro {
+    padding: 2rem 1rem;
+  }
+
+  .themes-section-heading {
+    font-size: 1.6rem;
+  }
+
+  .themes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .custom-last-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .theme-card-custom {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .themes-main-title {
+    font-size: 1.8rem;
+  }
+
+  .themes-subtitle {
+    font-size: 1rem;
+  }
+
+  .themes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-card p {
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .custom-last-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .theme-card-custom {
+    width: 100%;
+  }
+}
+
+  
+  

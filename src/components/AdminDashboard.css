@@ -1,0 +1,238 @@
+.admin-dashboard-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #f4f7fa;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  color: #2c3e50;
+}
+
+.admin-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.admin-dashboard-header h2 {
+  font-size: 2rem;
+  color: #003366;
+  flex: 1 1 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.logout-button {
+  background-color: #d00000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: white;
+  color: #d00000;
+  border: 2px solid #d00000;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+  padding: 24px;
+}
+
+.abstract-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 750px;
+}
+
+.abstract-table th {
+  background-color: #003366;
+  color: white;
+  text-align: left;
+  padding: 14px 16px;
+  font-weight: 600;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.abstract-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: top;
+}
+
+.abstract-table tr:nth-child(even) {
+  background-color: #f8fafd;
+}
+
+.abstract-table tr:hover {
+  background-color: #eef4fa;
+}
+
+.status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.approved {
+  color: #28a745;
+}
+
+.status.rejected {
+  color: #d00000;
+}
+
+.status.pending {
+  color: #e69900;
+}
+
+.remarks-box {
+  width: 100%;
+  max-width: 240px;
+  min-height: 48px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.remarks-box:focus {
+  outline: none;
+  border-color: #0077b6;
+  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
+}
+
+.approve-button,
+.reject-button {
+  padding: 8px 14px;
+  margin: 4px 4px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.approve-button {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.approve-button:hover {
+  background-color: white;
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
+}
+
+.reject-button {
+  background-color: #b71c1c;
+  color: white;
+}
+
+.reject-button:hover {
+  background-color: white;
+  color: #b71c1c;
+  border: 2px solid #b71c1c;
+}
+
+.error-message {
+  color: #d00000;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-top: 40px;
+  color: #555;
+}
+
+/* ===============================
+   Responsive for Tablets (≤768px)
+================================= */
+@media (max-width: 768px) {
+  .admin-dashboard-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .logout-button {
+    width: 100%;
+    max-width: 220px;
+    text-align: center;
+  }
+
+  .abstract-table th,
+  .abstract-table td {
+    padding: 10px;
+    font-size: 0.88rem;
+  }
+
+  .remarks-box {
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+
+  .approve-button,
+  .reject-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ===============================
+   Responsive for Phones (≤480px)
+================================= */
+@media (max-width: 480px) {
+  .admin-dashboard-page {
+    padding: 20px 10px;
+  }
+
+  .admin-dashboard-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .abstract-table {
+    font-size: 0.85rem;
+    min-width: unset;
+  }
+
+  .abstract-table th,
+  .abstract-table td {
+    padding: 8px;
+  }
+
+  .remarks-box {
+    font-size: 0.8rem;
+    max-width: 100%;
+  }
+
+  .approve-button,
+  .reject-button {
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .table-wrapper {
+    padding: 12px;
+  }
+}

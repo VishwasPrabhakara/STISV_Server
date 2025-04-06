@@ -1,0 +1,243 @@
+/* Global Page Wrapper */
+.home-wrapper {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Marquee Announcement Bar */
+.announcement-bar {
+  background-color: #003566;
+  color: #fff;
+  padding: 0.5rem 0;
+  font-size: 1.20rem;
+  font-weight: 500;
+}
+
+.announcement-bar marquee {
+  white-space: nowrap;
+  color: yellow;
+}
+
+/* Hero Section */
+.hero-section {
+  background: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/home.jpg?raw=true') no-repeat center center/cover !important;
+  color: #fff;
+  padding: 4rem 1rem 5rem;
+  text-align: center;
+  transition: opacity 1s ease-in-out;
+  background-image: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/home.jpg?raw=true') no-repeat center center/cover !important;
+  background-size: 30px 30px;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.location {
+  color: white !important;
+  text-decoration: none;
+  font-weight: 700!important;
+}
+
+.location:hover {
+  text-decoration: underline;
+  color: #f0f0f0; /* Optional soft hover effect */
+}
+
+.abstract-template-note {
+  margin: 30px auto 20px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-weight: bolder;
+  background-color: #003566;
+  width: 50%;
+  padding: 10px;
+  color: white!important;
+  text-align: center;
+}
+/* Title Styles */
+.hero-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+/* Conference Info */
+.conference-info {
+  margin: 1rem auto;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Abstract Note */
+.abstract-announcement {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #eaeaea;
+}
+
+/* CTA Buttons */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.cta-btn {
+  background-color: #ffffff;
+  color: #003566;
+  padding: 0.7rem 1.4rem;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.cta-btn:hover {
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+  text-decoration: none;
+}
+
+/* Countdown Timer */
+.countdown-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+
+.countdown-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 80px;
+}
+
+.countdown-value {
+  font-size: 2rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.countdown-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: white;
+}
+
+/* =============================
+   Responsive Design - Tablets
+============================= */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1rem 4rem;
+    background-size: cover !important;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+  }
+
+  .conference-info,
+  .abstract-announcement {
+    font-size: 0.95rem;
+  }
+
+  .abstract-template-note {
+    font-size: 0.75rem;
+  }
+
+  .cta-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .countdown-wrapper {
+    gap: 1rem;
+  }
+
+  .countdown-value {
+    font-size: 1.6rem;
+  }
+
+  .countdown-label {
+    font-size: 0.8rem;
+  }
+}
+
+
+/* =============================
+   Responsive Design - Phones
+============================= */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .conference-info,
+  .abstract-announcement {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .announcement-bar {
+    font-size: 0.9rem;
+  }
+
+  .cta-btn {
+    width: 80%;
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    align-self: center;
+  }
+
+  .countdown-wrapper {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  .countdown-box {
+    min-width: 30px;
+  }
+
+  .countdown-value {
+    font-size: 1.5rem;
+  }
+
+  .countdown-label {
+    font-size: 0.75rem;
+  }
+}

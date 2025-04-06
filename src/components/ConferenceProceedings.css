@@ -1,0 +1,228 @@
+.conference-proceedings-container {
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  padding: 0;
+  margin: 0;
+}
+
+/* HERO SECTION */
+.hero-banner-proceedings {
+  background: linear-gradient(135deg, #f0f4f8, #dbe9f4);
+  padding: 80px 20px;
+  text-align: center;
+  color: #003366;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.proceedings-heading {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  margin-top: -30px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.hero-subtext {
+  font-size: 1.1rem;
+  color: #2a2a2a;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* MAIN PARAGRAPH */
+.proceedings-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* TWO-COLUMN SECTION */
+/* Container for side-by-side boxes */
+.proceedings-side-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 3rem 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: -50px;
+  flex-wrap: nowrap; /* keep them side by side */
+}
+
+/* Both boxes */
+.proceedings-highlights,
+.proceedings-timeline {
+  flex: 1;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-width: 0;
+}
+
+/* Highlight List */
+.highlight-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.highlight-list li {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  background: #f5f7fa;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.timeline-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CTA Section */
+.cta-proceedings {
+  background: #f1f6fa;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.cta-proceedings h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.cta-proceedings p {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 25px;
+}
+
+.btn-download {
+  background: #0072ce;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.btn-download:hover {
+  background: #005bb5;
+}
+
+/* ============================
+   Responsive Design
+============================ */
+@media (max-width: 768px) {
+  .hero-banner-proceedings {
+    padding: 60px 15px;
+  }
+
+  .proceedings-heading {
+    font-size: 2.1rem;
+  }
+
+  .hero-subtext {
+    font-size: 1rem;
+  }
+
+  .proceedings-content {
+    font-size: 1rem;
+  }
+
+  .proceedings-side-section {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+
+  .proceedings-highlights,
+  .proceedings-timeline {
+    flex: 1 1 100%;
+    padding: 1.5rem;
+  }
+
+  .cta-proceedings h3 {
+    font-size: 1.3rem;
+  }
+
+  .cta-proceedings p {
+    font-size: 0.95rem;
+  }
+
+  .btn-download {
+    font-size: 0.95rem;
+    padding: 10px 22px;
+  }
+}
+
+@media (max-width: 360px) {
+  .proceedings-heading {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtext {
+    font-size: 0.95rem;
+  }
+
+  .highlight-list li {
+    font-size: 0.95rem;
+  }
+
+  .timeline-step {
+    font-size: 0.95rem;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .cta-proceedings {
+    padding: 40px 15px;
+  }
+
+  .btn-download {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .proceedings-side-section{
+    align-items: center;
+  }
+}

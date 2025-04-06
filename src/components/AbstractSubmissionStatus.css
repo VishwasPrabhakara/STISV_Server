@@ -1,0 +1,401 @@
+/* ============================
+   Abstract Status Container
+============================ */
+.abstract-status-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #1a1a1a;
+}
+
+.abstract-status-container h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #003566;
+  font-weight: 700;
+}
+
+.abstract-status-container p {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #003566;
+  font-weight: 700;
+}
+
+/* ============================
+   Abstract Details Card
+============================ */
+.abstract-details {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.abstract-row {
+  margin-bottom: 1.8rem;
+}
+
+.abstract-row strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #003566;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.abstract-row span {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* ============================
+   Abstract Code
+============================ */
+.abstract-code-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.abstract-code-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f0f8ff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+}
+
+.abstract-code {
+  font-weight: 600;
+  color: #003566;
+}
+
+.copy-icon {
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #0077b6;
+  transition: 0.3s;
+}
+
+.copy-icon:hover {
+  color: #00548a;
+}
+
+/* ============================
+   Inputs & Selects
+============================ */
+.abstract-row input,
+.abstract-row textarea,
+.abstract-row select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.abstract-row input:focus,
+.abstract-row textarea:focus,
+.abstract-row select:focus {
+  outline: none;
+  border-color: #0077b6;
+}
+
+/* ============================
+   Authors Table
+============================ */
+.authors-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  margin-top: 0.5rem;
+}
+
+.authors-table th,
+.authors-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.authors-table th {
+  background-color: #e8f4fd;
+  font-weight: 600;
+  color: #003566;
+}
+
+/* ============================
+   Editable Author Rows
+============================ */
+.authors-edit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.author-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.author-edit-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+
+.remove-author-button {
+  background-color: #d90429;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.remove-author-button:hover {
+  background-color: white;
+  color: #d90429;
+  border: 2px solid #d90429;
+}
+
+.add-author-button {
+  background-color: #0077b6;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.add-author-button:hover {
+  background-color: white;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+}
+
+/* ============================
+   Status Tags
+============================ */
+.status-accepted {
+  color: #2e8b57;
+  font-weight: 600;
+}
+
+.status-rejected {
+  color: #d90429;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #ff9900;
+  font-weight: 600;
+}
+
+/* ============================
+   Buttons & Actions
+============================ */
+.edit-action-row,
+.main-action-row,
+.payment-row,
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  border: none;
+}
+
+.edit-button,
+.save-button,
+.finalize-button,
+.back-button,
+.pay-button,
+.confirm-button,
+.submit-again-button {
+  background-color: #0077b6;
+  color: white;
+}
+
+.edit-button:hover,
+.save-button:hover,
+.finalize-button:hover,
+.back-button:hover,
+.pay-button:hover,
+.confirm-button:hover,
+.submit-again-button:hover {
+  background-color: white;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+}
+
+.cancel-button {
+  background-color: red;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+}
+
+/* ============================
+   Links & Notes
+============================ */
+.download-link {
+  color: #0077b6;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.submission-note,
+.submission-instruction {
+  background: #f1faff;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #003566;
+  margin: 1.5rem auto;
+  max-width: 640px;
+  text-align: center;
+}
+
+/* ============================
+   Finalized Message
+============================ */
+.finalized-message {
+  background: #f9f9f9;
+  border-left: 4px solid #0077b6;
+  padding: 1rem 1.2rem;
+  color: #333;
+  font-size: 1rem;
+  max-width: 640px;
+  margin: 1.5rem auto 0;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ============================
+   Error Message
+============================ */
+.error-message {
+  color: #d90429;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+/* ============================
+   Popup Dialog
+============================ */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup {
+  background: #ffffff;
+  padding: 2rem;
+  border: 2px solid #0077b6;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 450px;
+}
+
+.popup h3 {
+  font-size: 1.25rem;
+  color: #003566;
+  margin-bottom: 1rem;
+}
+
+/* ============================
+   Responsive Tweaks
+============================ */
+@media (max-width: 768px) {
+  .abstract-status-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .abstract-details {
+    padding: 1.5rem;
+  }
+
+  .abstract-code-box {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .popup {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .abstract-status-container h2 {
+    font-size: 1.6rem;
+  }
+
+  .abstract-row strong,
+  .abstract-row span {
+    font-size: 0.95rem;
+  }
+
+  .abstract-row input,
+  .abstract-row textarea,
+  .abstract-row select {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.9rem;
+  }
+
+  .popup h3 {
+    font-size: 1.05rem;
+  }
+
+  .error-message {
+    font-size: 0.95rem;
+  }
+}

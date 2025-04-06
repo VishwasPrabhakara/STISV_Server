@@ -1,0 +1,390 @@
+/* Global */
+.accommodation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  animation: fadeIn 0.6s ease;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+/* Intro Section */
+.intro-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.accommodation-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.accommodation-subtext {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Key Info */
+.key-info-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.key-info-card {
+  background: #f7f9fc;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  text-align: center;
+  flex: 1;
+  min-width: 220px;
+  transition: transform 0.2s ease;
+}
+
+.key-info-card:hover {
+  transform: translateY(-4px);
+}
+
+.key-info-card h3 {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.key-info-card p {
+  color: #444;
+  font-size: 0.95rem;
+}
+
+/* Hotel Cards */
+.hotels-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 2rem;
+  justify-content: center;
+}
+
+.hotel-card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: fit-content;
+  transition: transform 0.25s ease;
+  position: relative;
+}
+
+.hotel-card:hover {
+  transform: translateY(-5px);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+
+}
+
+.hotel-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.hotel-category {
+  font-weight: 600;
+  background: #f0f4ff;
+  color: #004aad;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.hotel-distance {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  color: #666;
+  gap: 5px;
+}
+
+.hotel-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.hotel-description {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* Amenities */
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.amenity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/* Rate Section */
+.hotel-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.rates-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.rate-card {
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  text-align: center;
+  flex: 1;
+  min-width: 130px;
+}
+
+.rate-card span {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.rate-card strong {
+  font-size: 1.15rem;
+  color: #111;
+}
+
+.rate-card small {
+  display: block;
+  font-size: 0.75rem;
+  color: #777;
+  margin-top: 4px;
+}
+
+/* Book Button */
+.book-button {
+  background-color: #0077b6;
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-left: 90px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.book-button:hover {
+  background-color: white;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+}
+
+/* Cancellation Section */
+.cancellation-policy {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.cancellation-policy h2 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.policy-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.policy-card {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  width: 240px;
+}
+
+/* Center last hotel card if not filling row */
+.hotels-section > .hotel-card:last-child:nth-child(3n + 2):not(:only-child),
+.hotels-section > .hotel-card:last-child:nth-child(3n + 1):not(:only-child) {
+  grid-column: 2 / 3;
+  justify-self: center;
+}
+
+.policy-icon {
+  color: #004aad;
+  margin-bottom: 0.5rem;
+}
+
+.policy-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.policy-card p {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive – Tablets */
+@media (max-width: 1024px) {
+  .hotels-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .accommodation-title {
+    font-size: 2rem;
+  }
+
+  .accommodation-subtext {
+    font-size: 1rem;
+  }
+
+  .key-info-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .key-info-card {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .hotel-card {
+    padding: 1.2rem;
+  }
+
+  .hotel-name {
+    font-size: 1.15rem;
+  }
+
+  .rates-section {
+    flex-direction: column;
+  }
+
+  .rate-card {
+    width: 100%;
+  }
+
+  .book-button {
+    margin-left: 0;
+    align-self: center;
+  }
+
+  .cancellation-policy h2 {
+    font-size: 1.5rem;
+  }
+
+  .policy-card {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+/* Responsive – Phones */
+@media (max-width: 480px) {
+  .accommodation-title {
+    font-size: 1.6rem;
+  }
+  .accommodation-container{
+    margin-right: 3rem;
+    
+  }
+
+  .accommodation-subtext {
+    font-size: 0.85rem;
+  }
+
+  .hotel-name {
+    font-size: 1rem;
+  }
+
+  .hotels-section{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .hotel-card {
+    width: 75%;
+  }
+  .hotel-description {
+    font-size: 0.9rem;
+  }
+
+  .amenities-list {
+    flex-direction: column;
+  }
+
+
+  .rate-card {
+    width: 75%;
+  }
+  .rate-card strong {
+    font-size: 1rem;
+  }
+
+  .book-button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .cancellation-policy h2 {
+    font-size: 1.4rem;
+  }
+
+  .policy-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .policy-card p {
+    font-size: 0.85rem;
+  }
+}

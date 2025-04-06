@@ -1,0 +1,323 @@
+/* =============================
+   GENERAL STYLING
+============================= */
+.contact-container {
+  padding: 80px 20px;
+  background: linear-gradient(to right, #f7f9fc, #eef3f8);
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+.contact-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+/* =============================
+   CONTACT DETAILS SECTION (LEFT)
+============================= */
+.contact-details-section {
+  flex: 1 1 45%;
+  background: #fff;
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+}
+
+.contact-details-section:hover {
+  transform: translateY(-5px);
+}
+
+.contact-title {
+  font-size: 2.3rem;
+  color: #2b2b2b;
+  font-weight: 700;
+  border-left: 5px solid #005fa3;
+  padding-left: 15px;
+  margin-bottom: 30px;
+}
+
+.organizer-name {
+  font-size: 1.05rem;
+  color: #444;
+  margin-bottom: 25px;
+  line-height: 1.75;
+}
+
+.secretariat-info h2 {
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+  color: #005fa3;
+  font-weight: 600;
+}
+
+.secretariat-info p {
+  font-size: 1.05rem;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.secretariat-info a {
+  color: #0077cc;
+  font-weight: 500;
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+.secretariat-info a:hover {
+  color: #005fa3;
+  text-decoration: underline;
+}
+
+/* =============================
+   CONTACT FORM SECTION (RIGHT)
+============================= */
+.contact-form-section {
+  flex: 1 1 50%;
+  background: #fff;
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 40px 35px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+}
+
+.contact-form-section:hover {
+  transform: translateY(-5px);
+}
+
+.form-heading,
+.contact-form-section h3 {
+  font-size: 2.3rem;
+  color: #2b2b2b;
+  font-weight: 700;
+  border-left: 5px solid #005fa3;
+  padding-left: 15px;
+  margin-bottom: 30px;
+}
+
+/* =============================
+   FLOATING LABEL FORM
+============================= */
+.floating-label-group {
+  position: relative;
+  margin-bottom: 28px;
+  width: 100%;
+}
+
+.floating-label-group input,
+.floating-label-group textarea {
+  width: 100%;
+  padding: 16px 14px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  resize: vertical;
+}
+
+.floating-label-group label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+  background: white;
+  padding: 0 6px;
+  pointer-events: none;
+  transition: 0.2s ease all;
+}
+
+.floating-label-group input:focus + label,
+.floating-label-group input:not(:placeholder-shown) + label,
+.floating-label-group textarea:focus + label,
+.floating-label-group textarea:not(:placeholder-shown) + label {
+  top: -8px;
+  font-size: 0.75rem;
+  color: #0077cc;
+}
+
+.floating-label-group input::placeholder,
+.floating-label-group textarea::placeholder {
+  color: transparent;
+}
+
+/* =============================
+   SUBMIT BUTTON
+============================= */
+.query-form button {
+  margin-top: 10px;
+  background-color: #0077cc;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.query-form button:hover {
+  background-color: white !important;
+  color: #0077cc !important;
+  border: 2px solid #0077cc !important;
+}
+
+.form-response {
+  margin-top: 18px;
+  font-size: 0.95rem;
+  color: #006400;
+  text-align: center;
+}
+
+/* =============================
+   FULLSCREEN LOADER
+============================= */
+.fullscreen-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-circle {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #fff;
+  border-top-color: #0077cc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loader-text {
+  color: #fff;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================
+   Responsive — Tablets (≤768px)
+============================= */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 60px 16px;
+  }
+
+  .contact-wrapper {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .contact-details-section,
+  .contact-form-section {
+    flex: 1 1 100%;
+    padding: 30px 25px;
+  }
+
+  .contact-title,
+  .form-heading,
+  .contact-form-section h3 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+
+  .floating-label-group input,
+  .floating-label-group textarea {
+    padding: 14px 12px;
+    font-size: 0.95rem;
+  }
+
+  .floating-label-group label {
+    font-size: 0.95rem;
+  }
+
+  .query-form button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px 0;
+  }
+
+  .loader-text {
+    font-size: 1rem;
+  }
+}
+
+/* =============================
+   Responsive — Mobile (≤480px)
+============================= */
+@media (max-width: 480px) {
+  .contact-container {
+    padding: 50px 12px;
+  }
+
+  .contact-title,
+  .form-heading,
+  .contact-form-section h3 {
+    font-size: 1.6rem;
+  }
+
+  .organizer-name,
+  .secretariat-info h2,
+  .secretariat-info p,
+  .secretariat-info a {
+    font-size: 0.95rem;
+  }
+
+  .floating-label-group {
+    margin-bottom: 24px;
+  }
+
+  .floating-label-group input,
+  .floating-label-group textarea {
+    padding: 12px 10px;
+    font-size: 0.9rem;
+  }
+
+  .floating-label-group label {
+    font-size: 0.85rem;
+  }
+
+  .query-form button {
+    font-size: 0.95rem;
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .loader-circle {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .loader-text {
+    font-size: 0.95rem;
+  }
+}
