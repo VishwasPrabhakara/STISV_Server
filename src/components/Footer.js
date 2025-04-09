@@ -49,14 +49,14 @@ const Footer = () => {
           <div className="footer-links-grid">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/about">About</NavLink>
-            <NavLink to="/programme">Programme</NavLink>
             <NavLink to="/distinguished-speaker">Speakers</NavLink>
             <NavLink to="/committee">Committee</NavLink>
             <NavLink to="/conference-schedule">Schedule</NavLink>
-            <NavLink to="/conference-proceedings">Proceedings</NavLink>
             <NavLink to="/venue">Venue</NavLink>
             <NavLink to="/announcements">Announcements</NavLink>
             <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/cancellation-and-refunds">Cancellation & Refund</NavLink> 
+            <NavLink to="/terms-and-conditions">Terms & Conditions</NavLink>
           </div>
         </div>
 

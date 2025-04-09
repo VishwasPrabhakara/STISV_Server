@@ -9,6 +9,7 @@ import {
 // Page Components
 import HomePage from './components/HomePage';
 import About from './components/About';
+import CancellationRefunds from './components/CancellationAndRefunds';
 import ConferenceThemes from './components/ConferenceThemes';
 import Programme from './components/Programme';
 import ConferenceRegistration from './components/ConferenceRegistration';
@@ -24,7 +25,7 @@ import MediaPartner from './components/Mediapartner';
 import Accomodation from './components/Accomodation';
 import Tours from './components/Tours';
 import Travel from './components/Travel';
-
+import TermsAndConditions from './components/TermsAndConditions';
 import Language from './components/Language';
 import Bengaluru from './components/Bengaluru';
 import Weather from './components/Weather';
@@ -62,7 +63,7 @@ const router = createBrowserRouter(
       <Route path="/announcements" element={<Announcements />} />
       <Route path="/conference-schedule" element={<ConferenceSchedule />} />
       <Route path="/mediapartners" element={<MediaPartner />} />
-      
+      <Route path="/terms-and-conditions" element={<TermsAndConditions/>} />
       <Route path="/accomodation" element={<Accomodation />} />
       <Route path="/tours-and-social-events" element={<Tours />} />
       <Route path="/travel-information" element={<Travel />} />
@@ -79,7 +80,7 @@ const router = createBrowserRouter(
       <Route path="/reach-iisc" element={<ReachIisc />} />
       <Route path="/login-signup" element={<MemberAccess />} />
       <Route path="/abstract-submission" element={<AbstractSubmission />} />
-      
+      <Route path='/cancellation-and-refunds' element={<CancellationRefunds />} />
       <Route path="/register" element={<NewUserRegistration />} />
       <Route path="/submit-abstract" element={<SubmitAbstractForm />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -1,6 +1,4 @@
-/* ================================
-   Distinguished Speakers Styling
-================================ */
+
 
 .distinguished-speakers-container {
   padding: 2rem 1rem;
@@ -10,9 +8,7 @@
   margin-top: -2rem;
 }
 
-/* ================================
-   Section Titles
-================================ */
+
 .section-title {
   text-align: center;
   font-size: 2rem;
@@ -24,9 +20,6 @@
   margin-bottom: 2rem;
 }
 
-/* ================================
-   Static Scroll (Plenary Section)
-================================ */
 .static-scroll {
   display: flex;
   justify-content: center;
@@ -40,9 +33,7 @@
   display: none;
 }
 
-/* ================================
-   Embla Carousel Container
-================================ */
+
 .invited-box {
   position: relative;
   padding: 0 3rem;
@@ -70,9 +61,7 @@
   justify-content: center;
 }
 
-/* ================================
-   Navigation Buttons
-================================ */
+
 .embla__prev,
 .embla__next {
   position: absolute;
@@ -100,9 +89,7 @@
   right: 0.2rem;
 }
 
-/* ================================
-   Speaker Card Styling
-================================ */
+
 .speaker-card {
   background-color: #fff;
   border-radius: 10px;
@@ -151,9 +138,7 @@
   color: #555;
 }
 
-/* ================================
-   Responsive Design - Tablet
-================================ */
+
 @media (max-width: 768px) {
   .section-title {
     font-size: 1.8rem;
@@ -180,14 +165,22 @@
   .embla__next {
     font-size: 1.8rem;
   }
+
+  
 }
 
-/* ================================
-   Responsive Design - Phones
-================================ */
+
 @media (max-width: 480px) {
   .section-title {
     font-size: 1.5rem;
+  }
+  
+  .embla__next{
+    margin-right: 100px;
+  }
+
+  .embla__prev{
+    margin-left: 100px;
   }
 
   .speaker-card {
@@ -210,4 +203,4 @@
   .invited-box {
     padding: 0 1.5rem;
   }
-}
+} 

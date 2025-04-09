@@ -1,0 +1,92 @@
+.terms-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    color: #222;
+    line-height: 1.7;
+  }
+  
+  .terms-container h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #004080;
+    text-align: center;
+  }
+  
+  .terms-container h2 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .terms-container section {
+    margin-bottom: 30px;
+  }
+  
+  .terms-container h3 {
+    font-size: 1.2rem;
+    color: #004080;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 6px;
+  }
+  
+  .terms-container ul {
+    padding-left: 20px;
+    margin: 10px 0;
+  }
+  
+  .terms-container ul li {
+    margin-bottom: 10px;
+  }
+  
+  .terms-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+  }
+  
+  .terms-container table th,
+  .terms-container table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .terms-container table th {
+    background-color: #f0f0f0;
+  }
+  
+  .terms-container a {
+    color: #004080;
+    text-decoration: none;
+  }
+  
+  .terms-container a:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 600px) {
+    .terms-container {
+      padding: 20px;
+      font-size: 0.95rem;
+    }
+  
+    .terms-container h1 {
+      font-size: 1.6rem;
+    }
+  
+    .terms-container h2 {
+      font-size: 1.1rem;
+    }
+  
+    .terms-container h3 {
+      font-size: 1.05rem;
+    }
+  }
+  
