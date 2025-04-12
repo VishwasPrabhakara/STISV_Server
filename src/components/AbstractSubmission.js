@@ -106,7 +106,7 @@ const AbstractSubmission = () => {
                   </button>
                   <a
                     className="btn btn-secondary"
-                    href="/assets/Abstract-Template.docx"
+                    href="/stis2025/assets/Abstract-Template.docx"
                     download
                   >
                     Download Abstract Template
@@ -129,7 +129,7 @@ const AbstractSubmission = () => {
                 <li>🔹 Use only the official template provided.</li>
               </ul>
               <a
-                href="/assets/Abstract-Template.docx"
+                href="/stis2025/assets/Abstract-Template.docx"
                 className="template-download"
                 download
               >
