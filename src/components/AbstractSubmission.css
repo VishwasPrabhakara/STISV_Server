@@ -145,6 +145,74 @@
   text-decoration: italic;
 }
 
+/* === Submitted Abstracts Section === */
+.submitted-abstracts-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.abstract-entry {
+  background-color: #f8f9fa;
+  border-left: 5px solid #0077b6;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  text-align: left;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.abstract-entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.abstract-entry strong {
+  font-size: 1.1rem;
+  color: #003566;
+}
+
+.abstract-entry code {
+  font-size: 0.95rem;
+  background: #e6f4ff;
+  color: #0077b6;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.abstract-entry .btn.small {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.9rem !important;
+  margin-top: 0.75rem;
+  display: inline-block;
+}
+
+/* Responsive: abstracts list on mobile */
+@media (max-width: 768px) {
+  .abstract-entry {
+    padding: 1rem 1.25rem;
+  }
+
+  .abstract-entry strong {
+    font-size: 1rem;
+  }
+
+  .abstract-entry code {
+    font-size: 0.85rem;
+  }
+
+  .abstract-entry .btn.small {
+    font-size: 0.85rem !important;
+  }
+}
+
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .button-group {

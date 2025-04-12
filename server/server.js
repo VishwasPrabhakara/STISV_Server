@@ -67,24 +67,18 @@ const upload = multer({
 
 // Middleware
 app.use(express.json());
-const allowedOrigins = [
-  'http://localhost:3000',             
-  'https://materials.iisc.ac.in', 
-  'https://stisv-1.onrender.com',  
-  'https://stisv.vercel.app', 
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed from this origin'));
-    }
-  },
-  credentials: true // if using cookies or sessions
+  origin: [
+    'http://localhost:3000',              // local dev
+    'https://materials.iisc.ac.in',       // IISc domain
+    'https://stisv-1.onrender.com',       // old Render app (if used)
+    'https://stisv.vercel.app'            // current frontend
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
@@ -138,23 +132,25 @@ const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   country: { type: String, required: true },
   affiliation: { type: String, required: true },
-  abstractSubmission: {
-    title: { type: String },
-    scope: { type: String },
-    abstractCode: { type: String },
-    presentingType: { type: String },
-    firstAuthorName: { type: String },
-    firstAuthorAffiliation: { type: String },
-    secondAuthorName: { type: String },
-    secondAuthorAffiliation: { type: String },
-    otherAuthors: { type: String },
-    presentingAuthorName: { type: String },
-    presentingAuthorAffiliation: { type: String },
-    abstractFile: { type: String }, // Stores the file path
-    mainBody: { type: String },
-    status: { type: String, default: "Pending" }, // ✅ Stores approval status (Pending, Approved, Rejected)
+  abstractSubmissions: [{
+    title: String,
+    scope: String,
+    abstractCode: String,
+    presentingType: String,
+    firstAuthorName: String,
+    firstAuthorAffiliation: String,
+    secondAuthorName: String,
+    secondAuthorAffiliation: String,
+    otherAuthors: String,
+    presentingAuthorName: String,
+    presentingAuthorAffiliation: String,
+    abstractFile: String,
+    mainBody: String,
+    status: { type: String, default: "Pending" },
     isFinalized: { type: Boolean, default: false },
-  }
+    remarks: String,
+    timestamp: String,
+  }]
 });
 
 const User = mongoose.model("User", userSchema);
@@ -347,28 +343,33 @@ app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (
     const cloudinaryResult = await uploadToCloudinary();
 
     // Update user's abstractSubmission in DB
-    const user = await User.findOneAndUpdate(
-      { uid },
-      {
-        $set: {
-          "abstractSubmission.title": title,
-          "abstractSubmission.scope": theme,
-          "abstractSubmission.presentingType": presentingType,
-          "abstractSubmission.firstAuthorName": firstAuthorName,
-          "abstractSubmission.firstAuthorAffiliation": firstAuthorAffiliation,
-          "abstractSubmission.otherAuthors": otherAuthors,
-          "abstractSubmission.presentingAuthorName": presentingAuthorName,
-          "abstractSubmission.presentingAuthorAffiliation": presentingAuthorAffiliation,
-          "abstractSubmission.abstractFile": cloudinaryResult.secure_url,
-          "abstractSubmission.mainBody": mainBody,
-          "abstractSubmission.abstractCode": abstractCode, // ✅ Save Abstract Code
-          "abstractSubmission.isFinalized": false,
-          "abstractSubmission.status": "Pending",
-          "abstractSubmission.timestamp": new Date().toLocaleString(),
-        }
-      },
-      { new: true, upsert: true }
-    );
+    const user = await User.findOne({ uid });
+
+if (!user) {
+  return res.status(404).json({ message: "User not found" });
+}
+
+// Create new abstract object
+const newAbstract = {
+  title,
+  scope: theme,
+  presentingType,
+  firstAuthorName,
+  firstAuthorAffiliation,
+  otherAuthors,
+  presentingAuthorName,
+  presentingAuthorAffiliation,
+  abstractFile: cloudinaryResult.secure_url,
+  mainBody,
+  abstractCode,
+  isFinalized: false,
+  status: "Pending",
+  timestamp: new Date().toLocaleString()
+};
+
+// Push into abstractSubmissions array
+user.abstractSubmissions.push(newAbstract);
+await user.save();
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -506,7 +507,8 @@ app.get("/get-all-abstracts", async (req, res) => {
 
 app.put("/update-abstract", verifyToken, upload.single("abstractFile"), async (req, res) => {
   try {
-    const uid = req.body.uid;
+    const { uid, abstractCode } = req.body;
+
     if (!uid) return res.status(400).json({ message: "User ID is required" });
 
     console.log(`🔹 Updating abstract for UID: ${uid}`);
@@ -549,21 +551,41 @@ app.put("/update-abstract", verifyToken, upload.single("abstractFile"), async (r
     }
 
     // ✅ Update MongoDB
-    const user = await User.findOneAndUpdate({ uid }, { $set: updateData }, { new: true });
-    if (!user) return res.status(404).json({ message: "User not found" });
 
-    console.log("✅ Abstract updated successfully in MongoDB!");
 
-    // ✅ Update Google Sheets Only If Data Changed
-    if (googleSheetUpdateRequired) {
-      console.log("🔄 Updating Google Sheets...");
-      await updateGoogleSheet(user, true);
-      console.log("✅ Google Sheets updated successfully!");
-    }
+if (!abstractCode) {
+  return res.status(400).json({ message: "Abstract code is required for update." });
+}
 
-    res.json({ message: "Abstract updated successfully", abstract: user.abstractSubmission });
+const user = await User.findOne({ uid });
+if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Send update confirmation email to user
+const abstractIndex = user.abstractSubmissions.findIndex(abs => abs.abstractCode === abstractCode);
+if (abstractIndex === -1) {
+  return res.status(404).json({ message: "Abstract not found for given code." });
+}
+
+// Update fields
+Object.entries(updateData).forEach(([key, value]) => {
+  const field = key.replace("abstractSubmission.", "");
+  user.abstractSubmissions[abstractIndex][field] = value;
+});
+
+// Save updated abstract
+await user.save();
+
+console.log("✅ Abstract updated successfully in MongoDB!");
+
+// ✅ Update Google Sheets Only If Data Changed
+if (googleSheetUpdateRequired) {
+  console.log("🔄 Updating Google Sheets...");
+  await updateGoogleSheet(user, true);
+  console.log("✅ Google Sheets updated successfully!");
+}
+
+res.json({ message: "Abstract updated successfully", abstract: user.abstractSubmissions[abstractIndex] });
+
+// ✅ Send update confirmation email to user
 const updateMailOptions = {
   from: process.env.EMAIL_USER,
   to: user.email,
@@ -573,13 +595,14 @@ const updateMailOptions = {
 Your abstract has been successfully updated in the STIS-V 2025 system.
 
 You can download your updated abstract from the following link:
-${user.abstractSubmission.abstractFile}
+${user.abstractSubmissions[abstractIndex].abstractFile}
 
 If you did not request this update or have any concerns, please contact the organizing team at stis.mte@iisc.ac.in.
 
 Best regards,  
 STIS-V 2025 Organizing Committee`,
 };
+
 
 try {
   await transporter.sendMail(updateMailOptions);
@@ -651,33 +674,32 @@ app.post("/admin/login", async (req, res) => {
 
 app.put("/admin/update-abstract-status", verifyAdminToken, async (req, res) => {
   try {
-    const { uid, status, remarks } = req.body;
+    const { uid, abstractCode, status, remarks } = req.body;
 
-    if (!uid || !status) {
-      return res.status(400).json({ message: "UID and status are required." });
+    if (!uid || !abstractCode || !status) {
+      return res.status(400).json({ message: "UID, Abstract Code, and Status are required." });
     }
 
     if (!["Approved", "Rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value." });
     }
 
-    const user = await User.findOneAndUpdate(
-      { uid },
-      {
-        $set: {
-          "abstractSubmission.status": status,
-          "abstractSubmission.remarks": remarks || "", // ✅ Save remarks
-        },
-      },
-      { new: true }
-    );
-
+    const user = await User.findOne({ uid });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const abstractIndex = user.abstractSubmissions.findIndex(abs => abs.abstractCode === abstractCode);
+    if (abstractIndex === -1) {
+      return res.status(404).json({ message: "Abstract not found for given code." });
+    }
+
+    user.abstractSubmissions[abstractIndex].status = status;
+    user.abstractSubmissions[abstractIndex].remarks = remarks || "";
+    await user.save();
+
     // ✅ Compose email message
-    let emailText = `Dear ${user.fullName},\n\nYour abstract submission has been **${status}**.\n`;
+    let emailText = `Dear ${user.fullName},\n\nYour abstract submission (${abstractCode}) has been **${status}**.\n`;
 
     if (status === "Rejected" && remarks) {
       emailText += `\nRemarks from reviewers:\n"${remarks}"\n`;
@@ -693,12 +715,12 @@ app.put("/admin/update-abstract-status", verifyAdminToken, async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to ${user.email} for status update: ${status}`);
+    console.log(`✅ Email sent to ${user.email} for abstract code ${abstractCode} status update: ${status}`);
 
     res.json({ message: `Abstract ${status} successfully`, user });
 
   } catch (error) {
-    console.error("Error updating abstract status:", error);
+    console.error("❌ Error updating abstract status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
@@ -706,41 +728,44 @@ app.put("/admin/update-abstract-status", verifyAdminToken, async (req, res) => {
 
 
 
+
 app.post("/finalize-abstract", verifyToken, async (req, res) => {
   try {
-    const { uid } = req.body;
+    const { uid, abstractCode } = req.body;
 
-    if (!uid) {
-      return res.status(400).json({ message: "User ID is required." });
+    if (!uid || !abstractCode) {
+      return res.status(400).json({ message: "User ID and Abstract Code are required." });
     }
 
-    console.log(`✅ Finalizing abstract for UID: ${uid}`);
+    console.log(`✅ Finalizing abstract for UID: ${uid}, Code: ${abstractCode}`);
 
-    // ✅ Update the abstract in MongoDB to set `isFinalized = true`
-    const user = await User.findOneAndUpdate(
-      { uid },
-      { $set: { "abstractSubmission.isFinalized": true } },
-      { new: true }
-    );
+    const user = await User.findOne({ uid });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const abstractIndex = user.abstractSubmissions.findIndex(abs => abs.abstractCode === abstractCode);
+    if (abstractIndex === -1) {
+      return res.status(404).json({ message: "Abstract not found for given code." });
     }
 
-    console.log("✅ Abstract successfully finalized in MongoDB!");
+    user.abstractSubmissions[abstractIndex].isFinalized = true;
+    await user.save();
 
-    // ✅ Update Google Sheets (if required)
+    // ✅ Update Google Sheets
     console.log("🔄 Updating Google Sheets...");
     await updateGoogleSheet(user, true);
     console.log("✅ Google Sheets updated successfully!");
 
-    res.status(200).json({ message: "Abstract finalized successfully", abstract: user.abstractSubmission });
+    res.status(200).json({
+      message: "Abstract finalized successfully",
+      abstract: user.abstractSubmissions[abstractIndex],
+    });
 
   } catch (error) {
     console.error("❌ Error finalizing abstract:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 
 app.delete("/delete-abstract-file", verifyToken, async (req, res) => {
@@ -774,12 +799,13 @@ app.get("/get-abstract/:uid", verifyToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json({ abstract: user.abstractSubmission });
+    res.json({ abstracts: user.abstractSubmissions });  // ✅ return abstracts (plural)
   } catch (error) {
     console.error("Error fetching abstract:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 
 // Delete Abstract File
@@ -818,6 +844,41 @@ app.use((error, req, res, next) => {
   }
   next(error);
 });
+
+// ✅ FIX: Get all abstracts submitted by a user
+app.get("/get-abstracts-by-user/:uid", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ uid: req.params.uid });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ abstracts: user.abstractSubmissions || [] });
+  } catch (error) {
+    console.error("❌ Error fetching user abstracts:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// ✅ Get abstract by UID + Abstract Code
+app.get("/get-abstract-by-code/:uid/:code", verifyToken, async (req, res) => {
+  const { uid, code } = req.params;
+  try {
+    const user = await User.findOne({ uid });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const abstract = user.abstractSubmissions.find(abs => abs.abstractCode === code);
+    if (!abstract) return res.status(404).json({ message: "Abstract not found" });
+
+    res.status(200).json({ abstract });
+  } catch (error) {
+    console.error("❌ Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
+
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

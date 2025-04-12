@@ -1,68 +1,133 @@
-/* ================== Conference Registration Coming Soon ================== */
-.registration-coming-soon {
-  max-width: 720px;
-  margin: 5rem auto 3rem auto;
-  padding: 2.5rem 2rem;
-  background-color: #ffffff;
-  border-left: 6px solid #1a73e8;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+.registration-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1e293b;
+}
+
+.registration-container h2 {
   text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-  transition: all 0.3s ease-in-out;
-}
-
-.coming-title {
-  font-size: 2rem;
+  font-size: 36px;
   font-weight: 700;
-  color: #003366;
-  margin-bottom: 1.25rem;
-  letter-spacing: 0.3px;
+  margin-bottom: 30px;
+  color: #1e40af;
 }
 
-.coming-text {
-  font-size: 1.1rem;
-  color: #444;
-  line-height: 1.7;
-  margin-bottom: 0.75rem;
+.user-info {
+  background: #f0f4ff;
+  border: 1px solid #dbeafe;
+  padding: 20px 30px;
+  border-radius: 14px;
+  margin-bottom: 30px;
+  font-size: 16px;
 }
 
-.coming-note {
-  font-size: 1.1rem;
+.user-info p {
+  margin: 8px 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.registration-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.registration-card {
+  background: linear-gradient(to bottom, #f9fafb, #ffffff);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.registration-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.registration-card h3 {
+  font-size: 18px;
   font-weight: 600;
-  color: #1a73e8;
-  margin-top: 1.25rem;
+  margin-bottom: 12px;
+  color: #1f2937;
 }
 
-/* ================== Responsive Design ================== */
+.registration-card .price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 16px;
+}
+
+.registration-card button {
+  padding: 12px 18px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.registration-card button:hover {
+  background-color: #1e40af;
+}
+
+.form-group.checkbox {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.form-group.checkbox label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.form-group.checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+}
+
+.form-group.checkbox a {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
-  .registration-coming-soon {
-    padding: 2rem 1.5rem;
-    margin: 4rem 1rem 2rem 1rem;
+  .registration-container {
+    padding: 24px;
   }
 
-  .coming-title {
-    font-size: 1.7rem;
+  .registration-card h3 {
+    font-size: 16px;
   }
 
-  .coming-text,
-  .coming-note {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .registration-coming-soon {
-    padding: 1.75rem 1.25rem;
-    margin: 3rem 1rem 2rem 1rem;
+  .registration-card .price {
+    font-size: 18px;
   }
 
-  .coming-title {
-    font-size: 1.5rem;
+  .registration-card button {
+    font-size: 14px;
+    padding: 10px 16px;
   }
 
-  .coming-text,
-  .coming-note {
-    font-size: 0.95rem;
+  .form-group.checkbox {
+    font-size: 14px;
   }
 }

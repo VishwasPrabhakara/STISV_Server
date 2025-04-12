@@ -10,113 +10,101 @@ const DEADLINE = new Date("2025-04-30T23:59:59");
 
 const AbstractSubmissionStatus = () => {
   const [abstract, setAbstract] = useState(null);
-  const [status, setStatus] = useState("Pending");
-  const [isFinalized, setIsFinalized] = useState(false);
-  const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [updatedAbstract, setUpdatedAbstract] = useState({});
   const [newFile, setNewFile] = useState(null);
-  const [showFinalizePopup, setShowFinalizePopup] = useState(false);
-  const [showLoginMessage, setShowLoginMessage] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [finalizing, setFinalizing] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [deadlinePassed, setDeadlinePassed] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [showFinalizePopup, setShowFinalizePopup] = useState(false);
 
-  const token = sessionStorage.getItem("token");
-  const uid = sessionStorage.getItem("uid");
+  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+  const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const abstractCode = searchParams.get("code");
 
   useEffect(() => {
-    const now = new Date();
-    setDeadlinePassed(now > DEADLINE);
-
     if (!uid || !token) {
-      setShowLoginMessage(true);
-      setTimeout(() => {
-        window.location.href = "/stis2025/login-signup";
-      }, 4000);
+      alert("Session expired. Please log in again.");
+      window.location.href = "/stis2025/login-signup";
       return;
     }
 
     const fetchAbstract = async () => {
       try {
-        const res = await axios.get(`https://stisv.onrender.com/get-abstract/${uid}`, {
+        const url = abstractCode
+          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
+          : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
+        const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const data = res.data.abstract;
-        let authors = [];
-
-        try {
-          authors = Array.isArray(data.otherAuthors)
-            ? data.otherAuthors
-            : JSON.parse(data.otherAuthors || "[]");
-        } catch {
-          authors = [];
+        const abstractData = abstractCode ? res.data.abstract : (res.data.abstracts?.slice(-1)[0] || null);
+        if (!abstractData) {
+          setError("No abstracts submitted yet.");
+        } else {
+          setAbstract(abstractData);
+          setUpdatedAbstract(abstractData);
         }
-
-        setAbstract({ ...data, otherAuthors: authors, remarks: data.remarks || "" }); // ✅ include remarks
-        setUpdatedAbstract({ ...data, otherAuthors: authors, remarks: data.remarks || "" });
-        setStatus(data.status || "Pending");
-        setIsFinalized(data.isFinalized || false);
-      } catch {
-        setError("Failed to fetch abstract");
+      } catch (err) {
+        console.error("AxiosError", err);
+        setError("Failed to load abstract.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchAbstract();
-  }, []);
+  }, [uid, token, abstractCode]);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(abstract.abstractCode);
+    alert("Copied to clipboard!");
+  };
+
+  const handleFileChange = (e) => setNewFile(e.target.files[0]);
 
   const handleUpdate = async () => {
     setUpdating(true);
     try {
       const formData = new FormData();
       formData.append("uid", uid);
+      formData.append("abstractCode", abstract.abstractCode);
 
-      let hasUpdates = false;
       const fields = [
-        "title", "scope", "presentingType",
-        "firstAuthorName", "firstAuthorAffiliation",
-        "otherAuthors", "presentingAuthorName",
-        "presentingAuthorAffiliation", "mainBody"
+        "title",
+        "scope",
+        "presentingType",
+        "firstAuthorName",
+        "firstAuthorAffiliation",
+        "otherAuthors",
+        "presentingAuthorName",
+        "presentingAuthorAffiliation",
+        "mainBody",
       ];
 
-      fields.forEach(field => {
-        if (JSON.stringify(updatedAbstract[field]) !== JSON.stringify(abstract[field])) {
-          formData.append(field, JSON.stringify(updatedAbstract[field]));
-          hasUpdates = true;
+      fields.forEach((field) => {
+        if (updatedAbstract[field]) {
+          formData.append(field, updatedAbstract[field]);
         }
       });
 
       if (newFile) {
         formData.append("abstractFile", newFile);
-        hasUpdates = true;
-      }
-
-      if (!hasUpdates) {
-        setError("No changes detected.");
-        setUpdating(false);
-        return;
       }
 
       const res = await axios.put("https://stisv.onrender.com/update-abstract", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const updated = res.data.abstract;
-      updated.otherAuthors = Array.isArray(updated.otherAuthors)
-        ? updated.otherAuthors
-        : JSON.parse(updated.otherAuthors || "[]");
-
-      setAbstract(updated);
-      setUpdatedAbstract(updated);
+      setAbstract(res.data.abstract);
+      setUpdatedAbstract(res.data.abstract);
       setEditMode(false);
-      setNewFile(null);
       setError(null);
     } catch {
-      setError("Error updating abstract.");
+      setError("Failed to update.");
     } finally {
       setUpdating(false);
     }
@@ -125,75 +113,40 @@ const AbstractSubmissionStatus = () => {
   const confirmFinalize = async () => {
     setFinalizing(true);
     try {
-      await axios.post("https://stisv.onrender.com/finalize-abstract", { uid }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setIsFinalized(true);
-      setEditMode(false);
+      await axios.post(
+        "https://stisv.onrender.com/finalize-abstract",
+        { uid, abstractCode: abstract.abstractCode },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setAbstract((prev) => ({ ...prev, isFinalized: true }));
       setShowFinalizePopup(false);
     } catch {
-      setError("Error finalizing.");
+      setError("Finalization failed.");
     } finally {
       setFinalizing(false);
     }
   };
 
-  const handleFileChange = (e) => {
-    if (!deadlinePassed) setNewFile(e.target.files[0]);
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(abstract.abstractCode);
-    alert("Abstract Code copied to clipboard!");
-  };
-
-  const goHome = () => {
-    window.location.href = "/stis2025/";
-  };
-
-  const formatTimestamp = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleString(undefined, {
-      year: "numeric", month: "short", day: "numeric",
-      hour: "2-digit", minute: "2-digit"
-    });
-  };
-
-  const renderField = (label, key, type = "text", options = []) => (
+  const renderField = (label, key, type = "text") => (
     <div className="abstract-row" key={key}>
       <strong>{label}:</strong>
-      {type === "textarea" ? (
-        editMode && !deadlinePassed ? (
+      {editMode ? (
+        type === "textarea" ? (
           <textarea
             value={updatedAbstract[key] || ""}
             onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })}
           />
         ) : (
-          <span>{abstract[key]}</span>
-        )
-      ) : type === "select" ? (
-        editMode && !deadlinePassed ? (
-          <select
-            value={updatedAbstract[key]}
-            onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })}
-          >
-            {options.map(opt => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
-          </select>
-        ) : (
-          <span>{abstract[key]}</span>
-        )
-      ) : (
-        editMode && !deadlinePassed ? (
           <input
-            type="text"
+            type={type}
             value={updatedAbstract[key] || ""}
             onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })}
           />
-        ) : (
-          <span>{abstract[key]}</span>
         )
+      ) : (
+        <span style={{ whiteSpace: "pre-line" }}>
+          {abstract[key]?.length > 0 ? abstract[key] : "-"}
+        </span>
       )}
     </div>
   );
@@ -201,80 +154,53 @@ const AbstractSubmissionStatus = () => {
   const renderOtherAuthors = () => (
     <div className="abstract-row">
       <strong>Other Authors:</strong>
-      {editMode && !deadlinePassed ? (
-        <div className="authors-edit-list">
-          {updatedAbstract.otherAuthors?.map((author, idx) => (
-            <div key={idx} className="author-edit-row">
-              <input
-                type="text"
-                placeholder="Name"
-                value={author.name}
-                onChange={(e) => {
-                  const newAuthors = [...updatedAbstract.otherAuthors];
-                  newAuthors[idx].name = e.target.value;
-                  setUpdatedAbstract({ ...updatedAbstract, otherAuthors: newAuthors });
-                }}
-              />
-              <input
-                type="text"
-                placeholder="Affiliation"
-                value={author.affiliation}
-                onChange={(e) => {
-                  const newAuthors = [...updatedAbstract.otherAuthors];
-                  newAuthors[idx].affiliation = e.target.value;
-                  setUpdatedAbstract({ ...updatedAbstract, otherAuthors: newAuthors });
-                }}
-              />
-              <button onClick={() => {
-                const filtered = updatedAbstract.otherAuthors.filter((_, i) => i !== idx);
-                setUpdatedAbstract({ ...updatedAbstract, otherAuthors: filtered });
-              }}>❌</button>
-            </div>
-          ))}
-          {updatedAbstract.otherAuthors?.length < 5 && (
-            <button
-              className="add-author-button"
-              onClick={() => {
-                const newList = [...updatedAbstract.otherAuthors, { name: "", affiliation: "" }];
-                setUpdatedAbstract({ ...updatedAbstract, otherAuthors: newList });
-              }}
-            >
-              + Add Author
-            </button>
-          )}
-        </div>
+      {editMode ? (
+        <textarea
+          value={updatedAbstract.otherAuthors || ""}
+          onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, otherAuthors: e.target.value })}
+        />
       ) : (
-        <ul>
-          {abstract.otherAuthors?.length > 0 ? (
-            abstract.otherAuthors.map((a, i) => (
-              <li key={i}><strong>{a.name}</strong> – {a.affiliation}</li>
-            ))
+        (() => {
+          let authors = [];
+          try {
+            authors = typeof abstract.otherAuthors === "string"
+              ? JSON.parse(abstract.otherAuthors)
+              : abstract.otherAuthors;
+          } catch {
+            authors = [];
+          }
+
+          return authors?.length ? (
+            <table className="authors-table">
+              <thead>
+                <tr><th>Name</th><th>Affiliation</th></tr>
+              </thead>
+              <tbody>
+                {authors.map((a, i) => (
+                  <tr key={i}>
+                    <td>{a.name || "-"}</td>
+                    <td>{a.affiliation || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
-            <li>No additional authors</li>
-          )}
-        </ul>
+            <span>No additional authors</span>
+          );
+        })()
       )}
     </div>
   );
 
-  if (showLoginMessage) {
-    return (
-      <>
-        <Navbar />
-        <div className="abstract-status-container">
-          <h2>Please login to view your abstract status</h2>
-          <p>Redirecting to login page...</p>
-        </div>
-        <Footer />
-      </>
-    );
-  }
+  const goHome = () => window.location.href = "/stis2025/";
 
   return (
     <>
       <Navbar />
       <div className="abstract-status-container">
         <h2>Abstract Submission Status</h2>
+        {loading && <p>Loading...</p>}
+        {error && <p className="error-message">{error}</p>}
 
         {abstract && (
           <>
@@ -282,126 +208,88 @@ const AbstractSubmissionStatus = () => {
               <strong>Abstract Code:</strong>
               <div className="abstract-code-box">
                 <span className="abstract-code">{abstract.abstractCode}</span>
-                <FontAwesomeIcon icon={faCopy} className="copy-icon" onClick={copyToClipboard} />
+                <FontAwesomeIcon icon={faCopy} onClick={copyToClipboard} />
               </div>
             </div>
 
             {renderField("Title", "title")}
             {renderField("Theme", "scope")}
-            {renderField("Mode of Presentation", "presentingType", "select", ["Oral", "Poster"])}
-            {renderField("First Author Name", "firstAuthorName")}
-            {renderField("First Author Affiliation", "firstAuthorAffiliation")}
+            {renderField("Presentation Type", "presentingType")}
+            {renderField("First Author", "firstAuthorName")}
+            {renderField("First Affiliation", "firstAuthorAffiliation")}
             {renderOtherAuthors()}
-            {renderField("Presenting Author Name", "presentingAuthorName")}
-            {renderField("Presenting Author Affiliation", "presentingAuthorAffiliation")}
-            {renderField("Main Body", "mainBody", "textarea")}
+            {renderField("Presenting Author", "presentingAuthorName")}
+            {renderField("Presenting Affiliation", "presentingAuthorAffiliation")}
+            {renderField("Main Abstract", "mainBody", "textarea")}
 
             <div className="abstract-row">
               <strong>Status:</strong>
               <span className={
-                status === "Approved" ? "status-accepted" :
-                status === "Rejected" ? "status-rejected" :
-                "status-pending"
+                abstract.status === "Approved" ? "status-accepted"
+                : abstract.status === "Rejected" ? "status-rejected"
+                : "status-pending"
               }>
-                {status}
+                {abstract.status}
               </span>
             </div>
 
-            {/* ✅ REMARKS Display (if Rejected) */}
-            {abstract.remarks && status === "Rejected" && (
+            {abstract.remarks && (
               <div className="abstract-row">
                 <strong>Remarks:</strong>
-                <div className="remarks-box">{abstract.remarks}</div>
+                <span>{abstract.remarks}</span>
               </div>
             )}
 
             <div className="abstract-row">
               <strong>Abstract File:</strong>
               {abstract.abstractFile ? (
-                <a href={abstract.abstractFile} target="_blank" className="download-link" rel="noopener noreferrer">Download</a>
+                <a href={abstract.abstractFile} target="_blank" rel="noreferrer">Download</a>
               ) : (
                 <span>No file uploaded</span>
               )}
             </div>
 
-            {abstract.lastSubmitted && (
-              <div className="abstract-row">
-                <strong>Last Submitted:</strong>
-                <span>{formatTimestamp(abstract.lastSubmitted)}</span>
-              </div>
-            )}
-
-            {editMode && !deadlinePassed && (
+            {editMode && (
               <>
                 <div className="abstract-row">
                   <strong>Upload New File:</strong>
                   <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
                 </div>
                 <div className="edit-action-row">
-                  <button className="save-button" onClick={handleUpdate} disabled={updating}>
+                  <button onClick={handleUpdate} disabled={updating}>
                     {updating ? "Saving..." : "Save Changes"}
                   </button>
-                  <button className="cancel-button" onClick={() => setEditMode(false)}>Cancel</button>
+                  <button onClick={() => setEditMode(false)}>Cancel</button>
                 </div>
               </>
             )}
-            {editMode && error && <p className="error-message">{error}</p>}
 
-            <div className="main-action-row">
-              {status === "Approved" && isFinalized && (
-                <>
-                  <button className="pay-button" onClick={() => window.location.href = "https://www.onlinesbi.sbi/sbicollect/"}>Pay Now</button>
-                  <button className="back-button" onClick={goHome}>Back to Home</button>
-                </>
-              )}
+            {!editMode && (
+              <div className="main-action-row">
+                <button onClick={() => setEditMode(true)}>Edit</button>
+                {!abstract.isFinalized && (
+                  <button onClick={() => setShowFinalizePopup(true)}>Finalize Submission</button>
+                )}
+                <button onClick={goHome}>Back to Home</button>
+              </div>
+            )}
 
-              {status === "Rejected" && (
-                !deadlinePassed ? (
-                  <>
-                    <button className="submit-again-button" onClick={() => window.location.href = "/stis2025/submit-abstract"}>Resubmit Abstract</button>
-                    <button className="back-button" onClick={goHome}>Back to Home</button>
-                  </>
-                ) : (
-                  <p className="finalized-message">The deadline has passed. Please try again in the next series.</p>
-                )
-              )}
-
-              {status !== "Approved" && status !== "Rejected" && !deadlinePassed && (
-                <>
-                  {!editMode && (
-                    <button className="edit-button" onClick={() => setEditMode(true)}>Edit / Resubmit Abstract</button>
-                  )}
-                  <button className="finalize-button" onClick={() => setShowFinalizePopup(true)}>Submit Abstract</button>
-                  <button className="back-button" onClick={goHome}>Back to Home</button>
-                </>
-              )}
-
-              {status !== "Approved" && status !== "Rejected" && deadlinePassed && (
-                <p className="finalized-message">The deadline has passed. Please wait for further updates.</p>
-              )}
-            </div>
-
-            
+            {showFinalizePopup && (
+              <div className="popup-overlay">
+                <div className="popup">
+                  <h3>Submit Abstract?</h3>
+                  <p>You can still edit until April 30.</p>
+                  <button onClick={confirmFinalize} disabled={finalizing}>
+                    {finalizing ? "Submitting..." : "Yes, Submit"}
+                  </button>
+                  <button onClick={() => setShowFinalizePopup(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
           </>
         )}
-
-        {showFinalizePopup && (
-          <div className="popup-overlay">
-            <div className="popup">
-              <h3>Are you sure you want to submit?</h3>
-              <p>You can still edit until April 30.</p>
-              <div className="popup-buttons">
-                <button className="confirm-button" onClick={confirmFinalize} disabled={finalizing}>
-                  {finalizing ? "Submitting..." : "Yes, Submit"}
-                </button>
-                <button className="cancel-button" onClick={() => setShowFinalizePopup(false)}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-      <br />
-      <br />
+      <br /><br />
       <Footer />
     </>
   );
