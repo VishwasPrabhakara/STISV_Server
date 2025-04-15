@@ -377,7 +377,11 @@ await user.save();
 
      // ✅ Update Google Sheets with Abstract details
      console.log("🔄 Attempting to update Google Sheets for Abstract Submission...");
-     await updateGoogleSheet(user, true);
+     const latestAbstract = user.abstractSubmissions[user.abstractSubmissions.length - 1];
+     
+// ✅ Add this log here:
+console.log("🧾 Sending to Sheets:", latestAbstract);
+await updateGoogleSheet(user, latestAbstract);
      console.log("✅ Google Sheets updated with Abstract details!");
  
 
@@ -446,7 +450,8 @@ try {
 
     res.status(200).json({
       message: "Abstract submitted successfully!",
-      abstract: user.abstractSubmission
+      abstract: latestAbstract
+
     });
 
   } catch (error) {
@@ -579,7 +584,8 @@ console.log("✅ Abstract updated successfully in MongoDB!");
 // ✅ Update Google Sheets Only If Data Changed
 if (googleSheetUpdateRequired) {
   console.log("🔄 Updating Google Sheets...");
-  await updateGoogleSheet(user, true);
+  const updatedAbstract = user.abstractSubmissions[abstractIndex];
+await updateGoogleSheet(user, updatedAbstract);
   console.log("✅ Google Sheets updated successfully!");
 }
 
@@ -752,7 +758,8 @@ app.post("/finalize-abstract", verifyToken, async (req, res) => {
 
     // ✅ Update Google Sheets
     console.log("🔄 Updating Google Sheets...");
-    await updateGoogleSheet(user, true);
+    const updatedAbstract = user.abstractSubmissions[abstractIndex];
+await updateGoogleSheet(user, updatedAbstract);
     console.log("✅ Google Sheets updated successfully!");
 
     res.status(200).json({
