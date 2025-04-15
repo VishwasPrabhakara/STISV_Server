@@ -70,7 +70,7 @@ const AbstractSubmissionStatus = () => {
           );
           setTimeout(() => {
             window.location.href = "/stis2025/login-signup";
-          }, 1500);
+          }, 2500);
         } else {
           setError("Failed to load abstract.");
         }
