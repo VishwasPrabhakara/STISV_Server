@@ -64,7 +64,7 @@ const AbstractSubmissionStatus = () => {
         if (err.response?.status === 401) {
           setError(
             <>
-              Please <strong>log in</strong> to view your abstract submission status. <br />
+              Please log in to view your abstract submission status. <br />
               Redirecting to login...
             </>
           );
