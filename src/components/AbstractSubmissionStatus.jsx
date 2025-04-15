@@ -18,6 +18,7 @@ const AbstractSubmissionStatus = () => {
   const [finalizing, setFinalizing] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [showFinalizePopup, setShowFinalizePopup] = useState(false);
+  const [loginRedirect, setLoginRedirect] = useState(false);
 
   const token = sessionStorage.getItem("token") || localStorage.getItem("token");
   const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
@@ -25,60 +26,59 @@ const AbstractSubmissionStatus = () => {
   const abstractCode = searchParams.get("code");
 
   useEffect(() => {
-    if (!uid || !token) {
+    const isLoggedIn = uid && token;
+  
+    if (!isLoggedIn) {
+      setLoading(false);
       setError("Please log in to view your abstract submission status.");
       setTimeout(() => {
         window.location.href = "/stis2025/login-signup";
       }, 2000);
-      setLoading(false);
       return;
     }
-
+  
     const fetchAbstract = async () => {
       try {
         const url = abstractCode
-          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
-          : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
-
+        ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
+        : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
+      
+  
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
+      
         });
-
+  
         const abstractData = abstractCode
           ? res.data.abstract
           : res.data.abstracts?.slice(-1)[0] || null;
-
+  
         if (!abstractData) {
           setError("No abstracts submitted yet.");
         } else {
-          let parsedAuthors = [];
-
-          try {
-            if (typeof abstractData.otherAuthors === "string") {
-              parsedAuthors = JSON.parse(abstractData.otherAuthors);
-            } else if (Array.isArray(abstractData.otherAuthors)) {
-              parsedAuthors = abstractData.otherAuthors;
-            }
-          } catch {
-            parsedAuthors = [];
-          }
-
-          const cleanData = {
-            ...abstractData,
-            otherAuthors: parsedAuthors || [],
-          };
-
-          setAbstract(cleanData);
-          setUpdatedAbstract(cleanData);
+          setAbstract(abstractData);
+          setUpdatedAbstract(abstractData);
         }
       } catch (err) {
         console.error("AxiosError", err);
-        setError("Failed to load abstract.");
+        if (err.response?.status === 401) {
+          setError(
+            <>
+              Please <strong>log in</strong> to view your abstract submission status. <br />
+              Redirecting to login...
+            </>
+          );
+          setTimeout(() => {
+            window.location.href = "/stis2025/login-signup";
+          }, 1500);
+        } else {
+          setError("Failed to load abstract.");
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchAbstract();
   }, [uid, token, abstractCode]);
 
