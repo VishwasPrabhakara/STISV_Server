@@ -92,7 +92,7 @@ const router = createBrowserRouter(
     </>
   ),
   {
-    basename: '/stis2025',
+    basename: '/stis2025/',
   }
 );
 

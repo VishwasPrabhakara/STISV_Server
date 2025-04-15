@@ -78,7 +78,7 @@ const Navbar = () => {
 
       {/* Navigation Menu */}
       <nav className={`navbar-menu ${isMobileOpen ? "active" : ""}`}>
-        <NavLink to="/" onClick={() => handleNavClick("/")}>Home</NavLink>
+        <NavLink to="/" end onClick={() => handleNavClick("/")}>Home</NavLink>
 
         {renderDropdown("About", [
           { to: "/about", label: "About the Conference" },
