@@ -1,84 +1,184 @@
-.conference-schedule-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
-    padding: 3rem 1rem;
-    background-color: #f9fafc;
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-  }
-  
-  .schedule-box {
-    background: white;
-    border-radius: 10px;
-    padding: 3rem 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    max-width: 700px;
-    width: 100%;
-  }
-  
-  .schedule-heading {
-    font-size: 2.2rem;
-    color: #003566;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-  }
-  
-  .schedule-message {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 1rem;
-    line-height: 1.7;
-  }
-  
-  .schedule-note {
-    font-size: 1rem;
-    color: #555;
-    font-style: italic;
-  }
+/* ===========================
+   General Container
+=========================== */
+.registration-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  background-color: #f9fafc;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+}
 
-  /* ============================
+/* ===========================
+   Section Headings
+=========================== */
+.registration-container h2 {
+  text-align: center;
+  color: #003566;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* ===========================
+   Info Section
+=========================== */
+.registration-info-box {
+  background: #ffffff;
+  border-left: 6px solid #0077b6;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 3rem;
+}
+
+.registration-info-box h3 {
+  font-size: 1.6rem;
+  color: #0077b6;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.registration-info-box ul {
+  padding-left: 1.2rem;
+  text-align: left;
+  margin: 0;
+}
+
+.registration-info-box ul li {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* ===========================
+   User Details
+=========================== */
+.user-info {
+  background: #e9f1fb;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  color: #003566;
+}
+
+/* ===========================
+   Pricing Cards
+=========================== */
+.registration-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.registration-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.registration-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.registration-card h3 {
+  font-size: 1.3rem;
+  color: #003566;
+  margin-bottom: 1rem;
+}
+
+.registration-card .price {
+  font-size: 1.4rem;
+  color: #0077b6;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.registration-card button {
+  background-color: #003566;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.registration-card button:hover {
+  background-color: #02528d;
+}
+
+/* ===========================
+   Terms & Agreement
+=========================== */
+.form-group.checkbox {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group.checkbox input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.form-group.checkbox a {
+  color: #0077b6;
+  text-decoration: underline;
+}
+
+.form-group.checkbox a:hover {
+  color: #005f87;
+}
+
+/* ===========================
    Responsive Design
-============================ */
+=========================== */
 @media (max-width: 768px) {
-  .conference-schedule-container {
+  .registration-container {
     padding: 2rem 1rem;
   }
 
-  .schedule-box {
-    padding: 2rem 1.5rem;
+  .registration-info-box h3 {
+    font-size: 1.4rem;
   }
 
-  .schedule-heading {
-    font-size: 1.8rem;
+  .registration-card h3 {
+    font-size: 1.15rem;
   }
 
-  .schedule-message {
-    font-size: 1rem;
-  }
-
-  .schedule-note {
-    font-size: 0.95rem;
+  .registration-card .price {
+    font-size: 1.2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .schedule-heading {
-    font-size: 1.5rem;
+  .registration-info-box {
+    padding: 1.5rem;
   }
 
-  .schedule-message {
-    font-size: 0.95rem;
+  .registration-info-box h3 {
+    font-size: 1.3rem;
   }
 
-  .schedule-note {
-    font-size: 0.9rem;
+  .registration-info-box ul li {
+    font-size: 1rem;
   }
 
-  .schedule-box {
+  .registration-card {
     padding: 1.5rem 1rem;
   }
-}
 
-  
+  .registration-card .price {
+    font-size: 1.1rem;
+  }
+}
