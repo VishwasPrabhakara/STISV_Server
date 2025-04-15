@@ -626,10 +626,13 @@ const adminUpdateMail = {
 
 Name: ${user.fullName}
 Email: ${user.email}
-UID: ${user.uid}
+Abstract Code: ${user.abstractSubmissions[abstractIndex].abstractCode}
+Abstract Title: ${user.abstractSubmissions[abstractIndex].title}
 
 Updated Abstract Link:
-${user.abstractSubmission.abstractFile}
+${user.abstractSubmissions[abstractIndex].abstractFile}
+
+
 
 Please verify and review the submission in the admin panel.
 
@@ -818,10 +821,12 @@ app.get("/get-abstract/:uid", verifyToken, async (req, res) => {
 // Delete Abstract File
 app.delete("/delete-abstract-file/:uid", verifyToken, async (req, res) => {
   try {
-    const user = await User.findOne({ uid: req.params.uid });
-    if (!user || !user.abstractSubmission?.abstractFile) {
-      return res.status(404).json({ message: "File not found" });
-    }
+    const { abstractCode } = req.body;
+    const abstract = user.abstractSubmissions.find(abs => abs.abstractCode === abstractCode);
+      if (!abstract || !abstract.abstractFile) {
+        return res.status(404).json({ message: "Abstract file not found" });
+      }
+
 
     // Delete file from filesystem
     fs.unlink(user.abstractSubmission.abstractFile, async (err) => {

@@ -21,14 +21,16 @@ const AbstractSubmissionStatus = () => {
 
   const token = sessionStorage.getItem("token") || localStorage.getItem("token");
   const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
-
   const searchParams = new URLSearchParams(window.location.search);
   const abstractCode = searchParams.get("code");
 
   useEffect(() => {
     if (!uid || !token) {
-      alert("Session expired. Please log in again.");
-      window.location.href = "/stis2025/login-signup";
+      setError("Please log in to view your abstract submission status.");
+      setTimeout(() => {
+        window.location.href = "/stis2025/login-signup";
+      }, 2000);
+      setLoading(false);
       return;
     }
 
@@ -37,16 +39,37 @@ const AbstractSubmissionStatus = () => {
         const url = abstractCode
           ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
           : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
+
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const abstractData = abstractCode ? res.data.abstract : (res.data.abstracts?.slice(-1)[0] || null);
+        const abstractData = abstractCode
+          ? res.data.abstract
+          : res.data.abstracts?.slice(-1)[0] || null;
+
         if (!abstractData) {
           setError("No abstracts submitted yet.");
         } else {
-          setAbstract(abstractData);
-          setUpdatedAbstract(abstractData);
+          let parsedAuthors = [];
+
+          try {
+            if (typeof abstractData.otherAuthors === "string") {
+              parsedAuthors = JSON.parse(abstractData.otherAuthors);
+            } else if (Array.isArray(abstractData.otherAuthors)) {
+              parsedAuthors = abstractData.otherAuthors;
+            }
+          } catch {
+            parsedAuthors = [];
+          }
+
+          const cleanData = {
+            ...abstractData,
+            otherAuthors: parsedAuthors || [],
+          };
+
+          setAbstract(cleanData);
+          setUpdatedAbstract(cleanData);
         }
       } catch (err) {
         console.error("AxiosError", err);
@@ -59,11 +82,6 @@ const AbstractSubmissionStatus = () => {
     fetchAbstract();
   }, [uid, token, abstractCode]);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(abstract.abstractCode);
-    alert("Copied to clipboard!");
-  };
-
   const handleFileChange = (e) => setNewFile(e.target.files[0]);
 
   const handleUpdate = async () => {
@@ -74,15 +92,8 @@ const AbstractSubmissionStatus = () => {
       formData.append("abstractCode", abstract.abstractCode);
 
       const fields = [
-        "title",
-        "scope",
-        "presentingType",
-        "firstAuthorName",
-        "firstAuthorAffiliation",
-        "otherAuthors",
-        "presentingAuthorName",
-        "presentingAuthorAffiliation",
-        "mainBody",
+        "title", "scope", "presentingType", "firstAuthorName", "firstAuthorAffiliation",
+        "presentingAuthorName", "presentingAuthorAffiliation", "mainBody"
       ];
 
       fields.forEach((field) => {
@@ -90,6 +101,8 @@ const AbstractSubmissionStatus = () => {
           formData.append(field, updatedAbstract[field]);
         }
       });
+
+      formData.append("otherAuthors", JSON.stringify(updatedAbstract.otherAuthors || []));
 
       if (newFile) {
         formData.append("abstractFile", newFile);
@@ -99,11 +112,20 @@ const AbstractSubmissionStatus = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setAbstract(res.data.abstract);
-      setUpdatedAbstract(res.data.abstract);
+      // Re-parse response
+      const updated = res.data.abstract;
+      const parsedAuthors = typeof updated.otherAuthors === "string"
+        ? JSON.parse(updated.otherAuthors)
+        : updated.otherAuthors;
+
+      const cleanUpdated = { ...updated, otherAuthors: parsedAuthors || [] };
+
+      setAbstract(cleanUpdated);
+      setUpdatedAbstract(cleanUpdated);
       setEditMode(false);
       setError(null);
-    } catch {
+    } catch (err) {
+      console.error("Update error:", err);
       setError("Failed to update.");
     } finally {
       setUpdating(false);
@@ -127,21 +149,21 @@ const AbstractSubmissionStatus = () => {
     }
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(abstract.abstractCode);
+    alert("Copied to clipboard!");
+  };
+
   const renderField = (label, key, type = "text") => (
     <div className="abstract-row" key={key}>
       <strong>{label}:</strong>
       {editMode ? (
         type === "textarea" ? (
-          <textarea
-            value={updatedAbstract[key] || ""}
-            onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })}
-          />
+          <textarea value={updatedAbstract[key] || ""} onChange={(e) =>
+            setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })} />
         ) : (
-          <input
-            type={type}
-            value={updatedAbstract[key] || ""}
-            onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })}
-          />
+          <input type={type} value={updatedAbstract[key] || ""} onChange={(e) =>
+            setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })} />
         )
       ) : (
         <span style={{ whiteSpace: "pre-line" }}>
@@ -151,32 +173,67 @@ const AbstractSubmissionStatus = () => {
     </div>
   );
 
-  const renderOtherAuthors = () => (
-    <div className="abstract-row">
-      <strong>Other Authors:</strong>
-      {editMode ? (
-        <textarea
-          value={updatedAbstract.otherAuthors || ""}
-          onChange={(e) => setUpdatedAbstract({ ...updatedAbstract, otherAuthors: e.target.value })}
-        />
-      ) : (
-        (() => {
-          let authors = [];
-          try {
-            authors = typeof abstract.otherAuthors === "string"
-              ? JSON.parse(abstract.otherAuthors)
-              : abstract.otherAuthors;
-          } catch {
-            authors = [];
-          }
+  const renderOtherAuthors = () => {
+    const authors = editMode ? updatedAbstract.otherAuthors : abstract.otherAuthors;
+    const isArray = Array.isArray(authors);
+    const safeAuthors = isArray ? authors : [];
 
-          return authors?.length ? (
+    return (
+      <div className="abstract-row">
+        <strong>Other Authors:</strong>
+        {editMode ? (
+          <>
             <table className="authors-table">
-              <thead>
-                <tr><th>Name</th><th>Affiliation</th></tr>
-              </thead>
+              <thead><tr><th>Name</th><th>Affiliation</th><th>Action</th></tr></thead>
               <tbody>
-                {authors.map((a, i) => (
+                {safeAuthors.map((author, i) => (
+                  <tr key={i}>
+                    <td>
+                      <input
+                        type="text"
+                        value={author.name || ""}
+                        onChange={(e) => {
+                          const updated = [...safeAuthors];
+                          updated[i].name = e.target.value;
+                          setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={author.affiliation || ""}
+                        onChange={(e) => {
+                          const updated = [...safeAuthors];
+                          updated[i].affiliation = e.target.value;
+                          setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <button onClick={() => {
+                        const updated = [...safeAuthors];
+                        updated.splice(i, 1);
+                        setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
+                      }} style={{ color: "red" }}>✖</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {safeAuthors.length < 5 && (
+              <button className="add-author-btn" onClick={() => {
+                const updated = [...safeAuthors, { name: "", affiliation: "" }];
+                setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
+              }} style={{ marginTop: "1rem" }}>+ Add Author</button>
+            )}
+          </>
+        ) : (
+          safeAuthors.length > 0 ? (
+            <table className="authors-table">
+              <thead><tr><th>Name</th><th>Affiliation</th></tr></thead>
+              <tbody>
+                {safeAuthors.map((a, i) => (
                   <tr key={i}>
                     <td>{a.name || "-"}</td>
                     <td>{a.affiliation || "-"}</td>
@@ -186,11 +243,11 @@ const AbstractSubmissionStatus = () => {
             </table>
           ) : (
             <span>No additional authors</span>
-          );
-        })()
-      )}
-    </div>
-  );
+          )
+        )}
+      </div>
+    );
+  };
 
   const goHome = () => window.location.href = "/stis2025/";
 
@@ -226,8 +283,8 @@ const AbstractSubmissionStatus = () => {
               <strong>Status:</strong>
               <span className={
                 abstract.status === "Approved" ? "status-accepted"
-                : abstract.status === "Rejected" ? "status-rejected"
-                : "status-pending"
+                  : abstract.status === "Rejected" ? "status-rejected"
+                    : "status-pending"
               }>
                 {abstract.status}
               </span>
@@ -244,12 +301,10 @@ const AbstractSubmissionStatus = () => {
               <strong>Abstract File:</strong>
               {abstract.abstractFile ? (
                 <a href={abstract.abstractFile} target="_blank" rel="noreferrer">Download</a>
-              ) : (
-                <span>No file uploaded</span>
-              )}
+              ) : <span>No file uploaded</span>}
             </div>
 
-            {editMode && (
+            {editMode ? (
               <>
                 <div className="abstract-row">
                   <strong>Upload New File:</strong>
@@ -262,13 +317,11 @@ const AbstractSubmissionStatus = () => {
                   <button onClick={() => setEditMode(false)}>Cancel</button>
                 </div>
               </>
-            )}
-
-            {!editMode && (
+            ) : (
               <div className="main-action-row">
-                <button onClick={() => setEditMode(true)}>Edit</button>
+                <button onClick={() => setEditMode(true)}>Edit / Resubmit Abstract</button>
                 {!abstract.isFinalized && (
-                  <button onClick={() => setShowFinalizePopup(true)}>Finalize Submission</button>
+                  <button onClick={() => setShowFinalizePopup(true)}>Submit Abstract</button>
                 )}
                 <button onClick={goHome}>Back to Home</button>
               </div>
