@@ -77,7 +77,7 @@ const ConferenceRegistration = ({ user }) => {
     const currency = region === "Indian" ? "INR" : "USD";
 
     const options = {
-      key: "rzp_test_7Y3qYx6nLr1qE1",
+      key: "rzp_test_zr7KV5WoIMCMbV",
       amount: amount * 100,
       currency,
       name: "STIS 2025 Conference",
