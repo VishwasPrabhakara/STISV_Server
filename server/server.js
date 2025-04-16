@@ -251,7 +251,10 @@ app.post("/login", async (req, res) => {
       token, 
       uid: user.uid, 
       givenName: user.givenName, // Include first name
-      fullName: user.fullName // Include full name if needed
+      fullName: user.fullName ,
+      email: user.email,        // ✅ Add this
+      country: user.country,    // ✅ Add this
+      phone: user.phone         // Include full name if needed
     });
 
   } catch (error) {

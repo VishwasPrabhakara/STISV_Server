@@ -1,6 +1,7 @@
+/* === Container === */
 .registration-container {
-  max-width: 1000px;
-  margin: 50px auto;
+  max-width: 1100px;
+  margin: 60px auto;
   padding: 40px;
   background: #ffffff;
   border-radius: 20px;
@@ -9,125 +10,243 @@
   color: #1e293b;
 }
 
+/* === Heading === */
 .registration-container h2 {
   text-align: center;
   font-size: 36px;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   color: #1e40af;
 }
 
-.user-info {
-  background: #f0f4ff;
-  border: 1px solid #dbeafe;
-  padding: 20px 30px;
-  border-radius: 14px;
-  margin-bottom: 30px;
-  font-size: 16px;
+/* === Info Section === */
+.registration-info-box h3 {
+  font-size: 24px;
+  color: #1f2937;
+  margin-bottom: 12px;
 }
 
-.user-info p {
-  margin: 8px 0;
-  line-height: 1.5;
-  font-weight: 500;
+.registration-info-box p {
+  font-size: 16px;
+  color: #334155;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.pricing-table {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.pricing-table h4 {
+  font-size: 20px;
+  color: #1e40af;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #dbeafe;
+  padding-bottom: 6px;
+}
+
+.pricing-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.pricing-table th,
+.pricing-table td {
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  text-align: center;
+}
+
+.note {
+  font-size: 15px;
+  color: #475569;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* === User Details === */
+.payment-section h3 {
+  font-size: 22px;
+  margin-top: 32px;
+  margin-bottom: 20px;
+  color: #1f2937;
+}
+
+.payment-section p {
+  font-size: 16px;
+  margin: 6px 0;
+  color: #374151;
+}
+
+/* === Registration Options === */
+.pricing-group {
+  margin-bottom: 40px;
+}
+
+.pricing-group h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 6px;
 }
 
 .registration-options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-  margin-bottom: 30px;
+  gap: 20px;
 }
 
 .registration-card {
-  background: linear-gradient(to bottom, #f9fafb, #ffffff);
+  background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 14px;
+  padding: 20px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
+
+/* === User Details Box === */
+.payment-section h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 6px;
+  text-align: center;
+}
+
+.user-info-box {
+  background-color: #f1f5ff;
+  border: 1px solid #dbeafe;
+  padding: 20px ;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  margin-left: 24rem;
+  width: 280px;
+}
+
+.user-info-box p {
+  margin: 8px 0;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.6;
+}
+
 
 .registration-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
-.registration-card h3 {
-  font-size: 18px;
+.registration-card h5 {
+  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 12px;
   color: #1f2937;
+  margin-bottom: 10px;
 }
 
 .registration-card .price {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 700;
   color: #2563eb;
   margin-bottom: 16px;
 }
 
 .registration-card button {
-  padding: 12px 18px;
   background-color: #2563eb;
-  color: white;
+  color: #fff;
+  padding: 10px 18px;
+  font-size: 14px;
   border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .registration-card button:hover {
-  background-color: #1e40af;
+  background-color: #1e3a8a;
 }
 
+/* === Agreement Section === */
 .form-group.checkbox {
   text-align: center;
-  font-size: 15px;
-  margin-top: 10px;
+  font-size: 14px;
+  margin-top: 20px;
 }
 
 .form-group.checkbox label {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
+  font-weight: 500;
 }
 
-.form-group.checkbox input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
+.form-group.checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
 }
 
 .form-group.checkbox a {
   color: #2563eb;
   text-decoration: underline;
-  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
+.form-group.checkbox a:hover {
+  color: #1e3a8a;
+}
+
+/* === Login Prompt Box === */
+.login-warning-box {
+  margin-top: 2rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 1.2rem 1.5rem;
+  border-radius: 10px;
+  color: #856404;
+  text-align: center;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* === Responsive === */
 @media (max-width: 768px) {
   .registration-container {
-    padding: 24px;
+    padding: 20px;
   }
 
-  .registration-card h3 {
-    font-size: 16px;
-  }
-
-  .registration-card .price {
-    font-size: 18px;
+  .pricing-grid {
+    grid-template-columns: 1fr;
   }
 
   .registration-card button {
-    font-size: 14px;
-    padding: 10px 16px;
+    width: 100%;
+    font-size: 15px;
   }
 
-  .form-group.checkbox {
-    font-size: 14px;
+  .pricing-group h4,
+  .registration-info-box h3,
+  .payment-section h3 {
+    font-size: 18px;
   }
 }

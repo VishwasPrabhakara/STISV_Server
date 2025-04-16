@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import Navbar from "./Navbar";
@@ -8,6 +8,10 @@ import "./MemberAccess.css";
 
 const MemberAccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirectPath = searchParams.get("redirect") || "/abstract-submission";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -44,10 +48,20 @@ const MemberAccess = () => {
       });
 
       if (response.data.token) {
+        // ✅ Store all required user info for later use
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("uid", response.data.uid);
         sessionStorage.setItem("fullName", response.data.fullName);
-        navigate("/abstract-submission");
+        sessionStorage.setItem("email", response.data.email);
+        sessionStorage.setItem("country", response.data.country);
+        sessionStorage.setItem("phone", response.data.phone); // ✅ added
+
+        // ✅ Navigate to redirect path (avoid double /stis2025)
+        navigate(
+          redirectPath.startsWith("/stis2025")
+            ? redirectPath.replace("/stis2025", "")
+            : redirectPath
+        );
       }
     } catch (error) {
       setMessage("Invalid credentials. Please try again.");
@@ -98,7 +112,16 @@ const MemberAccess = () => {
               </span>
             </div>
 
-            
+            <div className="remember-me">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                Remember Me
+              </label>
+            </div>
 
             <div className="login-actions">
               <p
@@ -117,9 +140,7 @@ const MemberAccess = () => {
               {loading ? "Logging in..." : "Login"}
             </button>
 
-            {message && (
-              <p className="login-error-message">{message}</p>
-            )}
+            {message && <p className="login-error-message">{message}</p>}
           </div>
 
           {/* Register Section */}
@@ -154,7 +175,3 @@ const MemberAccess = () => {
 };
 
 export default MemberAccess;
-
-
-
-
