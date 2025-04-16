@@ -139,9 +139,13 @@ const SponsorshipOpportunities = () => {
         </table>
         <p className="stall-note">
           <strong>Note:</strong> Every stall will be equipped with one plug point, two chairs, one table, and two spotlights.
+          <br />
+          <strong>  For any enquiries please contact us at <a href="mailto:stis.mte@iisc.ac.in">stis.mte@iisc.ac.in</a></strong> 
         </p>
       </section>
     </div>
+
+    
     <br />
     <br />
     <Footer />
