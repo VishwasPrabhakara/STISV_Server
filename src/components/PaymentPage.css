@@ -1,0 +1,175 @@
+/* ===== Payment Page Styles - International Standard ===== */
+
+.payment-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    background-color: #f7f9fb;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  }
+  
+  .payment-page h2 {
+    font-size: 2.4rem;
+    text-align: center;
+    color: #003566;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+  }
+  
+  .user-info {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin: 0 auto 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    max-width: 400px;
+  }
+  
+  .user-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: 100px;
+    
+  }
+  
+  .user-info-table td {
+    padding: 8px 0;
+    font-size: 1.05rem;
+    
+  }
+  
+  .user-info-table td.label {
+    font-weight: 600;
+    color: #1f2d3d;
+    text-align: left;
+    padding-right: 12px;
+    white-space: nowrap;
+    width: 20%;
+  }
+  
+  .user-info-table td.value {
+    text-align: left;
+    color: #333;
+  }
+  
+  
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin: 20px 0 40px;
+  }
+  
+  .category-box {
+    background-color: #ffffff;
+    border: 2px solid #e2e6ea;
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    width: 12rem;
+    height: 6rem;
+  }
+  
+  .category-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  .category-box span {
+    display: block;
+    font-size: 1.05rem;
+    color: #2e2e2e;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .category-box strong {
+    font-size: 1.2rem;
+    color: #0077cc;
+  }
+  
+  .category-box.selected {
+    border-color: #0077cc;
+    background-color: #e6f3ff;
+  }
+  
+  .amount-display {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+    font-weight: 600;
+    color: #003366;
+  }
+  
+  .error-message {
+    text-align: center;
+    color: #d00000;
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  .pay-now-btn {
+    display: block;
+    margin: 0 auto;
+    background-color: #0077cc;
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pay-now-btn:hover {
+    background-color: #005fa3;
+  }
+  
+  /* ================================
+     Responsive Design - Tablet
+  ================================ */
+  @media (max-width: 768px) {
+    .payment-page h2 {
+      font-size: 2rem;
+    }
+  
+    .category-box {
+      padding: 20px;
+    }
+  }
+  
+  /* ================================
+     Responsive Design - Phone
+  ================================ */
+  @media (max-width: 480px) {
+    .payment-page {
+      padding: 40px 12px;
+    }
+  
+    .payment-page h2 {
+      font-size: 1.8rem;
+    }
+  
+    .user-info p {
+      font-size: 1rem;
+    }
+  
+    .category-box span {
+      font-size: 1rem;
+    }
+  
+    .category-box strong {
+      font-size: 1.1rem;
+    }
+  
+    .pay-now-btn {
+      width: 100%;
+      padding: 12px;
+    }
+  }
+  

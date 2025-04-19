@@ -45,6 +45,7 @@ import ChairmanMessage from './components/ChairmanMessage';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import SponsorshipOpportunities from './components/SponsorshipOpportunities';
+import PaymentPage from './components/PaymentPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,7 +68,7 @@ const router = createBrowserRouter(
       <Route path="/accomodation" element={<Accomodation />} />
       <Route path="/tours-and-social-events" element={<Tours />} />
       <Route path="/travel-information" element={<Travel />} />
-    
+      <Route path='/conference-payment' element={<PaymentPage />} />
       <Route path="/official-language" element={<Language />} />
       <Route path="/about-bengaluru" element={<Bengaluru />} />
       <Route path="/weather" element={<Weather />} />

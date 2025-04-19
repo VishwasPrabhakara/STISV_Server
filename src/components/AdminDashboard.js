@@ -19,27 +19,19 @@ const AdminDashboard = () => {
           headers: { Authorization: `Bearer ${sessionStorage.getItem("adminToken")}` }
         });
 
-        const rawData = response.data.abstracts || [];
+        const allAbstracts = [];
 
-        const latestAbstractsMap = new Map();
-        rawData.forEach(entry => {
-          const { uid, abstractSubmission } = entry;
+        (response.data.abstracts || []).forEach(entry => {
+          const { uid, fullName, email, abstractSubmissions = [] } = entry;
 
-          if (abstractSubmission?.abstractCode) {
-            const current = latestAbstractsMap.get(uid);
-            const newTimestamp = new Date(abstractSubmission.updatedAt || abstractSubmission.createdAt || entry.updatedAt || entry.createdAt);
-            const oldTimestamp = current ? new Date(current.updatedAt || current.createdAt) : 0;
-
-            if (!current || newTimestamp > oldTimestamp) {
-              latestAbstractsMap.set(uid, {
-                uid,
-                ...abstractSubmission
-              });
+          abstractSubmissions.forEach(abs => {
+            if (abs.abstractCode) {
+              allAbstracts.push({ uid, fullName, email, ...abs });
             }
-          }
+          });
         });
 
-        setAbstracts(Array.from(latestAbstractsMap.values()));
+        setAbstracts(allAbstracts);
       } catch (error) {
         console.error("Error fetching abstracts:", error);
         setError("Error fetching abstracts");
@@ -51,11 +43,12 @@ const AdminDashboard = () => {
     fetchAbstracts();
   }, []);
 
-  const updateStatus = async (uid, status) => {
+  const updateStatus = async (uid, abstractCode, status) => {
     try {
-      const remarkText = remarks[uid] || "";
+      const remarkText = remarks[abstractCode] || "";
       await axios.put("https://stisv.onrender.com/admin/update-abstract-status", {
         uid,
+        abstractCode,
         status,
         remarks: remarkText
       }, {
@@ -63,7 +56,9 @@ const AdminDashboard = () => {
       });
 
       setAbstracts(prev =>
-        prev.map(abs => (abs.uid === uid ? { ...abs, status } : abs))
+        prev.map(abs =>
+          abs.abstractCode === abstractCode ? { ...abs, status } : abs
+        )
       );
     } catch (error) {
       setError("Error updating abstract status");
@@ -97,17 +92,19 @@ const AdminDashboard = () => {
                   <th>Abstract Code</th>
                   <th>Title</th>
                   <th>Author</th>
+                  <th>Email</th>
                   <th>Status</th>
                   <th>Remarks</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {abstracts.map((abstract) => (
-                  <tr key={abstract.uid}>
+                {abstracts.map((abstract, index) => (
+                  <tr key={index}>
                     <td>{abstract.abstractCode}</td>
                     <td>{abstract.title}</td>
-                    <td>{abstract.firstAuthorName}</td>
+                    <td>{abstract.firstAuthorName || abstract.presentingAuthorName}</td>
+                    <td>{abstract.email}</td>
                     <td className={`status ${abstract.status?.toLowerCase() || "pending"}`}>
                       {abstract.status || "Pending"}
                     </td>
@@ -115,9 +112,9 @@ const AdminDashboard = () => {
                       <textarea
                         className="remarks-box"
                         placeholder="Add remarks (optional)"
-                        value={remarks[abstract.uid] || ""}
+                        value={remarks[abstract.abstractCode] || ""}
                         onChange={(e) =>
-                          setRemarks({ ...remarks, [abstract.uid]: e.target.value })
+                          setRemarks({ ...remarks, [abstract.abstractCode]: e.target.value })
                         }
                         rows={2}
                       />
@@ -125,13 +122,13 @@ const AdminDashboard = () => {
                     <td>
                       <button
                         className="approve-button"
-                        onClick={() => updateStatus(abstract.uid, "Approved")}
+                        onClick={() => updateStatus(abstract.uid, abstract.abstractCode, "Approved")}
                       >
                         Approve
                       </button>
                       <button
                         className="reject-button"
-                        onClick={() => updateStatus(abstract.uid, "Rejected")}
+                        onClick={() => updateStatus(abstract.uid, abstract.abstractCode, "Rejected")}
                       >
                         Reject
                       </button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -9,10 +9,23 @@ import Footer from "./Footer";
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // ✅ Autofill if previously saved
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedAdminEmail");
+    const savedPassword = localStorage.getItem("rememberedAdminPassword");
+
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,8 +39,18 @@ const AdminLogin = () => {
       });
 
       sessionStorage.setItem("adminToken", response.data.token);
+
+      // ✅ Remember email & password
+      if (rememberMe) {
+        localStorage.setItem("rememberedAdminEmail", email);
+        localStorage.setItem("rememberedAdminPassword", password);
+      } else {
+        localStorage.removeItem("rememberedAdminEmail");
+        localStorage.removeItem("rememberedAdminPassword");
+      }
+
       navigate("/admin-dashboard");
-    } catch (error) {
+    } catch {
       setError("Invalid email or password.");
     } finally {
       setLoading(false);
@@ -37,11 +60,9 @@ const AdminLogin = () => {
   return (
     <>
       <Navbar />
-
       <div className="admin-login-page">
         <div className="admin-login-box">
           <h2>Administrator Login</h2>
-
           <form className="admin-login-form" onSubmit={handleLogin}>
             <div className="form-field">
               <input
@@ -51,12 +72,11 @@ const AdminLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                autoComplete="email"
               />
               <label htmlFor="adminEmail">Email</label>
             </div>
 
-            <div className="form-field">
+            <div className="form-field password-field">
               <input
                 type={showPassword ? "text" : "password"}
                 id="adminPassword"
@@ -64,7 +84,6 @@ const AdminLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
               />
               <label htmlFor="adminPassword">Password</label>
               <span
@@ -73,6 +92,20 @@ const AdminLogin = () => {
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
+            </div>
+
+            <div className="form-extra">
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                Remember me
+              </label>
+              <a href="#" className="forgot-password">
+                Forgot Password?
+              </a>
             </div>
 
             <button type="submit" className="admin-login-btn" disabled={loading}>
@@ -90,7 +123,6 @@ const AdminLogin = () => {
           </form>
         </div>
       </div>
-
       <br /><br />
       <Footer />
     </>

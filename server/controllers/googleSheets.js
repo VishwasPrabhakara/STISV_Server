@@ -15,6 +15,58 @@ function formatOtherAuthors(rawAuthors) {
   }
 }
 
+async function appendPaymentToSheet(payment) {
+  try {
+    console.log("📤 Sending payment to Google Sheets for:", payment.email);
+
+    const auth = new JWT({
+      email: process.env.GOOGLE_CLIENT_EMAIL,
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    const doc = new GoogleSpreadsheet(SHEET_ID, auth);
+    await doc.loadInfo();
+
+    const paymentsSheet = doc.sheetsByTitle["Payments"];
+
+    if (!paymentsSheet) {
+      console.error("❌ 'Payments' sheet not found in Google Sheet. Please create one.");
+      return;
+    }
+
+    const timestamp = new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      weekday: "short",
+    });
+
+    await paymentsSheet.addRow({
+      Timestamp: timestamp,
+      Name: payment.name || "N/A",
+      Email: payment.email || "N/A",
+      Phone: payment.phone || "N/A",
+      Category: payment.category || "N/A",
+      Currency: payment.currency || "N/A",
+      Amount: payment.amount || 0,
+      Payment_ID: payment.paymentId || "N/A",
+      Order_ID: payment.orderId || "N/A",
+      Status: payment.status || "paid",
+    });
+
+    console.log("✅ Payment row added to Google Sheets for:", payment.email);
+
+  } catch (error) {
+    console.error("❌ Google Sheets Payment export error:", error.message);
+  }
+}
+
+
 async function updateGoogleSheet(user, abstract = null) {
   try {
     console.log("🟢 Google Sheets update triggered for:", user.email);
@@ -119,4 +171,4 @@ async function updateGoogleSheet(user, abstract = null) {
   }
 }
 
-module.exports = { updateGoogleSheet };
+module.exports = { updateGoogleSheet, appendPaymentToSheet };
