@@ -8,8 +8,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 
-const { updateGoogleSheet } = require("./controllers/googleSheets");
+const { updateGoogleSheet, appendPaymentToSheet } = require("./controllers/googleSheets");
 const nodemailer = require("nodemailer");
 const cloudinary = require("cloudinary").v2;
 
@@ -79,6 +80,11 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 
 // Middleware to verify JWT token
@@ -151,7 +157,17 @@ const userSchema = new mongoose.Schema({
     isFinalized: { type: Boolean, default: false },
     remarks: String,
     timestamp: String,
-  }]
+  }],
+  payments: [{
+  paymentId: String,
+  orderId: String,
+  signature: String,
+  category: String,
+  currency: String,
+  amount: Number,
+  status: { type: String, default: "paid" },
+  timestamp: { type: Date, default: Date.now }
+}]
 });
 
 const User = mongoose.model("User", userSchema);
@@ -263,6 +279,158 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+app.post("/create-order", async (req, res) => {
+  try {
+    const { amount, currency } = req.body;
+
+    const options = {
+      amount: amount * 100,
+      currency,
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.status(200).json(order);
+  } catch (err) {
+    console.error("❌ Order creation failed:", err);
+    res.status(500).json({ message: "Order creation failed" });
+  }
+});
+
+app.post("/save-payment", async (req, res) => {
+  try {
+    const {
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
+      email,
+      name,
+      phone,
+      category,
+      currency,
+      amount,
+    } = req.body;
+
+    // 🔍 Find user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 🧾 Add payment to user.payments array
+    user.payments = user.payments || []; // ensure payments array exists
+    user.payments.push({
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      signature: razorpay_signature,
+      category,
+      currency,
+      amount,
+      status: "paid",
+      timestamp: new Date()
+    });
+
+    await user.save();
+
+    // ✅ Export this payment to Google Sheets
+await appendPaymentToSheet({
+  name,
+  email,
+  phone,
+  category,
+  currency,
+  amount,
+  paymentId: razorpay_payment_id,
+  orderId: razorpay_order_id,
+  status: "paid"
+});
+
+
+    // 📧 Send confirmation email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "STIS-V 2025 – Payment Confirmation",
+      text: `Dear ${name},
+
+We have received your payment successfully for STIS-V 2025.
+
+📄 Payment Details:
+- Payment ID: ${razorpay_payment_id}
+- Category: ${category}
+- Amount: ${currency === "INR" ? "₹" : "$"}${amount}
+
+Thank you for registering and supporting the event.
+
+Warm regards,  
+STIS-V 2025 Organizing Team`,
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: "stis.mte@iisc.ac.in",
+      subject: `New Payment Received - ${name}`,
+      text: `A new payment was received:
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Category: ${category}
+Amount: ${currency === "INR" ? "₹" : "$"}${amount}
+Payment ID: ${razorpay_payment_id}
+Order ID: ${razorpay_order_id}
+
+Regards,
+STIS-V Payment System`,
+    });
+
+    res.status(200).json({ message: "Payment recorded and confirmation email sent" });
+
+  } catch (err) {
+    console.error("❌ Error in /save-payment:", err);
+    res.status(500).json({ message: "Saving payment failed", error: err.message });
+  }
+});
+
+app.get("/get-payments/:uid", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ uid: req.params.uid });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ payments: user.payments || [] });
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+app.post("/razorpay-webhook", express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  },
+}), (req, res) => {
+  const secret = process.env.RAZORPAY_KEY_SECRET;
+  const signature = req.headers["x-razorpay-signature"];
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(req.rawBody)
+    .digest("hex");
+
+  if (signature === expectedSignature) {
+    console.log("✅ Razorpay Webhook Verified", req.body);
+    // You can also save this as fallback
+    res.status(200).json({ status: "ok" });
+  } else {
+    console.log("❌ Invalid Razorpay Webhook Signature");
+    res.status(400).json({ status: "unauthorized" });
+  }
+});
+
 
 
 // Reset Password Route
@@ -523,13 +691,14 @@ app.post("/submit-query", async (req, res) => {
 
 app.get("/get-all-abstracts", async (req, res) => {
   try {
-    const abstracts = await User.find({}, "uid fullName email abstractSubmission");
+    const abstracts = await User.find({}, "uid fullName email abstractSubmissions"); // ← FIXED HERE
     res.json({ abstracts });
   } catch (error) {
     console.error("Error fetching abstracts:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 
