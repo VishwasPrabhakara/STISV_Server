@@ -2,7 +2,7 @@
   "name": "stis2025",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/stis2025",
+  "homepage": "/stis2025/",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
