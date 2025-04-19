@@ -18,6 +18,27 @@
   margin-bottom: 40px;
   color: #1e40af;
 }
+.refund-policy-box {
+  margin-top: 2rem;
+  background-color: #fff9f0;
+  border: 1px solid #ffddae;
+  border-radius: 8px;
+  padding: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.refund-policy-box h4 {
+  margin-bottom: 1rem;
+  color: #b3541e;
+}
+
+.refund-policy-box ul, 
+.refund-policy-box ol {
+  margin-left: 1.5rem;
+}
+
 
 /* === Info Section === */
 .registration-info-box h3 {

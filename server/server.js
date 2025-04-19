@@ -72,7 +72,8 @@ app.use(cors({
     'http://localhost:3000',              // local dev
     'https://materials.iisc.ac.in',       // IISc domain
     'https://stisv-1.onrender.com',       // old Render app (if used)
-    'https://stisv.vercel.app'            // current frontend
+    'https://stisv.vercel.app',
+    'https://stisv.onrender.com', // current frontend
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -329,19 +330,38 @@ app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (
 
     const abstractCode = generateAbstractCode();
 
-    // Upload to Cloudinary
-    const uploadToCloudinary = () => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { resource_type: "auto", folder: "abstracts" },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        stream.end(req.file.buffer);
-      });
-    };
+   const uploadToCloudinary = () => {
+    return new Promise((resolve, reject) => {
+    const originalName = req.file.originalname; // e.g. MyAbstract.docx
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "raw",              // ✅ Required for .docx, .pdf, etc.
+        folder: "abstracts",               // ✅ Optional folder
+        use_filename: true,                // ✅ Use original file name
+        unique_filename: false,            // ✅ Prevent random string
+        public_id: originalName,           // ✅ Keep full name including extension
+        overwrite: true                    // ✅ Avoid conflict on same name
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          // ✅ Generate forced-download URL with correct file name
+          
+
+          result.download_url = result.secure_url;
+
+
+          resolve(result);
+        }
+      }
+    );
+
+    stream.end(req.file.buffer);
+  });
+};
+
 
     const cloudinaryResult = await uploadToCloudinary();
 
@@ -362,7 +382,7 @@ const newAbstract = {
   otherAuthors,
   presentingAuthorName,
   presentingAuthorAffiliation,
-  abstractFile: cloudinaryResult.secure_url,
+  abstractFile: cloudinaryResult.download_url,
   mainBody,
   abstractCode,
   isFinalized: false,
@@ -430,7 +450,7 @@ Presenting Type: ${presentingType}
 First Author: ${firstAuthorName} (${firstAuthorAffiliation})
 Other Authors: ${otherAuthors}
 Presenting Author: ${presentingAuthorName} (${presentingAuthorAffiliation})
-Abstract Link: ${cloudinaryResult.secure_url}
+Abstract Link: ${cloudinaryResult.download_url}
 
 Main Body:
 ${mainBody}
@@ -535,24 +555,38 @@ app.put("/update-abstract", verifyToken, upload.single("abstractFile"), async (r
     });
 
     // ✅ Handle File Upload
-    if (req.file) {
-      console.log("📎 Uploading new abstract file...");
+  if (req.file) {
+  console.log("📎 Uploading new abstract file...");
 
-      const uploadToCloudinary = () => {
-        return new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "auto", folder: "abstracts" },
-            (error, result) => (error ? reject(error) : resolve(result))
-          );
-          stream.end(req.file.buffer);
-        });
-      };
+  const uploadToCloudinary = () => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "raw",
+          folder: "abstracts",
+          use_filename: true,
+          unique_filename: false,
+          public_id: req.file.originalname,
+          overwrite: true
+        },
+        (error, result) => {
+          if (error) return reject(error);
 
-      const cloudinaryResult = await uploadToCloudinary();
-      updateData["abstractSubmission.abstractFile"] = cloudinaryResult.secure_url;
-      console.log(`✅ New File Uploaded: ${cloudinaryResult.secure_url}`);
-      googleSheetUpdateRequired = true;
-    }
+          // ✅ Set download_url from secure_url
+          result.download_url = result.secure_url;
+          resolve(result);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+  };
+
+  const cloudinaryResult = await uploadToCloudinary();
+  updateData["abstractSubmission.abstractFile"] = cloudinaryResult.download_url;
+  console.log(`✅ New File Uploaded: ${cloudinaryResult.download_url}`);
+  googleSheetUpdateRequired = true;
+}
+
 
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: "No valid fields provided for update." });

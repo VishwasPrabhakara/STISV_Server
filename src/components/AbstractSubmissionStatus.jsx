@@ -18,7 +18,7 @@ const AbstractSubmissionStatus = () => {
   const [finalizing, setFinalizing] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [showFinalizePopup, setShowFinalizePopup] = useState(false);
-  const [loginRedirect, setLoginRedirect] = useState(false);
+  const [showFinalizedMessage, setShowFinalizedMessage] = useState(false); // ✅ NEW
 
   const token = sessionStorage.getItem("token") || localStorage.getItem("token");
   const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
@@ -27,7 +27,7 @@ const AbstractSubmissionStatus = () => {
 
   useEffect(() => {
     const isLoggedIn = uid && token;
-  
+
     if (!isLoggedIn) {
       setLoading(false);
       setError("Please log in to view your abstract submission status.");
@@ -36,23 +36,21 @@ const AbstractSubmissionStatus = () => {
       }, 2000);
       return;
     }
-  
+
     const fetchAbstract = async () => {
       try {
         const url = abstractCode
-        ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
-        : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
-      
-  
+          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
+          : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
+
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
-      
         });
-  
+
         const abstractData = abstractCode
           ? res.data.abstract
           : res.data.abstracts?.slice(-1)[0] || null;
-  
+
         if (!abstractData) {
           setError("No abstracts submitted yet.");
         } else {
@@ -62,12 +60,7 @@ const AbstractSubmissionStatus = () => {
       } catch (err) {
         console.error("AxiosError", err);
         if (err.response?.status === 401) {
-          setError(
-            <>
-              Please log in to view your abstract submission status. <br />
-              Redirecting to login...
-            </>
-          );
+          setError("Please log in to view your abstract submission status.");
           setTimeout(() => {
             window.location.href = "/stis2025/login-signup";
           }, 2500);
@@ -78,7 +71,7 @@ const AbstractSubmissionStatus = () => {
         setLoading(false);
       }
     };
-  
+
     fetchAbstract();
   }, [uid, token, abstractCode]);
 
@@ -112,7 +105,6 @@ const AbstractSubmissionStatus = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Re-parse response
       const updated = res.data.abstract;
       const parsedAuthors = typeof updated.otherAuthors === "string"
         ? JSON.parse(updated.otherAuthors)
@@ -142,6 +134,7 @@ const AbstractSubmissionStatus = () => {
       );
       setAbstract((prev) => ({ ...prev, isFinalized: true }));
       setShowFinalizePopup(false);
+      setShowFinalizedMessage(true); // ✅ NEW
     } catch {
       setError("Finalization failed.");
     } finally {
@@ -297,11 +290,18 @@ const AbstractSubmissionStatus = () => {
               </div>
             )}
 
+            {showFinalizedMessage && (
+              <div className="success-message">
+                ✅ Your abstract has been successfully submitted.
+              </div>
+            )}
+
             <div className="abstract-row">
               <strong>Abstract File:</strong>
               {abstract.abstractFile ? (
                 <a href={abstract.abstractFile} target="_blank" rel="noreferrer">Download</a>
               ) : <span>No file uploaded</span>}
+              <span> (Open the downloaded file in .docx format.)</span>
             </div>
 
             {editMode ? (

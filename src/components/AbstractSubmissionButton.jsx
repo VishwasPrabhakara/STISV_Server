@@ -245,8 +245,9 @@ const SubmitAbstractForm = () => {
           </fieldset>
 
           <div className={`floating-group abstract-file-group ${formData.abstractFile ? "filled" : ""}`}>
-            <input type="file" name="abstractFile" onChange={handleFileChange} accept=".pdf,.doc,.docx" required />
-            <label >Abstract File *</label>
+            <input type="file" name="abstractFile" onChange={handleFileChange} accept=".doc,.docx" required />
+
+            <label >Abstract File (.docx only) *</label>
             {errors.abstractFile && <span className="error">{errors.abstractFile}</span>}
           </div>
 
