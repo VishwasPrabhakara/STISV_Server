@@ -314,15 +314,36 @@ app.post("/save-payment", async (req, res) => {
       amount,
     } = req.body;
 
-    // 🔍 Find user by email
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // ✅ Basic validation
+    if (
+      !razorpay_payment_id ||
+      !razorpay_order_id ||
+      !razorpay_signature ||
+      !email ||
+      !amount
+    ) {
+      return res.status(400).json({ message: "Missing required payment fields." });
     }
 
-    // 🧾 Add payment to user.payments array
-    user.payments = user.payments || []; // ensure payments array exists
+    // ✅ Debug log (optional - remove after testing)
+    console.log("🧾 Incoming payment:", req.body);
+
+    // ✅ Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // ✅ Prevent duplicate payments
+    const alreadyExists = user.payments.find(
+      (p) => p.paymentId === razorpay_payment_id
+    );
+    if (alreadyExists) {
+      return res.status(409).json({ message: "Payment already recorded." });
+    }
+
+    // ✅ Append new payment
+    user.payments = user.payments || [];
     user.payments.push({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
@@ -331,26 +352,25 @@ app.post("/save-payment", async (req, res) => {
       currency,
       amount,
       status: "paid",
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     await user.save();
 
-    // ✅ Export this payment to Google Sheets
-await appendPaymentToSheet({
-  name,
-  email,
-  phone,
-  category,
-  currency,
-  amount,
-  paymentId: razorpay_payment_id,
-  orderId: razorpay_order_id,
-  status: "paid"
-});
+    // ✅ Update Google Sheet
+    await appendPaymentToSheet({
+      name,
+      email,
+      phone,
+      category,
+      currency,
+      amount,
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      status: "paid",
+    });
 
-
-    // 📧 Send confirmation email
+    // ✅ Email to user
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -370,6 +390,7 @@ Warm regards,
 STIS-V 2025 Organizing Team`,
     });
 
+    // ✅ Email to admin
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: "stis.mte@iisc.ac.in",
@@ -384,17 +405,18 @@ Amount: ${currency === "INR" ? "₹" : "$"}${amount}
 Payment ID: ${razorpay_payment_id}
 Order ID: ${razorpay_order_id}
 
-Regards,
+Regards,  
 STIS-V Payment System`,
     });
 
-    res.status(200).json({ message: "Payment recorded and confirmation email sent" });
+    res.status(200).json({ message: "Payment recorded and confirmation email sent." });
 
   } catch (err) {
     console.error("❌ Error in /save-payment:", err);
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
+
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
   try {
