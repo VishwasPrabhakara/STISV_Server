@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import jsPDF from "jspdf";
 import "./PaymentSuccess.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import logo from "./assets/logo.png"; // Update path if needed
 
 const PaymentSuccess = () => {
   const [paymentData, setPaymentData] = useState(null);
@@ -56,8 +58,49 @@ const PaymentSuccess = () => {
     }
   }, [uid, token, status]);
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = () => {
+    if (!paymentData) return;
+
+    const doc = new jsPDF();
+
+    const img = new Image();
+    img.src = logo;
+
+    img.onload = () => {
+      doc.addImage(img, "PNG", 80, 10, 50, 20); // x, y, width, height
+
+      doc.setFontSize(14);
+      doc.text("STIS-V 2025 – Payment Receipt", 60, 40);
+
+      doc.setFontSize(12);
+      doc.text(`Name: ${sessionStorage.getItem("fullName") || "N/A"}`, 20, 60);
+      doc.text(`Email: ${sessionStorage.getItem("email") || "N/A"}`, 20, 70);
+      doc.text(`Phone: ${sessionStorage.getItem("phone") || "N/A"}`, 20, 80);
+
+      doc.text(`Payment ID: ${paymentData.paymentId}`, 20, 100);
+      doc.text(`Order ID: ${paymentData.orderId}`, 20, 110);
+      doc.text(
+        `Amount: ${paymentData.currency === "INR" ? "₹" : "$"}${paymentData.amount}`,
+        20,
+        120
+      );
+      doc.text(`Category: ${paymentData.category}`, 20, 130);
+      doc.text(`Status: ${paymentData.status}`, 20, 140);
+      doc.text(
+        `Timestamp: ${new Date(paymentData.timestamp).toLocaleString()}`,
+        20,
+        150
+      );
+
+      doc.setFontSize(10);
+      doc.text(
+        "Thank you for your payment. We look forward to your participation!",
+        20,
+        170
+      );
+
+      doc.save("STIS2025_Payment_Receipt.pdf");
+    };
   };
 
   return (
@@ -65,7 +108,11 @@ const PaymentSuccess = () => {
       <Navbar />
       <div className="payment-success-container">
         <div className="payment-box">
-          <h2>{status === "success" ? "🎉 Payment Successful" : "❌ Payment Failed"}</h2>
+          <h2>
+            {status === "success"
+              ? "🎉 Payment Successful"
+              : "❌ Payment Failed"}
+          </h2>
 
           {loading ? (
             <p className="loading-text">Loading payment details...</p>
@@ -77,7 +124,7 @@ const PaymentSuccess = () => {
               <p>If any amount was debited, it will be refunded automatically.</p>
               <p>Please try again after some time.</p>
               <div className="btn-group">
-                <button onClick={() => navigate("/stis2025/")}>Back to Home</button>
+                <button onClick={() => navigate("/")}>🏠 Back to Home</button>
               </div>
             </>
           ) : (
@@ -90,8 +137,8 @@ const PaymentSuccess = () => {
               <p><strong>Timestamp:</strong> {new Date(paymentData.timestamp).toLocaleString()}</p>
 
               <div className="btn-group">
-                <button onClick={handlePrint}>🖨 Print / Save Receipt</button>
-                <button onClick={() => navigate("/stis2025/")}>🏠 Back to Home</button>
+                <button onClick={handleDownloadPDF}>🖨 Download Receipt (PDF)</button>
+                <button onClick={() => navigate("/")}>🏠 Back to Home</button>
               </div>
             </>
           )}
