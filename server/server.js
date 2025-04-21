@@ -432,28 +432,84 @@ app.get("/get-payments/:uid", verifyToken, async (req, res) => {
 
 
 
-app.post("/razorpay-webhook", express.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  },
-}), (req, res) => {
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  const signature = req.headers["x-razorpay-signature"];
+app.post(
+  "/razorpay-webhook",
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+  async (req, res) => {
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const signature = req.headers["x-razorpay-signature"];
 
-  const expectedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(req.rawBody)
-    .digest("hex");
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(req.rawBody)
+      .digest("hex");
 
-  if (signature === expectedSignature) {
-    console.log("✅ Razorpay Webhook Verified", req.body);
-    // You can also save this as fallback
-    res.status(200).json({ status: "ok" });
-  } else {
-    console.log("❌ Invalid Razorpay Webhook Signature");
-    res.status(400).json({ status: "unauthorized" });
+    if (signature !== expectedSignature) {
+      console.log("❌ Invalid Razorpay Webhook Signature");
+      return res.status(400).json({ status: "unauthorized" });
+    }
+
+    console.log("✅ Razorpay Webhook Verified");
+
+    const payment = req.body.payload.payment?.entity;
+
+    if (!payment || !payment.notes || !payment.notes.email) {
+      return res.status(400).json({ status: "invalid payload" });
+    }
+
+    const {
+      id: paymentId,
+      order_id: orderId,
+      currency,
+      amount,
+      status,
+      notes,
+    } = payment;
+
+    const { email, category } = notes;
+
+    try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        console.warn("⚠️ Webhook: User not found for email:", email);
+        return res.status(404).json({ status: "user not found" });
+      }
+
+      const alreadyExists = user.payments.find(p => p.paymentId === paymentId);
+      if (alreadyExists) {
+        console.log("ℹ️ Webhook: Payment already recorded");
+        return res.status(200).json({ status: "already recorded" });
+      }
+
+      user.payments.push({
+        paymentId,
+        orderId,
+        signature,
+        category,
+        currency,
+        amount: amount / 100,
+        status,
+        timestamp: new Date(),
+      });
+
+      await user.save();
+      console.log("✅ Webhook: Payment saved to DB for", email);
+
+      // Optional: send email to user and admin here
+
+      return res.status(200).json({ status: "payment saved" });
+    } catch (err) {
+      console.error("❌ Webhook error:", err);
+      return res.status(500).json({ status: "error", error: err.message });
+    }
   }
-});
+);
+
 
 app.post("/payment-failed", async (req, res) => {
   const { email, orderId, reason } = req.body;
