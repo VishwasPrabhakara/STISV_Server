@@ -46,6 +46,7 @@ import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import SponsorshipOpportunities from './components/SponsorshipOpportunities';
 import PaymentPage from './components/PaymentPage';
+import PaymentSuccess from './components/PaymentSuccess';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -76,7 +77,7 @@ const router = createBrowserRouter(
       <Route path="/international-travel" element={<InternationalTravel />} />
       <Route path="/transport" element={<Transport />} />
       <Route path="/local-bengaluru" element={<Local />} />
-      
+      <Route path='//payment-success' element={<PaymentSuccess />} />
       <Route path="/electricity" element={<Electricity />} />
       <Route path="/reach-iisc" element={<ReachIisc />} />
       <Route path="/login-signup" element={<MemberAccess />} />
