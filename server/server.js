@@ -1,5 +1,10 @@
 require("dotenv").config();
+const express = require("express");
 const bodyParser = require("body-parser");
+const crypto = require("crypto");
+
+// Initialize app FIRST
+const app = express();
 
 app.post(
   "/razorpay-webhook",
@@ -76,7 +81,7 @@ app.post(
 );
 
 
-const express = require("express");
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
@@ -115,7 +120,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const app = express();
+
 const PORT = process.env.PORT || 5000;
 
 const uploadDir = path.join(process.cwd(), "uploads");
