@@ -48,15 +48,21 @@ const MemberAccess = () => {
       });
 
       if (response.data.token) {
-        // ✅ Store all required user info for later use
-        sessionStorage.setItem("token", response.data.token);
-        sessionStorage.setItem("uid", response.data.uid);
-        sessionStorage.setItem("fullName", response.data.fullName);
-        sessionStorage.setItem("email", response.data.email);
-        sessionStorage.setItem("country", response.data.country);
-        sessionStorage.setItem("phone", response.data.phone); // ✅ added
+        const { token, uid, fullName, email, country, phone } = response.data;
 
-        // ✅ Navigate to redirect path (avoid double /stis2025)
+        // ✅ Store in sessionStorage
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("uid", uid);
+        sessionStorage.setItem("fullName", fullName);
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("country", country);
+        sessionStorage.setItem("phone", phone);
+
+        // ✅ Also store in localStorage (fallback for pages like PaymentSuccess)
+        localStorage.setItem("token", token);
+        localStorage.setItem("uid", uid);
+
+        // ✅ Redirect user
         navigate(
           redirectPath.startsWith("/stis2025")
             ? redirectPath.replace("/stis2025", "")

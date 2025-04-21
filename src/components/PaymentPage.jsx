@@ -8,7 +8,6 @@ import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 countries.registerLocale(enLocale);
 
-
 const PaymentPage = () => {
   const [user, setUser] = useState(null);
   const [category, setCategory] = useState("");
@@ -57,6 +56,7 @@ const PaymentPage = () => {
     setCategory(cat);
     setCurrency(cur);
     setAmount(pricing[cur][cat]);
+    setError(""); // Clear error if any
   };
 
   const loadRazorpay = () => {
@@ -71,53 +71,62 @@ const PaymentPage = () => {
   }, []);
 
   const handlePayment = async () => {
-    if (!category) return setError("Please select a category");
+    if (!category) {
+      setError("Please select a category");
+      return;
+    }
 
-    const res = await axios.post("https://stisv.onrender.com/create-order", {
-      amount,
-      currency,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      category,
-    });
-
-    const options = {
-      key: "rzp_test_zr7KV5WoIMCMbV", // Replace with real key
-      amount: res.data.amount,
-      currency: res.data.currency,
-      name: "STIS-V 2025",
-      description: category,
-      order_id: res.data.id,
-      prefill: {
+    try {
+      const res = await axios.post("https://stisv.onrender.com/create-order", {
+        amount,
+        currency,
         name: user.name,
         email: user.email,
-        contact: user.phone,
-      },
-      handler: function (response) {
-        window.location.href = `/stis2025/payment-success?paymentId=${response.razorpay_payment_id}`;
-      },
-    };
+        phone: user.phone,
+        category,
+      });
 
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+      const options = {
+        key: "rzp_test_zr7KV5WoIMCMbV", // Replace with live key in production
+        amount: res.data.amount,
+        currency: res.data.currency,
+        name: "STIS-V 2025",
+        description: category,
+        order_id: res.data.id,
+        notes: {
+          email: user.email,
+          phone: user.phone,
+          category: category,
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: user.phone,
+        },
+        handler: function (response) {
+          window.location.href = `/stis2025/payment-success?paymentId=${response.razorpay_payment_id}`;
+        },
+        theme: {
+          color: "#0056b3",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Payment initiation failed", err);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   const formatPhone = (rawPhone, userCountryName = "India") => {
     if (!rawPhone) return "";
-  
-    // Get the 2-letter ISO code from country name
     const isoCode = countries.getAlpha2Code(userCountryName, "en") || "IN";
-  
     const phoneNumber = parsePhoneNumberFromString(rawPhone, isoCode);
-  
-    if (phoneNumber && phoneNumber.isValid()) {
-      return phoneNumber.formatInternational(); // e.g., +91 87928 23161
-    } else {
-      return `+${rawPhone}`;
-    }
+    return phoneNumber && phoneNumber.isValid()
+      ? phoneNumber.formatInternational()
+      : `+${rawPhone}`;
   };
-  
 
   return (
     <>
@@ -126,32 +135,32 @@ const PaymentPage = () => {
         <h2>Conference Registration</h2>
 
         {user && (
-  <div className="user-info">
-    <table className="user-info-table">
-      <tbody>
-        <tr>
-          <td className="label">Name:</td>
-          <td className="value">{user.name}</td>
-        </tr>
-        <tr>
-          <td className="label">Email:</td>
-          <td className="value">{user.email}</td>
-        </tr>
-        <tr>
-          <td className="label">Phone:</td>
-          <td className="value">{formatPhone(user.phone, user.country)}</td>
-        </tr>
-        <tr>
-          <td className="label">Country:</td>
-          <td className="value">{user.country}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-)}
-
+          <div className="user-info">
+            <table className="user-info-table">
+              <tbody>
+                <tr>
+                  <td className="label">Name:</td>
+                  <td className="value">{user.name}</td>
+                </tr>
+                <tr>
+                  <td className="label">Email:</td>
+                  <td className="value">{user.email}</td>
+                </tr>
+                <tr>
+                  <td className="label">Phone:</td>
+                  <td className="value">{formatPhone(user.phone, user.country)}</td>
+                </tr>
+                <tr>
+                  <td className="label">Country:</td>
+                  <td className="value">{user.country}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <h3>Select Payment Category</h3>
+
         <div className="category-grid">
           {Object.keys(pricing.INR).map((cat) => (
             <div
@@ -165,7 +174,6 @@ const PaymentPage = () => {
           ))}
         </div>
 
-       
         <div className="category-grid">
           {Object.keys(pricing.USD).map((cat) => (
             <div
