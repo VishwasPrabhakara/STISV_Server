@@ -432,47 +432,47 @@ app.get("/get-payments/:uid", verifyToken, async (req, res) => {
 
 
 
+const bodyParser = require("body-parser");
+
 app.post(
   "/razorpay-webhook",
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
-    },
-  }),
+  bodyParser.raw({ type: "application/json" }), // <-- Raw buffer for signature verification
   async (req, res) => {
-    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET; // Use webhook secret, not key secret
     const signature = req.headers["x-razorpay-signature"];
 
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(req.rawBody)
-      .digest("hex");
-
-    if (signature !== expectedSignature) {
-      console.log("❌ Invalid Razorpay Webhook Signature");
-      return res.status(400).json({ status: "unauthorized" });
-    }
-
-    console.log("✅ Razorpay Webhook Verified");
-
-    const payment = req.body.payload.payment?.entity;
-
-    if (!payment || !payment.notes || !payment.notes.email) {
-      return res.status(400).json({ status: "invalid payload" });
-    }
-
-    const {
-      id: paymentId,
-      order_id: orderId,
-      currency,
-      amount,
-      status,
-      notes,
-    } = payment;
-
-    const { email, category } = notes;
-
     try {
+      const expectedSignature = crypto
+        .createHmac("sha256", secret)
+        .update(req.body) // req.body is raw buffer
+        .digest("hex");
+
+      if (signature !== expectedSignature) {
+        console.log("❌ Invalid Razorpay Webhook Signature");
+        return res.status(400).json({ status: "unauthorized" });
+      }
+
+      const parsedBody = JSON.parse(req.body); // Now parse the buffer to JSON
+
+      console.log("✅ Razorpay Webhook Verified");
+
+      const payment = parsedBody.payload.payment?.entity;
+
+      if (!payment || !payment.notes || !payment.notes.email) {
+        return res.status(400).json({ status: "invalid payload" });
+      }
+
+      const {
+        id: paymentId,
+        order_id: orderId,
+        currency,
+        amount,
+        status,
+        notes,
+      } = payment;
+
+      const { email, category } = notes;
+
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -500,15 +500,14 @@ app.post(
       await user.save();
       console.log("✅ Webhook: Payment saved to DB for", email);
 
-      // Optional: send email to user and admin here
-
       return res.status(200).json({ status: "payment saved" });
     } catch (err) {
-      console.error("❌ Webhook error:", err);
+      console.error("❌ Webhook processing error:", err);
       return res.status(500).json({ status: "error", error: err.message });
     }
   }
 );
+
 
 
 app.post("/payment-failed", async (req, res) => {
