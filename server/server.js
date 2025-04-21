@@ -1,5 +1,150 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
+const crypto = require("crypto");
+
+// Initialize app FIRST
+const app = express();
+
+app.post(
+  "/razorpay-webhook",
+  bodyParser.raw({ type: "application/json" }), // <-- Raw buffer for signature verification
+  async (req, res) => {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET; // Use webhook secret, not key secret
+    const signature = req.headers["x-razorpay-signature"];
+
+    try {
+      const expectedSignature = crypto
+        .createHmac("sha256", secret)
+        .update(req.body) // req.body is raw buffer
+        .digest("hex");
+
+      if (signature !== expectedSignature) {
+        console.log("❌ Invalid Razorpay Webhook Signature");
+        return res.status(400).json({ status: "unauthorized" });
+      }
+
+      const parsedBody = JSON.parse(req.body); // Now parse the buffer to JSON
+
+      console.log("✅ Razorpay Webhook Verified");
+
+      const payment = parsedBody.payload.payment?.entity;
+
+      if (!payment || !payment.notes || !payment.notes.email) {
+        return res.status(400).json({ status: "invalid payload" });
+      }
+
+      const {
+        id: paymentId,
+        order_id: orderId,
+        currency,
+        amount,
+        status,
+        notes,
+      } = payment;
+
+      const { email, category } = notes;
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        console.warn("⚠️ Webhook: User not found for email:", email);
+        return res.status(404).json({ status: "user not found" });
+      }
+
+      const alreadyExists = user.payments.find(p => p.paymentId === paymentId);
+      if (alreadyExists) {
+        console.log("ℹ️ Webhook: Payment already recorded");
+        return res.status(200).json({ status: "already recorded" });
+      }
+
+      user.payments.push({
+        paymentId,
+        orderId,
+        signature,
+        category,
+        currency,
+        amount: amount / 100,
+        status,
+        timestamp: new Date(),
+      });
+
+      await user.save();
+
+      // ✅ Append to Google Sheet
+try {
+  await appendPaymentToSheet({
+    name: user.fullName,
+    email,
+    phone: user.phone,
+    category,
+    currency,
+    amount: amount / 100,
+    paymentId,
+    orderId,
+    status,
+  });
+  console.log("✅ Webhook: Payment added to Google Sheet");
+} catch (sheetErr) {
+  console.error("❌ Webhook: Google Sheet update failed:", sheetErr.message);
+}
+
+// ✅ Send confirmation email to user
+try {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "STIS-V 2025 – Payment Confirmation",
+    text: `Dear ${user.fullName},
+
+We have received your payment for STIS-V 2025.
+
+📄 Payment Details:
+- Payment ID: ${paymentId}
+- Category: ${category}
+- Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
+
+Thank you for registering and supporting the event.
+
+Warm regards,  
+STIS-V 2025 Organizing Team`,
+  });
+  console.log("✅ Webhook: Confirmation email sent to user");
+} catch (emailErr) {
+  console.error("❌ Webhook: Failed to send email to user:", emailErr.message);
+}
+
+// ✅ Notify admin
+try {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: "stis.mte@iisc.ac.in",
+    subject: `New Payment Received via Webhook - ${user.fullName}`,
+    text: `Name: ${user.fullName}
+Email: ${email}
+Phone: ${user.phone}
+Category: ${category}
+Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
+Payment ID: ${paymentId}
+Order ID: ${orderId}`,
+  });
+  console.log("✅ Webhook: Notification email sent to admin");
+} catch (adminErr) {
+  console.error("❌ Webhook: Failed to notify admin:", adminErr.message);
+}
+
+      console.log("✅ Webhook: Payment saved to DB for", email);
+
+      return res.status(200).json({ status: "payment saved" });
+    } catch (err) {
+      console.error("❌ Webhook processing error:", err);
+      return res.status(500).json({ status: "error", error: err.message });
+    }
+  }
+);
+
+
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
@@ -8,7 +153,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const crypto = require("crypto");
+
 const Razorpay = require("razorpay");
 
 
@@ -38,7 +183,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const app = express();
+
 const PORT = process.env.PORT || 5000;
 
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -325,7 +470,6 @@ app.post("/save-payment", async (req, res) => {
       return res.status(400).json({ message: "Missing required payment fields." });
     }
 
-    // ✅ Debug log (optional - remove after testing)
     console.log("🧾 Incoming payment:", req.body);
 
     // ✅ Find the user by email
@@ -356,26 +500,34 @@ app.post("/save-payment", async (req, res) => {
     });
 
     await user.save();
+    console.log("✅ Payment saved to MongoDB for:", email);
 
-    // ✅ Update Google Sheet
-    await appendPaymentToSheet({
-      name,
-      email,
-      phone,
-      category,
-      currency,
-      amount,
-      paymentId: razorpay_payment_id,
-      orderId: razorpay_order_id,
-      status: "paid",
-    });
+    // ✅ Attempt to update Google Sheet
+    try {
+      await appendPaymentToSheet({
+        name,
+        email,
+        phone,
+        category,
+        currency,
+        amount,
+        paymentId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        status: "paid",
+      });
+      console.log("✅ Payment appended to Google Sheets for:", email);
+    } catch (sheetErr) {
+      console.error("❌ Failed to append payment to Google Sheets:", sheetErr.message);
+      // You may choose to return 500 if this is critical
+    }
 
     // ✅ Email to user
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "STIS-V 2025 – Payment Confirmation",
-      text: `Dear ${name},
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "STIS-V 2025 – Payment Confirmation",
+        text: `Dear ${name},
 
 We have received your payment successfully for STIS-V 2025.
 
@@ -388,14 +540,19 @@ Thank you for registering and supporting the event.
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-    });
+      });
+      console.log("✅ Payment confirmation email sent to:", email);
+    } catch (emailErr) {
+      console.error("❌ Failed to send payment confirmation email:", emailErr.message);
+    }
 
     // ✅ Email to admin
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "stis.mte@iisc.ac.in",
-      subject: `New Payment Received - ${name}`,
-      text: `A new payment was received:
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: "stis.mte@iisc.ac.in",
+        subject: `New Payment Received - ${name}`,
+        text: `A new payment was received:
 
 Name: ${name}
 Email: ${email}
@@ -407,7 +564,11 @@ Order ID: ${razorpay_order_id}
 
 Regards,  
 STIS-V Payment System`,
-    });
+      });
+      console.log("✅ Payment notification sent to admin.");
+    } catch (adminErr) {
+      console.error("❌ Failed to send payment notification to admin:", adminErr.message);
+    }
 
     res.status(200).json({ message: "Payment recorded and confirmation email sent." });
 
@@ -416,6 +577,7 @@ STIS-V Payment System`,
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
+
 
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
@@ -432,81 +594,6 @@ app.get("/get-payments/:uid", verifyToken, async (req, res) => {
 
 
 
-const bodyParser = require("body-parser");
-
-app.post(
-  "/razorpay-webhook",
-  bodyParser.raw({ type: "application/json" }), // <-- Raw buffer for signature verification
-  async (req, res) => {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET; // Use webhook secret, not key secret
-    const signature = req.headers["x-razorpay-signature"];
-
-    try {
-      const expectedSignature = crypto
-        .createHmac("sha256", secret)
-        .update(req.body) // req.body is raw buffer
-        .digest("hex");
-
-      if (signature !== expectedSignature) {
-        console.log("❌ Invalid Razorpay Webhook Signature");
-        return res.status(400).json({ status: "unauthorized" });
-      }
-
-      const parsedBody = JSON.parse(req.body); // Now parse the buffer to JSON
-
-      console.log("✅ Razorpay Webhook Verified");
-
-      const payment = parsedBody.payload.payment?.entity;
-
-      if (!payment || !payment.notes || !payment.notes.email) {
-        return res.status(400).json({ status: "invalid payload" });
-      }
-
-      const {
-        id: paymentId,
-        order_id: orderId,
-        currency,
-        amount,
-        status,
-        notes,
-      } = payment;
-
-      const { email, category } = notes;
-
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        console.warn("⚠️ Webhook: User not found for email:", email);
-        return res.status(404).json({ status: "user not found" });
-      }
-
-      const alreadyExists = user.payments.find(p => p.paymentId === paymentId);
-      if (alreadyExists) {
-        console.log("ℹ️ Webhook: Payment already recorded");
-        return res.status(200).json({ status: "already recorded" });
-      }
-
-      user.payments.push({
-        paymentId,
-        orderId,
-        signature,
-        category,
-        currency,
-        amount: amount / 100,
-        status,
-        timestamp: new Date(),
-      });
-
-      await user.save();
-      console.log("✅ Webhook: Payment saved to DB for", email);
-
-      return res.status(200).json({ status: "payment saved" });
-    } catch (err) {
-      console.error("❌ Webhook processing error:", err);
-      return res.status(500).json({ status: "error", error: err.message });
-    }
-  }
-);
 
 
 
