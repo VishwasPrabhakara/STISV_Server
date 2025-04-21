@@ -70,6 +70,69 @@ app.post(
       });
 
       await user.save();
+
+      // ✅ Append to Google Sheet
+try {
+  await appendPaymentToSheet({
+    name: user.fullName,
+    email,
+    phone: user.phone,
+    category,
+    currency,
+    amount: amount / 100,
+    paymentId,
+    orderId,
+    status,
+  });
+  console.log("✅ Webhook: Payment added to Google Sheet");
+} catch (sheetErr) {
+  console.error("❌ Webhook: Google Sheet update failed:", sheetErr.message);
+}
+
+// ✅ Send confirmation email to user
+try {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "STIS-V 2025 – Payment Confirmation",
+    text: `Dear ${user.fullName},
+
+We have received your payment for STIS-V 2025.
+
+📄 Payment Details:
+- Payment ID: ${paymentId}
+- Category: ${category}
+- Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
+
+Thank you for registering and supporting the event.
+
+Warm regards,  
+STIS-V 2025 Organizing Team`,
+  });
+  console.log("✅ Webhook: Confirmation email sent to user");
+} catch (emailErr) {
+  console.error("❌ Webhook: Failed to send email to user:", emailErr.message);
+}
+
+// ✅ Notify admin
+try {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: "stis.mte@iisc.ac.in",
+    subject: `New Payment Received via Webhook - ${user.fullName}`,
+    text: `Name: ${user.fullName}
+Email: ${email}
+Phone: ${user.phone}
+Category: ${category}
+Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
+Payment ID: ${paymentId}
+Order ID: ${orderId}`,
+  });
+  console.log("✅ Webhook: Notification email sent to admin");
+} catch (adminErr) {
+  console.error("❌ Webhook: Failed to notify admin:", adminErr.message);
+}
+
       console.log("✅ Webhook: Payment saved to DB for", email);
 
       return res.status(200).json({ status: "payment saved" });
