@@ -47,6 +47,7 @@ import AdminDashboard from './components/AdminDashboard';
 import SponsorshipOpportunities from './components/SponsorshipOpportunities';
 import PaymentPage from './components/PaymentPage';
 import PaymentSuccess from './components/PaymentSuccess';
+import AllPayments from './components/AllPayments';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -91,6 +92,7 @@ const router = createBrowserRouter(
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/sponsorship-opportunities" element={<SponsorshipOpportunities />} />
+      <Route path='/payment-reciepts' element={<AllPayments />} />
     </>
   ),
   {

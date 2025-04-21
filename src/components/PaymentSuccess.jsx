@@ -5,8 +5,7 @@ import jsPDF from "jspdf";
 import "./PaymentSuccess.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-const logo = "https://iisc.ac.in/wp-content/themes/iisc/images/favicon/apple-icon-57x57.png"; // use your actual image URL
-
+import logo from "../assets/logo-iisc.png"; // Use your actual path // ✅ Local image import (Webpack will base64 it)
 
 const PaymentSuccess = () => {
   const [paymentData, setPaymentData] = useState(null);
@@ -16,7 +15,7 @@ const PaymentSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const status = queryParams.get("status") || "success"; // success | failure
+  const status = queryParams.get("status") || "success";
 
   const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
   const token = localStorage.getItem("token");
@@ -33,9 +32,7 @@ const PaymentSuccess = () => {
 
       try {
         const res = await axios.get(`${API_BASE_URL}/get-payments/${uid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (res.data.payments && res.data.payments.length > 0) {
@@ -61,59 +58,88 @@ const PaymentSuccess = () => {
 
   const handleDownloadPDF = () => {
     if (!paymentData) return;
-
-    const doc = new jsPDF();
-
+  
+    const doc = new jsPDF("p", "mm", "a4");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+  
+    const userName = sessionStorage.getItem("fullName") || "N/A";
+    const userEmail = sessionStorage.getItem("email") || "N/A";
+    const userPhone = sessionStorage.getItem("phone") || "N/A";
+  
     const img = new Image();
     img.src = logo;
-
+  
     img.onload = () => {
-      doc.addImage(img, "PNG", 80, 10, 50, 20); // x, y, width, height
-
+      // === 1. Logo Header ===
+      doc.addImage(img, "PNG", pageWidth / 2 - 25, 10, 50, 30);
+  
+      // === 2. Title ===
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.setTextColor(34, 82, 160);
+      doc.text("STIS-V 2025 – Payment Receipt", pageWidth / 2, 50, null, null, "center");
+  
+      // === 3. Border Box ===
+      doc.setDrawColor(200);
+      doc.roundedRect(15, 55, 180, 140, 2, 2); // shifted box start + more height
+  
+      // === 4. Participant Info ===
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      doc.text("STIS-V 2025 – Payment Receipt", 60, 40);
-
+      doc.setTextColor(0, 0, 0);
+      doc.text("Participant Information", 20, 65);
+  
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      doc.text(`Name: ${sessionStorage.getItem("fullName") || "N/A"}`, 20, 60);
-      doc.text(`Email: ${sessionStorage.getItem("email") || "N/A"}`, 20, 70);
-      doc.text(`Phone: ${sessionStorage.getItem("phone") || "N/A"}`, 20, 80);
+      doc.setTextColor(50, 50, 50);
+      doc.text(`Name     : ${userName}`, 25, 73);
+      doc.text(`Email    : ${userEmail}`, 25, 81);
+      doc.text(`Phone    : ${userPhone}`, 25, 89);
+  
+      // === 5. Payment Info ===
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Payment Details", 20, 105);
+  
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(50, 50, 50);
+      doc.text(`Payment ID : ${paymentData.paymentId}`, 25, 113);
+      doc.text(`Order ID   : ${paymentData.orderId}`, 25, 121);
+  
+      // ✅ Fix awkward "Amount" spacing
+      doc.text("Amount     :", 25, 136);
+      doc.text(`${paymentData.amount} ${paymentData.currency === "INR" ? "Rupees" : "USD"}`,50, 136);
 
-      doc.text(`Payment ID: ${paymentData.paymentId}`, 20, 100);
-      doc.text(`Order ID: ${paymentData.orderId}`, 20, 110);
-      doc.text(
-        `Amount: ${paymentData.currency === "INR" ? "₹" : "$"}${paymentData.amount}`,
-        20,
-        120
-      );
-      doc.text(`Category: ${paymentData.category}`, 20, 130);
-      doc.text(`Status: ${paymentData.status}`, 20, 140);
-      doc.text(
-        `Timestamp: ${new Date(paymentData.timestamp).toLocaleString()}`,
-        20,
-        150
-      );
-
+  
+      doc.text(`Category   : ${paymentData.category}`, 25, 137);
+      doc.text(`Status     : ${paymentData.status}`, 25, 145);
+      doc.text(`Date       : ${new Date(paymentData.timestamp).toLocaleString()}`, 25, 153);
+  
+      // === 6. Footer ===
+      doc.setFont("times", "italic");
+      doc.setFontSize(11);
+      doc.setTextColor(80);
+      doc.text("Thank you for your payment. We look forward to seeing you at STIS-V 2025!", 20, 180);
       doc.setFontSize(10);
-      doc.text(
-        "Thank you for your payment. We look forward to your participation!",
-        20,
-        170
-      );
-
+      doc.text("For queries, contact: stis.mte@iisc.ac.in", 20, 186);
+  
+      // === 7. Save PDF ===
       doc.save("STIS2025_Payment_Receipt.pdf");
     };
   };
+  
+  
+  
 
   return (
     <>
       <Navbar />
       <div className="payment-success-container">
         <div className="payment-box">
-          <h2>
-            {status === "success"
-              ? "🎉 Payment Successful"
-              : "❌ Payment Failed"}
-          </h2>
+          <h2>{status === "success" ? "🎉 Payment Successful" : "❌ Payment Failed"}</h2>
 
           {loading ? (
             <p className="loading-text">Loading payment details...</p>
@@ -122,10 +148,10 @@ const PaymentSuccess = () => {
           ) : status === "failure" ? (
             <>
               <p>Unfortunately, your payment could not be processed at this time.</p>
-              <p>If any amount was debited, it will be refunded.</p>
+              <p>If any amount was debited, it will be refunded automatically.</p>
               <p>Please try again after some time.</p>
               <div className="btn-group">
-                <button onClick={() => navigate("/")}>🏠 Back to Home</button>
+                <button onClick={() => navigate("/")}>Back to Home</button>
               </div>
             </>
           ) : (
@@ -138,8 +164,8 @@ const PaymentSuccess = () => {
               <p><strong>Timestamp:</strong> {new Date(paymentData.timestamp).toLocaleString()}</p>
 
               <div className="btn-group">
-                <button onClick={handleDownloadPDF}>🖨 Download Receipt (PDF)</button>
-                <button onClick={() => navigate("/")}>🏠 Back to Home</button>
+                <button onClick={handleDownloadPDF}>Download Receipt (PDF)</button>
+                <button onClick={() => navigate("/")}>Back to Home</button>
               </div>
             </>
           )}
