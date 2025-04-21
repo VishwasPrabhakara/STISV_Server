@@ -455,6 +455,35 @@ app.post("/razorpay-webhook", express.json({
   }
 });
 
+app.post("/payment-failed", async (req, res) => {
+  const { email, orderId, reason } = req.body;
+  if (!email || !orderId) {
+    return res.status(400).json({ message: "Missing details" });
+  }
+
+  console.warn(`⚠️ Payment failed for ${email}. OrderID: ${orderId}. Reason: ${reason}`);
+
+  // Optional: send email
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "STIS-V 2025 – Payment Failure Notice",
+    text: `Dear user,
+
+Your payment with Order ID: ${orderId} failed due to the following reason:
+${reason || "Unknown"}.
+
+If any amount was deducted, it will be refunded by Razorpay within 5–7 working days.
+
+You can try the payment again from the portal.
+
+Warm regards,  
+STIS-V 2025 Team`
+  });
+
+  return res.status(200).json({ message: "Failure noted" });
+});
+
 
 
 // Reset Password Route
