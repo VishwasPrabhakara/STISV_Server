@@ -5,7 +5,8 @@ import jsPDF from "jspdf";
 import "./PaymentSuccess.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import logo from "./assets/logo.png"; // Update path if needed
+const logo = "https://iisc.ac.in/wp-content/themes/iisc/images/favicon/apple-icon-57x57.png"; // use your actual image URL
+
 
 const PaymentSuccess = () => {
   const [paymentData, setPaymentData] = useState(null);
@@ -121,7 +122,7 @@ const PaymentSuccess = () => {
           ) : status === "failure" ? (
             <>
               <p>Unfortunately, your payment could not be processed at this time.</p>
-              <p>If any amount was debited, it will be refunded automatically.</p>
+              <p>If any amount was debited, it will be refunded.</p>
               <p>Please try again after some time.</p>
               <div className="btn-group">
                 <button onClick={() => navigate("/")}>🏠 Back to Home</button>
