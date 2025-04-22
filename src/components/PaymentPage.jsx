@@ -22,7 +22,7 @@ const PaymentPage = () => {
   const pricing = {
     INR: {
       "Indian Speaker / Participant": 15340,
-      "Indian Student / Speaker": 1180,
+      "Indian Student / Speaker": 100,
       "Indian Student / Participant": 4720,
       "Indian Spouse / Partner": 8260,
     },
@@ -87,7 +87,7 @@ const PaymentPage = () => {
       });
 
       const options = {
-        key: "rzp_test_zr7KV5WoIMCMbV", // Replace with live key in production
+        key: "rzp_live_VBcFKiPwDUl4SE", // Replace with live key in production
         amount: res.data.amount,
         currency: res.data.currency,
         name: "STIS-V 2025",

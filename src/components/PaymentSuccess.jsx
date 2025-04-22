@@ -18,7 +18,8 @@ const PaymentSuccess = () => {
   const status = queryParams.get("status") || "success";
 
   const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+
 
   const API_BASE_URL = "https://stisv.onrender.com";
 
@@ -61,73 +62,63 @@ const PaymentSuccess = () => {
   
     const doc = new jsPDF("p", "mm", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-  
+
     const userName = sessionStorage.getItem("fullName") || "N/A";
     const userEmail = sessionStorage.getItem("email") || "N/A";
     const userPhone = sessionStorage.getItem("phone") || "N/A";
-  
+
     const img = new Image();
     img.src = logo;
-  
+
     img.onload = () => {
-      // === 1. Logo Header ===
-      doc.addImage(img, "PNG", pageWidth / 2 - 25, 10, 50, 30);
-  
-      // === 2. Title ===
+      doc.addImage(img, "PNG", pageWidth / 2 - 25, 10, 50, 40); // Logo
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(20);
       doc.setTextColor(34, 82, 160);
-      doc.text("STIS-V 2025 – Payment Receipt", pageWidth / 2, 50, null, null, "center");
-  
-      // === 3. Border Box ===
+      doc.text("STIS-V 2025 – Payment Receipt", pageWidth / 2, 55, null, null, "center");
+
+      doc.setDrawColor(180);
+      doc.line(20, 60, 190, 60);
+
       doc.setDrawColor(200);
-      doc.roundedRect(15, 55, 180, 140, 2, 2); // shifted box start + more height
-  
-      // === 4. Participant Info ===
+      doc.roundedRect(15, 65, 180, 130, 2, 2);
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
       doc.setTextColor(0, 0, 0);
-      doc.text("Participant Information", 20, 65);
-  
+      doc.text("Participant Information", 20, 72);
+
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
       doc.setTextColor(50, 50, 50);
-      doc.text(`Name     : ${userName}`, 25, 73);
-      doc.text(`Email    : ${userEmail}`, 25, 81);
-      doc.text(`Phone    : ${userPhone}`, 25, 89);
-  
-      // === 5. Payment Info ===
+      doc.text(`Name     : ${userName}`, 25, 80);
+      doc.text(`Email    : ${userEmail}`, 25, 88);
+      doc.text(`Phone    : ${userPhone}`, 25, 96);
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
       doc.setTextColor(0, 0, 0);
-      doc.text("Payment Details", 20, 105);
-  
+      doc.text("Payment Details", 20, 112);
+
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
       doc.setTextColor(50, 50, 50);
-      doc.text(`Payment ID : ${paymentData.paymentId}`, 25, 113);
-      doc.text(`Order ID   : ${paymentData.orderId}`, 25, 121);
-  
-      // ✅ Fix awkward "Amount" spacing
+      doc.text(`Payment ID : ${paymentData.paymentId}`, 25, 120);
+      doc.text(`Order ID   : ${paymentData.orderId}`, 25, 128);
       doc.text("Amount     :", 25, 136);
       doc.text(`${paymentData.amount} ${paymentData.currency === "INR" ? "Rupees" : "USD"}`,50, 136);
+      doc.text(`Category   : ${paymentData.category}`, 25, 144);
+      doc.text(`Status     : ${paymentData.status}`, 25, 152);
+      doc.text(`Date       : ${new Date(paymentData.timestamp).toLocaleString()}`, 25, 160);
 
-  
-      doc.text(`Category   : ${paymentData.category}`, 25, 137);
-      doc.text(`Status     : ${paymentData.status}`, 25, 145);
-      doc.text(`Date       : ${new Date(paymentData.timestamp).toLocaleString()}`, 25, 153);
-  
-      // === 6. Footer ===
       doc.setFont("times", "italic");
       doc.setFontSize(11);
       doc.setTextColor(80);
       doc.text("Thank you for your payment. We look forward to seeing you at STIS-V 2025!", 20, 180);
-      doc.setFontSize(10);
-      doc.text("For queries, contact: stis.mte@iisc.ac.in", 20, 186);
-  
-      // === 7. Save PDF ===
-      doc.save("STIS2025_Payment_Receipt.pdf");
+      doc.text("For queries, contact: stis.mte@iisc.ac.in", 20, 187);
+
+      doc.save(`STIS2025_Receipt_${paymentData.paymentId}.pdf`);
     };
   };
   
