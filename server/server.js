@@ -443,35 +443,27 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
 }
 
 
-app.get("/api/registration/get-registration/:uid", async (req, res) => {
+// In your server.js or routes
+
+app.get("/api/registration/get-user-basic/:uid", async (req, res) => {
   try {
-    // 1. Try from RegistrationForm
-    const registration = await RegistrationForm.findOne({ userId: req.params.uid });
-
-    if (registration) {
-      console.log("✅ Found registration from RegistrationForm.");
-      return res.status(200).json(registration);
-    }
-
-    // 2. Else, fallback: get from User
     const user = await User.findOne({ uid: req.params.uid });
 
     if (!user) {
-      console.warn("⚠️ User not found for UID:", req.params.uid);
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Create a dummy response from User model
-    const userData = {
+    // Pre-fill the form
+    res.status(200).json({
       title: "",
-      name: user.fullName,
-      email: user.email,
-      phone: user.phone,
-      designation: user.affiliation,
+      name: user.fullName || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      designation: user.affiliation || "",
       address: "",
-      country: user.country,
+      country: user.country || "",
       zipcode: "",
-      abstracts: user.abstractSubmissions || [],
+      abstracts: user.abstractSubmissions || [], // if any
       dietaryPreferenceAuthor: "",
       accompanyingPersons: [],
       selectedCategory: "",
@@ -479,17 +471,15 @@ app.get("/api/registration/get-registration/:uid", async (req, res) => {
         baseFee: 0,
         gst: 0,
         totalAmount: 0,
-      }
-    };
-
-    console.log("✅ User data prepared from User model.");
-    return res.status(200).json(userData);
+      },
+    });
 
   } catch (error) {
-    console.error("❌ Error fetching registration/user details:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error fetching user basic info:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 
 
