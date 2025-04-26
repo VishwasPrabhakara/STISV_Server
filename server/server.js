@@ -355,7 +355,8 @@ const registrationFormSchema = new mongoose.Schema({
   paymentStatus: { type: String, default: "Pending" },
 });
 
-module.exports = mongoose.model('RegistrationForm', registrationFormSchema);
+const RegistrationForm = mongoose.model('RegistrationForm', registrationFormSchema);
+
 
 app.post("/register", async (req, res) => {
   try {
