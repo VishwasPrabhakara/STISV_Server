@@ -321,8 +321,6 @@ const User = mongoose.model("User", userSchema);
 
 // models/RegistrationForm.js
 
-const mongoose = require('mongoose');
-
 const registrationFormSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   title: String,
