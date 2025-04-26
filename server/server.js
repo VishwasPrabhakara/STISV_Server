@@ -318,6 +318,47 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
+
+// models/RegistrationForm.js
+
+const mongoose = require('mongoose');
+
+const registrationFormSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  title: String,
+  name: String,
+  email: String,
+  phone: String,
+  designation: String,
+  address: String,
+  country: String,
+  zipcode: String,
+  abstracts: [
+    {
+      abstractCode: String,
+      title: String,
+      presentationType: String,
+    }
+  ],
+  dietaryPreferenceAuthor: String,
+  accompanyingPersons: [
+    {
+      name: String,
+      relation: String,
+      dietaryPreference: String,
+    }
+  ],
+  selectedCategory: String,
+  selectedCategoryDetails: {
+    baseFee: Number,
+    gst: Number,
+    totalAmount: Number,
+  },
+  paymentStatus: { type: String, default: "Pending" },
+});
+
+module.exports = mongoose.model('RegistrationForm', registrationFormSchema);
+
 app.post("/register", async (req, res) => {
   try {
     const { email, password, phone, givenName, familyName, fullName, country, affiliation } = req.body;
@@ -395,6 +436,27 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
   }
 }
 
+
+app.get("/api/registration/get-user-basic/:uid", async (req, res) => {
+  try {
+    const user = await User.findOne({ uid: req.params.uid });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      title: "", // Title will be selected manually
+      name: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      designation: user.affiliation,
+      address: "",
+      country: user.country,
+      zipcode: "",
+    });
+  } catch (error) {
+    console.error("Error fetching user basic info:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 
