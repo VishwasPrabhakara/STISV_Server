@@ -26,6 +26,7 @@
   padding: 4rem 1rem 5rem;
   text-align: center;
   transition: opacity 1s ease-in-out;
+  background-image: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/home.jpg?raw=true') no-repeat center center/cover !important;
   background-size: 30px 30px;
 }
 
@@ -41,20 +42,21 @@
 
 .location:hover {
   text-decoration: underline;
-  color: #f0f0f0;
+  color: #f0f0f0; /* Optional soft hover effect */
 }
 
 .abstract-template-note {
   margin: 30px auto 20px;
   font-size: 1.05rem;
   font-weight: 900;
+  font-weight: bolder;
   background-color: #003566;
   width: 50%;
   padding: 10px;
   color: white!important;
   text-align: center;
 }
-
+/* Title Styles */
 .hero-title {
   font-size: 2.4rem;
   font-weight: 700;
@@ -69,6 +71,7 @@
   margin-bottom: 1rem;
 }
 
+/* Conference Info */
 .conference-info {
   margin: 1rem auto;
   font-size: 1rem;
@@ -76,12 +79,14 @@
   color: white;
 }
 
+/* Abstract Note */
 .abstract-announcement {
   margin-top: 1rem;
   font-size: 1rem;
   color: #eaeaea;
 }
 
+/* CTA Buttons */
 .cta-buttons {
   display: flex;
   justify-content: center;
@@ -106,6 +111,7 @@
   background-color: transparent;
   color: #fff;
   border-color: #fff;
+  text-decoration: none;
 }
 
 /* Countdown Timer */
@@ -137,132 +143,238 @@
   color: white;
 }
 
-/* === SPLIT SECTION LAYOUT === */
-.split-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 4rem 2rem;
-  gap: 2rem;
-  background-color: #f8fafc;
-  flex-wrap: wrap;
+/* === Speakers Section === */
+.speakers-section {
+  padding: 40px 20px;
+  background: rgba(0, 0, 0, 0);
+  text-align: center;
 }
 
-/* Left column - Speakers */
-.left-speakers-column {
-  flex: 1;
-  min-width: 300px;
-  max-width: 50%;
-  overflow-y: auto;
-  max-height: 80vh;
+.speakers-section .section-title {
+  border: none !important;
+  position: static;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: white;
 }
 
-.vertical-speakers-list {
+.speakers-section .section-title::before,
+.speakers-section .section-title::after {
+  content: none !important;
+  display: none;
+}
+
+/* === Marquee Container === */
+.speakers-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 20px 0;
+}
+
+/* === Scrolling Track === */
+.speakers-track {
+  display: inline-flex;
+  width: max-content;
+  animation: scroll-loop 60s linear infinite; /* 👈 Slowed from 40s to 60s */
+}
+
+@keyframes scroll-loop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Only scroll halfway because list is duplicated */
+}
+
+/* === Speaker Card (as <a> tag) === */
+.speaker-card-rect {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding-right: 1rem;
+  align-items: center;
+  margin: 0 15px;
+  width: 180px;
+  flex: 0 0 auto;
+  text-decoration: none; /* Remove underline for link */
+  color: inherit;         /* Inherit text color */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.speaker-card-vertical {
-  position: relative;
-  transition: transform 0.3s;
-}
-
-.speaker-card-vertical:hover {
-  transform: scale(1.02);
-}
-
+/* === Image Container === */
 .speaker-img-wrapper {
-  position: relative;
   width: 100%;
   height: 220px;
   overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* === Image Styling === */
 .speaker-img-rect {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
 }
 
-.vertical-scroller {
-  height: 80vh;
-  overflow: hidden;
-  position: relative;
+/* === Zoom & Glow on Hover === */
+.speaker-card-rect:hover .speaker-img-wrapper {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
 }
 
-.scroller-content {
-  display: flex;
-  flex-direction: column;
-  animation: scroll-vertical 60s linear infinite;
-}
-
-@keyframes scroll-vertical {
-  0% {
-    transform: translateY(0%);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
-}
-
-
+/* === Info Slide Box (Name + Affiliation) === */
 .speaker-info-slide {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  padding: 0.8rem;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.speaker-card-vertical:hover .speaker-info-slide {
-  opacity: 1;
-}
-
-/* Right column - Gallery */
-.right-gallery-column {
-  flex: 1;
-  min-width: 300px;
-  max-width: 50%;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-}
-
-.gallery-item img {
+  background: #ffffff;
+  padding: 10px;
+  margin-top: 8px;
   width: 100%;
-  height: auto;
-  border-radius: 10px;
-  object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
 }
 
-/* Responsive handling */
-@media (max-width: 900px) {
-  .split-section {
+/* === Show Info Box on Hover === */
+.speaker-card-rect:hover .speaker-info-slide {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === Info Text Styling === */
+.speaker-info-slide h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.speaker-info-slide p {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #666;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* === Responsive: Smaller Width for Mobile === */
+@media (max-width: 600px) {
+  .speaker-card-rect {
+    width: 140px;
+  }
+
+  .speaker-img-wrapper {
+    height: 180px;
+  }
+
+  .speaker-info-slide h3 {
+    font-size: 0.9rem;
+  }
+
+  .speaker-info-slide p {
+    font-size: 0.75rem;
+  }
+}
+
+
+
+
+/* =============================
+   Responsive Design - Tablets
+============================= */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1rem 4rem;
+    background-size: cover !important;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+  }
+
+  .conference-info,
+  .abstract-announcement {
+    font-size: 0.95rem;
+  }
+
+  .abstract-template-note {
+    font-size: 0.75rem;
+  }
+
+  .cta-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .countdown-wrapper {
+    gap: 1rem;
+  }
+
+  .countdown-value {
+    font-size: 1.6rem;
+  }
+
+  .countdown-label {
+    font-size: 0.8rem;
+  }
+}
+
+
+/* =============================
+   Responsive Design - Phones
+============================= */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .conference-info,
+  .abstract-announcement {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+
+  .cta-buttons {
     flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .left-speakers-column,
-  .right-gallery-column {
-    max-width: 100%;
+  .announcement-bar {
+    font-size: 0.9rem;
   }
 
-  .vertical-speakers-list {
-    max-height: none;
+  .cta-btn {
+    width: 80%;
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    align-self: center;
+  }
+
+  .countdown-wrapper {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  .countdown-box {
+    min-width: 30px;
+  }
+
+  .countdown-value {
+    font-size: 1.5rem;
+  }
+
+  .countdown-label {
+    font-size: 0.75rem;
   }
 }
