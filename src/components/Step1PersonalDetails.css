@@ -1,0 +1,95 @@
+/* Step1PersonalDetails.css */
+
+.step1-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+  }
+  
+  .step1-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: -20px;
+    text-align: center;
+    color: #003366;
+  }
+  
+  .step1-input:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.15);
+    transition: all 0.3s ease;
+  }
+  
+
+  .step1-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .step1-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .step1-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+  }
+  
+  .step1-input:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    outline: none;
+  }
+  
+  .step1-input::placeholder {
+    color: #aaa;
+  }
+  
+  /* Special for textarea */
+  .step1-input[type="textarea"],
+  textarea.step1-input {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  /* Responsive - Tablet */
+  @media (max-width: 768px) {
+    .step1-container {
+      margin: 20px 15px;
+      padding: 20px;
+    }
+  
+    .step1-title {
+      font-size: 24px;
+    }
+  }
+  
+  /* Responsive - Mobile */
+  @media (max-width: 480px) {
+    .step1-container {
+      margin: 15px 10px;
+      padding: 15px;
+    }
+  
+    .step1-title {
+      font-size: 22px;
+    }
+  
+    .step1-input {
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+  }
+  

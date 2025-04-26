@@ -1,0 +1,180 @@
+/* Step4PaymentSelection.css */
+
+.step4-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .step4-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    margin-top: -20px;
+    color: #003366;
+  }
+  
+  .columns-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .column {
+    flex: 0 0 48%;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .column-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #0056b3;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 8px;
+  }
+  
+  .registration-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .registration-tile {
+    border: 2px solid #d9d9d9;
+    border-radius: 10px;
+    padding: 20px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 120px;
+    width: 300px;
+  }
+  
+  .registration-tile:hover {
+    border-color: #0056b3;
+    background: #f0f8ff;
+  }
+  
+  .registration-tile.selected {
+    border-color: #0056b3;
+    background: #e6f0ff;
+  }
+  
+  .tile-header {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: #222;
+  }
+  
+  .tile-splitup {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  .step4-container p {
+    text-align: center;
+  }
+  .tile-total {
+    
+    font-weight: bold;
+    color: #0056b3;
+    text-align: center;
+  }
+
+  .international .tile-total{
+    margin-top: 32px;
+    font-weight: bold;
+    color: #0056b3;
+    text-align: center;
+  }
+  
+  .cart-summary {
+    background: #f0f4f7;
+    padding: 25px;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  
+  .cart-summary-title {
+    font-size: 1.6rem;
+    color: #003366;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  .cart-item-title {
+    font-weight: 500;
+    color: #222;
+  }
+  
+  .total-payable {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #0056b3;
+    margin-top: 20px;
+  }
+  
+  .payment-button {
+    display: block;
+    margin-top: 10%;
+    margin-bottom: -13%;
+    margin-left: 70%;
+    background-color: #0056b3;
+    color: #ffffff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    
+    
+  }
+   .cart-summary td{
+    padding: 12px 100px;
+    
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+   }
+
+  .payment-button:hover {
+    background: #003d80;
+  }
+  
+  .error-message {
+    text-align: center;
+    color: red;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  
+  /* 📱 Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .columns-container {
+      flex-direction: column;
+    }
+  
+    .column {
+      flex: 1 1 100%;
+    }
+  }
+  

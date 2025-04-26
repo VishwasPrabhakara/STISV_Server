@@ -1,0 +1,100 @@
+/* === Registration Form Global Styling === */
+
+.registration-form-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Step Indicator Styling */
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 10px 5px;
+  font-size: 16px;
+  color: #aaa;
+  font-weight: 500;
+  border-bottom: 2px solid #ddd;
+  transition: 0.3s all ease;
+}
+
+.step.active {
+  color: #0056b3;
+  font-weight: 700;
+  border-bottom: 3px solid #0056b3;
+}
+
+/* Form Content Area */
+.form-content {
+  min-height: 400px;
+  margin-top: 20px;
+}
+
+/* Navigation Buttons */
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.nav-button {
+  background-color: #0056b3;
+  color: #ffffff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #003d80;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .registration-form-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .step {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-form-container {
+    margin: 15px;
+    padding: 15px;
+  }
+
+  .step {
+    font-size: 13px;
+  }
+}

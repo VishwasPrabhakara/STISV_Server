@@ -21,7 +21,7 @@ const ConferenceRegistration = () => {
           <div className="pricing-flex-wrapper">
             {/* Indian Delegates Table */}
             <div className="pricing-table">
-              <h4>For Indian Delegates (INR)</h4>
+              <h4>For National Delegates (INR)</h4>
               <table className="styled-table">
                 <thead>
                   <tr>

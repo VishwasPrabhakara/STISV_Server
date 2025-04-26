@@ -150,7 +150,8 @@ const PaymentSuccess = () => {
               <p><strong>Payment ID:</strong> {paymentData.paymentId}</p>
               <p><strong>Order ID:</strong> {paymentData.orderId}</p>
               <p><strong>Amount:</strong> {paymentData.currency === "INR" ? "₹" : "$"}{paymentData.amount}</p>
-              <p><strong>Status:</strong> {paymentData.status}</p>
+              <p><strong>Status:</strong> {paymentData.status === "captured" ? "Success" : paymentData.status}</p>
+
               <p><strong>Category:</strong> {paymentData.category}</p>
               <p><strong>Timestamp:</strong> {new Date(paymentData.timestamp).toLocaleString()}</p>
 

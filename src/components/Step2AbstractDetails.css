@@ -1,0 +1,126 @@
+/* Step2AbstractDetails.css */
+
+/* Container */
+.step2-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  /* Title */
+  .step2-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: -20px;
+    color: #003366;
+    text-align: center;
+  }
+  
+  /* Abstract Summary */
+  .abstract-summary {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Tabs */
+  .abstract-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .abstract-tab {
+    padding: 10px 20px;
+    background-color: #f5f7fa;
+    color: #003366;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .abstract-tab:hover {
+    background-color: #003366;
+    color: #ffffff;
+  }
+  
+  .abstract-tab.active {
+    background-color: #003366;
+    color: #ffffff;
+  }
+  
+  /* Form Group */
+  .step2-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .step2-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .step2-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .step2-input:focus {
+    border-color: #003366;
+    outline: none;
+  }
+  
+  /* Note */
+  .abstract-note {
+    margin-top: 30px;
+    font-size: 0.95rem;
+    color: #555;
+    text-align: center;
+    background: #f9fafc;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border-left: 4px solid #003366;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .step2-container {
+      margin: 20px;
+      padding: 20px;
+    }
+  
+    .step2-title {
+      font-size: 1.6rem;
+    }
+  
+    .abstract-tab {
+      padding: 8px 14px;
+      font-size: 0.95rem;
+    }
+  
+    .step2-input {
+      padding: 10px 12px;
+    }
+  }
+  
