@@ -216,20 +216,13 @@ const upload = multer({
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'https://materials.iisc.ac.in',
-      'https://stisv-1.onrender.com',
-      'https://stisv.vercel.app',
-      'https://stisv.onrender.com',
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    'http://localhost:3000',              // local dev
+    'https://materials.iisc.ac.in',       // IISc domain
+    'https://stisv-1.onrender.com',       // old Render app (if used)
+    'https://stisv.vercel.app',
+    'https://stisv.onrender.com', // current frontend
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -325,76 +318,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-
-// models/RegistrationForm.js
-
-const registrationFormSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-
-  // Personal
-  title: String,
-  name: String,
-  email: String,
-  phone: String,
-  designation: String,
-  address: String,
-  country: String,
-  zipcode: String,
-
-  // Abstracts
-  abstracts: [
-    {
-      abstractCode: String,
-      title: String,
-      presentationType: String,
-      scope: String,
-      firstAuthorName: String,
-      firstAuthorAffiliation: String,
-      presentingAuthorName: String,
-      presentingAuthorAffiliation: String,
-      abstractFile: String,
-      isFinalized: Boolean,
-      status: String,
-    }
-  ],
-
-  // Accompanying persons
-  dietaryPreferenceAuthor: String,
-  accompanyingPersons: [
-    {
-      name: String,
-      relation: String,
-      dietaryPreference: String,
-    }
-  ],
-
-  // Payment section
-  selectedCategory: String,
-  selectedCategoryDetails: {
-    baseFee: Number,
-    gst: Number,
-    totalAmount: Number,
-  },
-
-  // After payment success
-  payment: {
-    paymentId: String,
-    orderId: String,
-    signature: String,
-    category: String,
-    currency: String,
-    amount: Number,
-    status: String,
-    timestamp: Date,
-  },
-
-  paymentStatus: { type: String, default: "Pending" },
-
-}, { timestamps: true });
-
-const RegistrationForm = mongoose.model('RegistrationForm', registrationFormSchema);
-
-
 app.post("/register", async (req, res) => {
   try {
     const { email, password, phone, givenName, familyName, fullName, country, affiliation } = req.body;
@@ -473,163 +396,6 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
 }
 
 
-// In your server.js or routes
-
-app.post("/api/registration/create-or-fetch/:uid", async (req, res) => {
-  try {
-    const { uid } = req.params;
-
-    // 1. Find the User first
-    const user = await User.findOne({ uid });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // 2. Check if registrationForm already exists
-    let regForm = await RegistrationForm.findOne({ userId: uid });
-
-    if (regForm) {
-      console.log("ℹ️ Existing registration form found, sending...");
-      return res.status(200).json({ registrationForm: regForm });
-    }
-
-    // 3. Create a new Registration Form from User details
-    const newRegistrationForm = new RegistrationForm({
-      userId: uid,
-      title: "", // Empty, user can fill
-      name: user.fullName || "",
-      email: user.email || "",
-      phone: user.phone || "",
-      designation: user.affiliation || "",
-      address: "", // Empty, user will fill
-      country: user.country || "",
-      zipcode: "", // Empty, user will fill
-      abstracts: (user.abstractSubmissions || []).map(abs => ({
-        abstractCode: abs.abstractCode || "",
-        title: abs.title || "",
-        presentationType: abs.presentingType || "",
-        scope: abs.scope || "",
-        firstAuthorName: abs.firstAuthorName || "",
-        firstAuthorAffiliation: abs.firstAuthorAffiliation || "",
-        presentingAuthorName: abs.presentingAuthorName || "",
-        presentingAuthorAffiliation: abs.presentingAuthorAffiliation || "",
-        abstractFile: abs.abstractFile || "",
-        isFinalized: abs.isFinalized || false,
-        status: abs.status || "Pending",
-      })),
-      dietaryPreferenceAuthor: "",
-      accompanyingPersons: [],
-      selectedCategory: "",
-      selectedCategoryDetails: {
-        baseFee: 0,
-        gst: 0,
-        totalAmount: 0,
-      },
-      paymentStatus: "Pending",
-    });
-
-    await newRegistrationForm.save();
-
-    console.log("✅ New registration form created for:", user.email);
-
-    res.status(201).json({ registrationForm: newRegistrationForm });
-
-  } catch (error) {
-    console.error("❌ Error in create-or-fetch registration:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-
-app.put("/api/registration/update-section/:registrationFormId", async (req, res) => {
-  try {
-    const { registrationFormId } = req.params;
-    const updateFields = req.body; // Whatever fields you want to update
-
-    const registrationForm = await RegistrationForm.findById(registrationFormId);
-
-    if (!registrationForm) {
-      return res.status(404).json({ message: "Registration form not found" });
-    }
-
-    // 🛠 Smart merge: only update the fields sent by frontend
-    for (const key in updateFields) {
-      if (updateFields.hasOwnProperty(key)) {
-        if (typeof updateFields[key] === 'object' && !Array.isArray(updateFields[key]) && updateFields[key] !== null) {
-          // If nested object (example: selectedCategoryDetails), merge inside
-          registrationForm[key] = {
-            ...registrationForm[key],
-            ...updateFields[key]
-          };
-        } else {
-          registrationForm[key] = updateFields[key];
-        }
-      }
-    }
-
-    await registrationForm.save();
-
-    console.log(`✅ Registration form updated: ${registrationFormId}`);
-
-    res.status(200).json({ message: "Registration form updated successfully", registrationForm });
-
-  } catch (error) {
-    console.error("❌ Error in updating registration form:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-app.put("/api/registration/save-payment/:registrationFormId", async (req, res) => {
-  try {
-    const { registrationFormId } = req.params;
-    const {
-      paymentId,
-      orderId,
-      signature,
-      category,
-      currency,
-      amount,
-      status,
-      timestamp
-    } = req.body;
-
-    if (!paymentId || !orderId || !signature || !category || !currency || !amount || !status) {
-      return res.status(400).json({ message: "Missing payment fields" });
-    }
-
-    const registrationForm = await RegistrationForm.findById(registrationFormId);
-
-    if (!registrationForm) {
-      return res.status(404).json({ message: "Registration form not found" });
-    }
-
-    // Save payment details
-    registrationForm.payment = {
-      paymentId,
-      orderId,
-      signature,
-      category,
-      currency,
-      amount,
-      status,
-      timestamp: timestamp ? new Date(timestamp) : new Date()
-    };
-    registrationForm.paymentStatus = status.toLowerCase() === "captured" || status.toLowerCase() === "paid" ? "Paid" : "Pending";
-
-    await registrationForm.save();
-
-    console.log(`✅ Payment saved inside registration form: ${registrationFormId}`);
-
-    res.status(200).json({ message: "Payment saved successfully in registration form", registrationForm });
-
-  } catch (error) {
-    console.error("❌ Error saving payment in registration form:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-
 
 
 // Login User
@@ -678,56 +444,6 @@ app.post("/create-order", async (req, res) => {
     res.status(500).json({ message: "Order creation failed" });
   }
 });
-
-// ✅ New Route to fetch User basic details for Registration Form prefill
-app.get("/api/registration/get-user-basic/:uid", async (req, res) => {
-  try {
-    const { uid } = req.params;
-    const user = await User.findOne({ uid });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Send only the required basic details
-    res.status(200).json({
-      title: "",
-      name: user.fullName,
-      email: user.email,
-      phone: user.phone,
-      designation: user.affiliation,
-      address: "",
-      country: user.country,
-      zipcode: "",
-      abstracts: user.abstractSubmissions.map(abs => ({
-        abstractCode: abs.abstractCode,
-        title: abs.title,
-        presentationType: abs.presentingType,
-        scope: abs.scope,
-        firstAuthorName: abs.firstAuthorName,
-        firstAuthorAffiliation: abs.firstAuthorAffiliation,
-        presentingAuthorName: abs.presentingAuthorName,
-        presentingAuthorAffiliation: abs.presentingAuthorAffiliation,
-        abstractFile: abs.abstractFile,
-        isFinalized: abs.isFinalized,
-        status: abs.status,
-      })),
-      dietaryPreferenceAuthor: "",
-      accompanyingPersons: [],
-      selectedCategory: "",
-      selectedCategoryDetails: {
-        baseFee: 0,
-        gst: 0,
-        totalAmount: 0,
-      },
-    });
-
-  } catch (error) {
-    console.error("❌ Error fetching user basic info:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
 
 app.post("/save-payment", async (req, res) => {
   try {
