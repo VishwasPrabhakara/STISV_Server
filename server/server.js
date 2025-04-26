@@ -679,6 +679,56 @@ app.post("/create-order", async (req, res) => {
   }
 });
 
+// ✅ New Route to fetch User basic details for Registration Form prefill
+app.get("/api/registration/get-user-basic/:uid", async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const user = await User.findOne({ uid });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send only the required basic details
+    res.status(200).json({
+      title: "",
+      name: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      designation: user.affiliation,
+      address: "",
+      country: user.country,
+      zipcode: "",
+      abstracts: user.abstractSubmissions.map(abs => ({
+        abstractCode: abs.abstractCode,
+        title: abs.title,
+        presentationType: abs.presentingType,
+        scope: abs.scope,
+        firstAuthorName: abs.firstAuthorName,
+        firstAuthorAffiliation: abs.firstAuthorAffiliation,
+        presentingAuthorName: abs.presentingAuthorName,
+        presentingAuthorAffiliation: abs.presentingAuthorAffiliation,
+        abstractFile: abs.abstractFile,
+        isFinalized: abs.isFinalized,
+        status: abs.status,
+      })),
+      dietaryPreferenceAuthor: "",
+      accompanyingPersons: [],
+      selectedCategory: "",
+      selectedCategoryDetails: {
+        baseFee: 0,
+        gst: 0,
+        totalAmount: 0,
+      },
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching user basic info:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 app.post("/save-payment", async (req, res) => {
   try {
     const {
