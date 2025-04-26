@@ -286,6 +286,24 @@ const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   country: { type: String, required: true },
   affiliation: { type: String, required: true },
+
+  // 🆕 Additional fields for Registration
+  title: { type: String, default: "" },
+  address: { type: String, default: "" },
+  zipcode: { type: String, default: "" },
+  dietaryPreferenceAuthor: { type: String, default: "" },
+  accompanyingPersons: [{
+    name: String,
+    relation: String,
+    dietaryPreference: String,
+  }],
+  selectedCategory: { type: String, default: "" },
+  selectedCategoryDetails: {
+    baseFee: { type: Number, default: 0 },
+    gst: { type: Number, default: 0 },
+    totalAmount: { type: Number, default: 0 },
+  },
+
   abstractSubmissions: [{
     title: String,
     scope: String,
@@ -305,17 +323,19 @@ const userSchema = new mongoose.Schema({
     remarks: String,
     timestamp: String,
   }],
+
   payments: [{
-  paymentId: String,
-  orderId: String,
-  signature: String,
-  category: String,
-  currency: String,
-  amount: Number,
-  status: { type: String, default: "paid" },
-  timestamp: { type: Date, default: Date.now }
-}]
+    paymentId: String,
+    orderId: String,
+    signature: String,
+    category: String,
+    currency: String,
+    amount: Number,
+    status: { type: String, default: "paid" },
+    timestamp: { type: Date, default: Date.now }
+  }]
 });
+
 
 const User = mongoose.model("User", userSchema);
 app.post("/register", async (req, res) => {
@@ -395,6 +415,56 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
   }
 }
 
+// ✅ Clean user info fetch (GET)
+app.get("/user-info/:uid", async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const user = await User.findOne({ uid });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); // Send the full user object (frontend can pick needed fields)
+  } catch (error) {
+    console.error("❌ Error fetching user info:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+// ✅ Clean user update (PUT)
+app.put("/user-info/update/:uid", async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const updateData = req.body; // whatever fields frontend sends
+
+    const user = await User.findOne({ uid });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Smart update: merge only provided fields
+    for (let key in updateData) {
+      if (typeof updateData[key] === 'object' && updateData[key] !== null && !Array.isArray(updateData[key])) {
+        user[key] = {
+          ...user[key],
+          ...updateData[key]
+        };
+      } else {
+        user[key] = updateData[key];
+      }
+    }
+
+    await user.save();
+    console.log(`✅ User updated successfully: ${uid}`);
+
+    res.status(200).json({ message: "User info updated successfully", user });
+
+  } catch (error) {
+    console.error("❌ Error updating user info:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
 
 
 
