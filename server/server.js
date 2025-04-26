@@ -329,7 +329,7 @@ const User = mongoose.model("User", userSchema);
 // models/RegistrationForm.js
 
 const registrationFormSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: String, required: true }, // ✅ CHANGE TO STRING (was ObjectId)
   title: String,
   name: String,
   email: String,
