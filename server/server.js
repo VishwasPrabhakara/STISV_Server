@@ -216,13 +216,20 @@ const upload = multer({
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: [
-    'http://localhost:3000',              // local dev
-    'https://materials.iisc.ac.in',       // IISc domain
-    'https://stisv-1.onrender.com',       // old Render app (if used)
-    'https://stisv.vercel.app',
-    'https://stisv.onrender.com', // current frontend
-  ],
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://materials.iisc.ac.in',
+      'https://stisv-1.onrender.com',
+      'https://stisv.vercel.app',
+      'https://stisv.onrender.com',
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
