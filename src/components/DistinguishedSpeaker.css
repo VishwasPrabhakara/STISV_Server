@@ -1,69 +1,95 @@
-
-
+/* ===== Top-level container ===== */
 .distinguished-speakers-container {
   padding: 2rem 1rem;
   background-color: #f9fafc;
   font-family: 'Segoe UI', sans-serif;
   color: #1a1a1a;
-  margin-top: -2rem;
 }
 
-
-.section-title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #003566;
-  border-bottom: 3px solid #0077b6;
-  display: inline-block;
-  padding-bottom: 0.5rem;
+/* ===== Title & underline ===== */
+.distinguished-speakers-container .section-title-wrapper {
+  display: flex;
+  justify-content: center;
   margin-bottom: 2rem;
 }
 
-.static-scroll {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 2rem;
-  overflow-x: auto;
-  padding: 1rem 0;
+.distinguished-speakers-container .section-title {
+  position: relative;
+  display: inline-block;
+  padding-left: 12px;
+  padding-bottom: 6px;
+  color: #003566;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
 }
 
-.static-scroll::-webkit-scrollbar {
+.distinguished-speakers-container .section-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #0077b6;
+}
+
+.distinguished-speakers-container .section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #0077b6;
+}
+
+/* ===== Static scroll for plenary ===== */
+.distinguished-speakers-container .static-scroll {
+  display: flex;
+  justify-content: center; /* ✅ center only plenary cards */
+  flex-wrap: wrap;         /* allow wrapping if screen is small */
+  gap: 2rem;
+  padding: 1rem 0;
+  overflow: hidden;        /* no scrolling */
+}
+
+
+.distinguished-speakers-container .static-scroll::-webkit-scrollbar {
   display: none;
 }
 
-
-.invited-box {
+/* ===== Invited carousel (Embla) ===== */
+.distinguished-speakers-container .invited-box {
   position: relative;
-  padding: 0 3rem;
+  padding: 0 2.5rem;
 }
 
-.embla {
+.distinguished-speakers-container .embla {
   overflow: hidden;
   position: relative;
 }
 
-.embla__viewport {
+.distinguished-speakers-container .embla__viewport {
   overflow: hidden;
   width: 100%;
 }
 
-.embla__container {
+.distinguished-speakers-container .embla__container {
   display: flex;
   gap: 2rem;
   padding: 10px 0;
 }
 
-.embla__slide {
-  flex: 0 0 250px;
+.distinguished-speakers-container .embla__slide {
+  flex: 0 0 260px;
   display: flex;
   justify-content: center;
+  padding: 0 10px;
 }
 
-
-.embla__prev,
-.embla__next {
+.distinguished-speakers-container .embla__prev,
+.distinguished-speakers-container .embla__next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -76,25 +102,25 @@
   transition: color 0.3s ease;
 }
 
-.embla__prev:hover,
-.embla__next:hover {
+.distinguished-speakers-container .embla__prev:hover,
+.distinguished-speakers-container .embla__next:hover {
   color: #003566;
 }
 
-.embla__prev {
-  left: 0.2rem;
+.distinguished-speakers-container .embla__prev {
+  left: 0;
 }
 
-.embla__next {
-  right: 0.2rem;
+.distinguished-speakers-container .embla__next {
+  right: 0;
 }
 
-
-.speaker-card {
+/* ===== Speaker Card Styles ===== */
+.distinguished-speakers-container .speaker-card {
   background-color: #fff;
   border-radius: 10px;
-  width: 250px;
-  height: 340px;
+  width: 260px;
+  height: 400px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
@@ -104,21 +130,33 @@
   flex-direction: column;
 }
 
-.speaker-card:hover {
+.distinguished-speakers-container .speaker-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid #0077b6;
 }
 
-.speaker-avatar img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
+/* ===== Image Styles ===== */
+.distinguished-speakers-container .speaker-avatar {
+  height: 280px;
+  overflow: hidden;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.speaker-info {
+.distinguished-speakers-container .speaker-avatar img {
+  width: 100%;
+  height: 280px;
+  object-fit: fill;
+  display: block;
+}
+
+/* ===== Speaker Info ===== */
+.distinguished-speakers-container .speaker-info {
   padding: 1rem;
   flex-grow: 1;
   display: flex;
@@ -126,81 +164,62 @@
   justify-content: center;
 }
 
-.speaker-info h4 {
+.distinguished-speakers-container .speaker-info h4 {
   font-size: 1rem;
   font-weight: 600;
   margin: 0.5rem 0 0.3rem;
   color: #003566;
 }
 
-.speaker-info p {
+.distinguished-speakers-container .speaker-info p {
   font-size: 0.9rem;
   color: #555;
 }
 
-
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .section-title {
-    font-size: 1.8rem;
-  }
-
-  .speaker-card {
+  .distinguished-speakers-container .speaker-card {
     width: 200px;
-    height: 300px;
+    height: 340px;
   }
 
-  .speaker-avatar img {
-    height: 180px;
+  .distinguished-speakers-container .speaker-avatar {
+    height: 220px;
   }
 
-  .speaker-info h4 {
+  .distinguished-speakers-container .speaker-info h4 {
     font-size: 0.95rem;
   }
 
-  .speaker-info p {
+  .distinguished-speakers-container .speaker-info p {
     font-size: 0.85rem;
   }
 
-  .embla__prev,
-  .embla__next {
+  .distinguished-speakers-container .embla__prev,
+  .distinguished-speakers-container .embla__next {
     font-size: 1.8rem;
   }
-
-  
 }
 
-
 @media (max-width: 480px) {
-  .section-title {
-    font-size: 1.5rem;
-  }
-  
-  .embla__next{
-    margin-right: 100px;
-  }
-
-  .embla__prev{
-    margin-left: 100px;
-  }
-
-  .speaker-card {
+  .distinguished-speakers-container .speaker-card {
     width: 160px;
-    height: 270px;
+    height: 290px;
   }
 
-  .speaker-avatar img {
-    height: 150px;
+  .distinguished-speakers-container .speaker-avatar {
+    height: 180px;
   }
 
-  .speaker-info h4 {
+  .distinguished-speakers-container .speaker-info h4 {
     font-size: 0.9rem;
   }
 
-  .speaker-info p {
+  .distinguished-speakers-container .speaker-info p {
     font-size: 0.8rem;
   }
 
-  .invited-box {
-    padding: 0 1.5rem;
+  .distinguished-speakers-container .invited-box {
+    padding: 0 1rem;
   }
-} 
+}

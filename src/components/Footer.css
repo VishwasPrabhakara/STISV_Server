@@ -47,7 +47,7 @@
   font-style: italic;
   font-size: 0.9rem;
   color: #6b7280;
-  margin-left: -120px!important;
+  text-align: left;
 }
 
 .footer-column p {

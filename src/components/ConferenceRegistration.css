@@ -1,273 +1,163 @@
-/* === Container === */
+/* === Base Container === */
 .registration-container {
-  max-width: 1100px;
-  margin: 60px auto;
-  padding: 40px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: #1e293b;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  background-color: #fdfdfd;
 }
 
-/* === Heading === */
-.registration-container h2 {
+/* === Section Titles === */
+.reg-title {
   text-align: center;
-  font-size: 36px;
+  font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 40px;
-  color: #1e40af;
-}
-.refund-policy-box {
-  margin-top: 2rem;
-  background-color: #fff9f0;
-  border: 1px solid #ffddae;
-  border-radius: 8px;
-  padding: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #333;
-}
-
-.refund-policy-box h4 {
+  color: #003566;
   margin-bottom: 1rem;
-  color: #b3541e;
 }
 
-.refund-policy-box ul, 
-.refund-policy-box ol {
-  margin-left: 1.5rem;
-}
-
-
-/* === Info Section === */
 .registration-info-box h3 {
-  font-size: 24px;
-  color: #1f2937;
-  margin-bottom: 12px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #003566;
+  margin-top: 1.5rem;
 }
 
-.registration-info-box p {
-  font-size: 16px;
-  color: #334155;
-  line-height: 1.6;
-  margin-bottom: 24px;
+.fee-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
-.pricing-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 30px;
+/* === Pricing Layout === */
+.pricing-flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 1rem;
 }
 
-.pricing-table {
-  background: #f9fafb;
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid #e2e8f0;
+/* === Indian Table: Wider === */
+.pricing-table:first-child {
+  flex: 1.2;
+  min-width: 360px;
+}
+
+/* === Foreign Table: Slightly Narrower === */
+.pricing-table:last-child {
+  flex: 1;
+  min-width: 300px;
 }
 
 .pricing-table h4 {
-  font-size: 20px;
-  color: #1e40af;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #dbeafe;
-  padding-bottom: 6px;
+  color: #003566;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
-.pricing-table table {
+/* === Table Styling === */
+.styled-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 15px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #ccc;
 }
 
-.pricing-table th,
-.pricing-table td {
-  border: 1px solid #cbd5e1;
-  padding: 10px;
-  text-align: center;
+.styled-table th,
+.styled-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.95rem;
+  vertical-align: top;
+}
+
+.styled-table th {
+  background-color: lightslategray;
+  color: darkblue;
+  font-weight: 600;
+}
+
+.styled-table td b {
+  color: #0a3d62;
+}
+
+.foreign{
+  height: 85%;
+}
+
+/* === Asterisk & Notes === */
+.red-asterisk {
+  color: red;
+  font-weight: bold;
 }
 
 .note {
-  font-size: 15px;
-  color: #475569;
-  font-style: italic;
-  margin-top: 10px;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #333;
 }
 
-/* === User Details === */
-.payment-section h3 {
-  font-size: 22px;
-  margin-top: 32px;
-  margin-bottom: 20px;
-  color: #1f2937;
+/* === Refund Section === */
+.refund-policy-box {
+  margin-top: 2.5rem;
+  background-color: #f9fafb;
+  border-left: 4px solid #003566;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
 }
 
-.payment-section p {
-  font-size: 16px;
-  margin: 6px 0;
-  color: #374151;
+.refund-policy-box h4 {
+  color: #003566;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
-/* === Registration Options === */
-.pricing-group {
-  margin-bottom: 40px;
+.refund-policy-box ul,
+.refund-policy-box ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.pricing-group h4 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e40af;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 6px;
+.refund-policy-box li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
 
-.registration-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.registration-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-/* === User Details Box === */
-.payment-section h3 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1e3a8a;
-  margin-bottom: 18px;
-  border-bottom: 1px solid #cbd5e1;
-  padding-bottom: 6px;
-  text-align: center;
-}
-
-.user-info-box {
-  background-color: #f1f5ff;
-  border: 1px solid #dbeafe;
-  padding: 20px ;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
-  font-size: 16px;
-  margin-left: 24rem;
-  width: 280px;
-}
-
-.user-info-box p {
-  margin: 8px 0;
-  font-weight: 500;
-  color: #1f2937;
-  line-height: 1.6;
-}
-
-
-.registration-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-}
-
-.registration-card h5 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 10px;
-}
-
-.registration-card .price {
-  font-size: 18px;
-  font-weight: 700;
-  color: #2563eb;
-  margin-bottom: 16px;
-}
-
-.registration-card button {
-  background-color: #2563eb;
-  color: #fff;
-  padding: 10px 18px;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-.registration-card button:hover {
-  background-color: #1e3a8a;
-}
-
-/* === Agreement Section === */
-.form-group.checkbox {
-  text-align: center;
-  font-size: 14px;
-  margin-top: 20px;
-}
-
-.form-group.checkbox label {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  font-weight: 500;
-}
-
-.form-group.checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-}
-
-.form-group.checkbox a {
-  color: #2563eb;
-  text-decoration: underline;
-  transition: color 0.2s ease;
-}
-
-.form-group.checkbox a:hover {
-  color: #1e3a8a;
-}
-
-/* === Login Prompt Box === */
-.login-warning-box {
-  margin-top: 2rem;
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  padding: 1.2rem 1.5rem;
-  border-radius: 10px;
-  color: #856404;
-  text-align: center;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .registration-container {
-    padding: 20px;
+/* === Responsive Layouts === */
+@media (max-width: 992px) {
+  .pricing-flex-wrapper {
+    flex-direction: column;
   }
 
-  .pricing-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .registration-card button {
+  .pricing-table {
     width: 100%;
-    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reg-title {
+    font-size: 1.7rem;
   }
 
-  .pricing-group h4,
   .registration-info-box h3,
-  .payment-section h3 {
-    font-size: 18px;
+  .fee-title {
+    font-size: 1.4rem;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+
+  .refund-policy-box {
+    padding: 0.75rem 1rem;
   }
 }

@@ -42,6 +42,7 @@
 
 .about-page .about-text-block {
   margin-bottom: 3rem;
+  text-align: justify;
 }
 
 .about-page .about-text-block h2 {

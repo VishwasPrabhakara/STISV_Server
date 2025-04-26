@@ -26,7 +26,6 @@
   padding: 4rem 1rem 5rem;
   text-align: center;
   transition: opacity 1s ease-in-out;
-  background-image: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/home.jpg?raw=true') no-repeat center center/cover !important;
   background-size: 30px 30px;
 }
 
@@ -42,21 +41,20 @@
 
 .location:hover {
   text-decoration: underline;
-  color: #f0f0f0; /* Optional soft hover effect */
+  color: #f0f0f0;
 }
 
 .abstract-template-note {
   margin: 30px auto 20px;
   font-size: 1.05rem;
   font-weight: 900;
-  font-weight: bolder;
   background-color: #003566;
   width: 50%;
   padding: 10px;
   color: white!important;
   text-align: center;
 }
-/* Title Styles */
+
 .hero-title {
   font-size: 2.4rem;
   font-weight: 700;
@@ -71,7 +69,6 @@
   margin-bottom: 1rem;
 }
 
-/* Conference Info */
 .conference-info {
   margin: 1rem auto;
   font-size: 1rem;
@@ -79,14 +76,12 @@
   color: white;
 }
 
-/* Abstract Note */
 .abstract-announcement {
   margin-top: 1rem;
   font-size: 1rem;
   color: #eaeaea;
 }
 
-/* CTA Buttons */
 .cta-buttons {
   display: flex;
   justify-content: center;
@@ -111,7 +106,6 @@
   background-color: transparent;
   color: #fff;
   border-color: #fff;
-  text-decoration: none;
 }
 
 /* Countdown Timer */
@@ -143,101 +137,132 @@
   color: white;
 }
 
-/* =============================
-   Responsive Design - Tablets
-============================= */
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 3rem 1rem 4rem;
-    background-size: cover !important;
-  }
+/* === SPLIT SECTION LAYOUT === */
+.split-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4rem 2rem;
+  gap: 2rem;
+  background-color: #f8fafc;
+  flex-wrap: wrap;
+}
 
-  .hero-title {
-    font-size: 2rem;
-  }
+/* Left column - Speakers */
+.left-speakers-column {
+  flex: 1;
+  min-width: 300px;
+  max-width: 50%;
+  overflow-y: auto;
+  max-height: 80vh;
+}
 
-  .hero-subtitle {
-    font-size: 1.3rem;
-  }
+.vertical-speakers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-right: 1rem;
+}
 
-  .conference-info,
-  .abstract-announcement {
-    font-size: 0.95rem;
-  }
+.speaker-card-vertical {
+  position: relative;
+  transition: transform 0.3s;
+}
 
-  .abstract-template-note {
-    font-size: 0.75rem;
-  }
+.speaker-card-vertical:hover {
+  transform: scale(1.02);
+}
 
-  .cta-btn {
-    font-size: 0.9rem;
-    padding: 0.6rem 1.2rem;
-  }
+.speaker-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
 
-  .countdown-wrapper {
-    gap: 1rem;
-  }
+.speaker-img-rect {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-  .countdown-value {
-    font-size: 1.6rem;
-  }
+.vertical-scroller {
+  height: 80vh;
+  overflow: hidden;
+  position: relative;
+}
 
-  .countdown-label {
-    font-size: 0.8rem;
+.scroller-content {
+  display: flex;
+  flex-direction: column;
+  animation: scroll-vertical 60s linear infinite;
+}
+
+@keyframes scroll-vertical {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-50%);
   }
 }
 
 
-/* =============================
-   Responsive Design - Phones
-============================= */
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 1.2rem;
-  }
+.speaker-info-slide {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 0.8rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.9rem;
+}
 
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
+.speaker-card-vertical:hover .speaker-info-slide {
+  opacity: 1;
+}
 
-  .conference-info,
-  .abstract-announcement {
-    font-size: 0.85rem;
-    padding: 0 0.5rem;
-  }
+/* Right column - Gallery */
+.right-gallery-column {
+  flex: 1;
+  min-width: 300px;
+  max-width: 50%;
+}
 
-  .cta-buttons {
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive handling */
+@media (max-width: 900px) {
+  .split-section {
     flex-direction: column;
-    gap: 0.5rem;
   }
 
-  .announcement-bar {
-    font-size: 0.9rem;
+  .left-speakers-column,
+  .right-gallery-column {
+    max-width: 100%;
   }
 
-  .cta-btn {
-    width: 80%;
-    font-size: 0.9rem;
-    padding: 0.7rem;
-    align-self: center;
-  }
-
-  .countdown-wrapper {
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: nowrap;
-    width: 100%;
-  }
-
-  .countdown-box {
-    min-width: 30px;
-  }
-
-  .countdown-value {
-    font-size: 1.5rem;
-  }
-
-  .countdown-label {
-    font-size: 0.75rem;
+  .vertical-speakers-list {
+    max-height: none;
   }
 }

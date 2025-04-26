@@ -244,12 +244,18 @@ const SubmitAbstractForm = () => {
             </div>
           </fieldset>
 
-          <div className={`floating-group abstract-file-group ${formData.abstractFile ? "filled" : ""}`}>
-            <input type="file" name="abstractFile" onChange={handleFileChange} accept=".doc,.docx" required />
-
-            <label >Abstract File (.docx only) *</label>
+          <div className="abstract-file-group">
+            <label>Abstract File (.docx only) *</label>
+            <input
+              type="file"
+              name="abstractFile"
+              onChange={handleFileChange}
+              accept=".doc,.docx"
+              required
+            />
             {errors.abstractFile && <span className="error">{errors.abstractFile}</span>}
           </div>
+
 
           <div className={`floating-group ${formData.mainBody ? "filled" : ""}`}>
             <textarea name="mainBody" value={formData.mainBody} onChange={handleChange} rows={6} required />

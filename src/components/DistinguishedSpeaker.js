@@ -7,19 +7,19 @@ import Footer from "./Footer";
 
   const plenarySpeakers = [
     {
-      name: "Prof. Hiroshi Nogami",
+      name: " Hiroshi Nogami",
       affiliation: "Tohoku University, Japan",
       url: "https://www.r-info.tohoku.ac.jp/en/3ace24fb652e45919a59410fd85caede.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Hiroshi Nogami.jpeg"
     },
     {
-      name: "Prof. Nirupam Chakraborti",
+      name: " Nirupam Chakraborti",
       affiliation: "Czech Technical University, Prague",
       url: "https://scholar.google.co.kr/citations?user=RONBrJ0AAAAJ&hl=en",
       imagePath: "/stis2025/assets/speakers_upscaled/Nirupam_Chakraborti.jpeg"
     },
     {
-      name: "Prof. Henrik Saxén",
+      name: " Henrik Saxén",
       affiliation: "Abo Akademi University, Finland",
       url: "https://users.abo.fi/hsaxen/",
       imagePath: "/stis2025/assets/speakers_upscaled/Henrik Saxen.jpeg"
@@ -28,178 +28,178 @@ import Footer from "./Footer";
   
   const invitedSpeakers = [
     {
-      name: "Prof. Shigeru Ueda",
+      name: " Shigeru Ueda",
       affiliation: "Tohoku University, Japan",
       url: "https://www.r-info.tohoku.ac.jp/en/56a8d0a4aa0365e3d0e525661c8675b7.html",
       imagePath: "/stis2025/assets/speakers_upscaled/shigeru ueda.jpeg"
     },
     {
-      name: "Prof. Ronald O'Malley",
+      name: " Ronald O'Malley",
       affiliation: "Missouri University of Science and Technology, USA",
       url: "https://scholar.google.com/citations?user=S_R3hM0AAAAJ&hl=en",
       imagePath: "/stis2025/assets/speakers_upscaled/Ronald J. O'Malley.jpeg"
     },
     {
-      name: "Dr. Y Gordon",
+      name: " Y Gordon",
       affiliation: "Hatch, Canada",
       url: "https://www.linkedin.com/in/iakov-gordon-a1976a15/?originalSubdomain=ca",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Y Gordon.jpeg"
     },
     {
-      name: "Prof. Dr. Joohyun Park",
+      name: "  Joohyun Park",
       affiliation: "Hanyang University, Korea",
       url: "http://hitep2.hanyang.ac.kr/member01.html",
       imagePath: "/stis2025/assets/speakers_upscaled/JOO HYUN PARK.jpeg"
     },
     {
-      name: "Prof. H. Matsuura",
+      name: " H. Matsuura",
       affiliation: "University of Tokyo, Japan",
       url: "https://www.material.t.u-tokyo.ac.jp/faculty/hiroyuki_matsuura_e.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Hiroyuki Matsuura.jpeg"
     },
     {
-      name: "Prof. Alberto Conejo",
+      name: " Alberto Conejo",
       affiliation: "USTB, China",
       url: "https://www.researchgate.net/profile/Alberto-Conejo",
       imagePath: "/stis2025/assets/speakers_upscaled/Alberto Conjego.jpeg"
     },
     {
-      name: "Prof. Geoff Wang",
+      name: " Geoff Wang",
       affiliation: "University of Queensland, Australia",
       url: "https://about.uq.edu.au/experts/525",
       imagePath: "/stis2025/assets/speakers_upscaled/Geoff Wang.png"
     },
     {
-      name: "Prof. Jung-Wook Cho",
+      name: " Jung-Wook Cho",
       affiliation: "POSTECH, Korea",
       url: "https://www.researchgate.net/profile/Jungwook-Cho",
       imagePath: "/stis2025/assets/speakers_upscaled/Jungwook Cho.jpeg"
     },
     {
-      name: "Prof. Konstantin V. Grigorovich",
+      name: " Konstantin V. Grigorovich",
       affiliation: "RAS, Russia",
       url: "https://www.researchgate.net/profile/Konstantin-Grigorovich",
       imagePath: "/stis2025/assets/speakers_upscaled/Konstantin Grigorovich.jpeg"
     },
     {
-      name: "Prof. Miroslaw Karbowniczek",
+      name: " Miroslaw Karbowniczek",
       affiliation: "AGH University, Poland",
       url: "https://skos.agh.edu.pl/osoba/miroslaw-karbowniczek-1329.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Mirosław Karbowniczek.jpeg"
     },
     {
-      name: "Prof. Paulo Santos Assis",
+      name: " Paulo Santos Assis",
       affiliation: "UFOP, Brazil",
       url: "https://www.researchgate.net/profile/Paulo-Assis-2",
       imagePath: "/stis2025/assets/speakers_upscaled/Paulo S Assis.jpeg"
     },
     {
-      name: "Prof. Pasquale D Cavaliere",
+      name: " Pasquale D Cavaliere",
       affiliation: "University of Salento, Italy",
       url: "https://www.unisalento.it/scheda-utente/-/people/pasquale.cavaliere",
       imagePath: "/stis2025/assets/speakers_upscaled/Pasquale Daniele CAVALIERE.jpeg"
     },
     {
-      name: "Prof. Kazuki Morita",
+      name: " Kazuki Morita",
       affiliation: "Tokyo, Japan",
       url: "https://www.material.t.u-tokyo.ac.jp/faculty/morita_e.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Kazuki Morita.png"
     },
     {
-      name: "Prof. Geoffrey Brooks",
+      name: " Geoffrey Brooks",
       affiliation: "Swinburne University, Australia",
       url: "https://www.swinburne.edu.au/research/our-research/access-our-research/find-a-researcher-or-supervisor/researcher-profile/?id=gbrooks/",
       imagePath: "/stis2025/assets/speakers_upscaled/Geoffrey Brooks.jpeg"
     },
     {
-      name: "Prof. Olena Volkova",
+      name: " Olena Volkova",
       affiliation: "Technical University Frieberg, Germany",
       url: "https://www.researchgate.net/profile/Olena-Volkova-2",
       imagePath: "/stis2025/assets/speakers_upscaled/Olena Volkova.png"
     },
     {
-      name: "Prof. S.J. KIM",
+      name: " S.J. KIM",
       affiliation: "Chosun University, Korea",
       url: "https://www.unlv.edu/people/sj-kim",
       imagePath: "/stis2025/assets/speakers_upscaled/Sun-Joong Kim.jpeg"
     },
     {
-      name: "Prof. M. Hayashi",
+      name: " M. Hayashi",
       affiliation: "Institute of Science, Tokyo, Japan",
       url: "",
       imagePath: "/stis2025/assets/speakers_upscaled/miyuki hayashi.jpeg"
     },
     {
-      name: "Dr. Ricardo Carli",
+      name: " Ricardo Carli",
       affiliation: "Prosimet, Italy",
       url: "https://www.linkedin.com/in/riccardo-carli-431a1446/?originalSubdomain=it",
       imagePath: "/stis2025/assets/speakers_upscaled/Riccardo Carli.jpeg"
     },
     {
-      name: "Prof. Jorge Madias",
+      name: " Jorge Madias",
       affiliation: "Metallion, Argentina",
       url: "https://www.researchgate.net/profile/Jorge-Madias",
       imagePath: "/stis2025/assets/speakers_upscaled/Jorge-Madias.png"
     },
    
     {
-      name: "Prof. Charlotte Anderson",
+      name: " Charlotte Anderson",
       affiliation: "Lulea University of Technology, Sweden",
       url: "https://www.physicaltherapy.utoronto.ca/charlotte-anderson",
       imagePath: "/stis2025/assets/speakers_upscaled/Charlotte Anderson.jpg"
     },
 
     {
-      name: "Prof. Brahma Deo",
+      name: " Brahma Deo",
       affiliation: "IIT Bhubaneswar, India ",
       url: "https://www.iitbbs.ac.in/index.php/bdeo",
       imagePath: "/stis2025/assets/speakers_upscaled/Brahma Deo.jpg"
     },
 
     {
-      name: "Prof. Dipak Mazumdar",
-      affiliation: "IIT Kanpur,India",
+      name: " Dipak Mazumdar",
+      affiliation: "IIT Kanpur, India",
       url: "https://home.iitk.ac.in/~dipak/",
       imagePath: "/stis2025/assets/speakers_upscaled/Dipak Mazumdar.jpg"
     },
 
     {
-      name: "Prof. R H Tupkary",
+      name: " R H Tupkary",
       affiliation: "Former Prof VNIT Nagpur, India",
       url: "",
       imagePath: "/stis2025/assets/speakers_upscaled/R H Tupkary.jpeg"
     },
 
     {
-      name: "Prof. GG Roy",
+      name: " GG Roy",
       affiliation: "IIT Kharagpur, India",
       url: "http://www.metal.iitkgp.ac.in/People/facultyDetails/6",
       imagePath: "/stis2025/assets/speakers_upscaled/GG Roy.png"
     },
 
     {
-      name: "Mr. Keith Vining",
+      name: " Keith Vining",
       affiliation: "CSIRO, Australia",
       url: "https://people.csiro.au/V/K/Keith-Vining",
       imagePath: "/stis2025/assets/speakers_upscaled/Keith-Vining.jpeg"
     },
 
     {
-      name: "Prof. AK Singh",
+      name: " AK Singh",
       affiliation: " IIT Kanpur, India",
       url: "https://www.iitk.ac.in/new/amarendra-kumar-singh ",
       imagePath: "/stis2025/assets/speakers_upscaled/amrendra-singh.jpeg"
     },
 
     {
-      name: "Prof. LIU Jianhua",
+      name: " LIU Jianhua",
       affiliation: "USTB, China",
       url: "https://ieten.ustb.edu.cn/Discipline/yjgcly/2019-12-07/ed15a296dd6f480d97ec60ea1b7d5af3.htm",
       imagePath: "/stis2025/assets/speakers_upscaled/LIU Jianhua.jpeg"
     },
 
     {
-      name: "Prof. Kamalesh Mandal",
+      name: " Kamalesh Mandal",
       affiliation: "Steel Dynamics",
       url: "https://www.linkedin.com/in/kamalesh-mandal-phd-49140626/",
       imagePath: "/stis2025/assets/speakers_upscaled/Kamalesh Mandal.jpeg"
@@ -240,7 +240,9 @@ import Footer from "./Footer";
         <div className="distinguished-speakers-container">
           {/* === Plenary Speakers === */}
           <section className="speakers-section">
+          <div className="section-title-wrapper">
             <h2 className="section-title">Plenary Speakers</h2>
+          </div>
             <div className="static-scroll">
               {plenarySpeakers.map((s, i) => renderSpeakerCard(s, i))}
             </div>
@@ -248,16 +250,18 @@ import Footer from "./Footer";
   
           {/* === Invited Speakers (Embla Carousel) === */}
           <section className="speakers-section">
+          <div className="section-title-wrapper">
             <h2 className="section-title">Invited Speakers</h2>
+          </div>
             <div className="invited-box">
               <div className="embla">
                 <div className="embla__viewport" ref={emblaRef}>
                   <div className="embla__container">
                   {invitedSpeakers.map((speaker, i) => (
-  <div className="embla__slide" key={`invited-${i}`}>
-    {renderSpeakerCard(speaker)}
-  </div>
-))}
+                  <div className="embla__slide" key={`invited-${i}`}>
+                    {renderSpeakerCard(speaker)}
+                  </div>
+                ))}
 
                   </div>
                 </div>
@@ -268,6 +272,7 @@ import Footer from "./Footer";
           </section>
         </div>
         <br/>
+        <br /> <br/>
         <br />
         <Footer />
       </>

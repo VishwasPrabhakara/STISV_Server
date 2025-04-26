@@ -80,6 +80,29 @@
   z-index: 1;
 }
 
+.abstract-form-wrapper .abstract-file-group {
+  margin-top: 1.5rem;
+  margin-bottom: 3rem; /* 👈 Moves the file upload group downward */
+}
+
+.abstract-form-wrapper .abstract-file-group label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #003566;
+  font-weight: 600;
+}
+
+.abstract-form-wrapper .abstract-file-group input[type="file"] {
+  width: 80%;
+  padding: 0.7rem 0.75rem;
+  border: 1.8px solid #ccd6dd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #fff;
+}
+
+
 .abstract-form-wrapper .floating-group textarea {
   min-height: 130px;
   width: 80%;

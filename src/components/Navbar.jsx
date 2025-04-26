@@ -89,12 +89,14 @@ const Navbar = () => {
           { to: "/mediapartners", label: "Media Partner" }
         ])}
 
+      <NavLink to="/distinguished-speaker" end onClick={() => handleNavClick("/distinguished-speaker")}>Speakers</NavLink>
+
         {renderDropdown("Programme", [
           { to: "/conference-themes", label: "Themes & Topics" },
           { to: "/conference-schedule", label: "Schedule" },
           { to: "/conference-proceedings", label: "Conference Proceedings" },
           { to: "/programme", label: "Important Dates" },
-          { to: "/distinguished-speaker", label: "Speakers" }
+         
         ])}
 
         {renderDropdown("Abstract", [

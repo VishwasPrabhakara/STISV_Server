@@ -35,7 +35,7 @@ const About = () => {
         {/* Parallax Image Section */}
         <section className="about-parallax">
           <div className="parallax-text">
-            <h2>Hosted by the Indian Institute of Science</h2>
+            <h2>Hosted by the Indian Institute of Science, Bengaluru</h2>
             <p>India’s premier research institution, fostering global excellence.</p>
           </div>
         </section>
