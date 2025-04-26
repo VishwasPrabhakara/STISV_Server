@@ -443,26 +443,56 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
 }
 
 
-app.get("/api/registration/get-user-basic/:uid", async (req, res) => {
+app.get("/api/registration/get-registration/:uid", async (req, res) => {
   try {
-    const user = await User.findOne({ uid: req.params.uid });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const uid = req.params.uid;
 
-    res.json({
-      title: "", // Title will be selected manually
-      name: user.fullName,
-      email: user.email,
-      phone: user.phone,
-      designation: user.affiliation,
-      address: "",
-      country: user.country,
-      zipcode: "",
-    });
+    // First check if user exists
+    const user = await User.findOne({ uid });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Now check if registration form already submitted
+    const registration = await RegistrationForm.findOne({ userId: user._id });
+
+    if (!registration) {
+      // If not registered yet, return basic info from user
+      return res.status(200).json({
+        title: "", // Empty for user to select
+        name: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        designation: user.affiliation,
+        address: "",
+        country: user.country,
+        zipcode: "",
+        abstracts: user.abstractSubmissions.map(abs => ({
+          abstractCode: abs.abstractCode,
+          title: abs.title,
+          presentationType: abs.presentingType,
+        })),
+        dietaryPreferenceAuthor: "",
+        accompanyingPersons: [],
+        selectedCategory: "",
+        selectedCategoryDetails: {
+          baseFee: 0,
+          gst: 0,
+          totalAmount: 0,
+        },
+        paymentStatus: "Pending",
+      });
+    }
+
+    // If registration already exists, return the full registration document
+    return res.status(200).json(registration);
+
   } catch (error) {
-    console.error("Error fetching user basic info:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching registration:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 
 
