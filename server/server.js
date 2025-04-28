@@ -436,7 +436,10 @@ app.put("/user-info/update/:uid", async (req, res) => {
   try {
     const { uid } = req.params;
     const updateData = req.body; // whatever fields frontend sends
-
+    if (updateData.dietaryPreferenceAuthor === "Other" && updateData.otherDietaryPreference) {
+      updateData.dietaryPreferenceAuthor = updateData.otherDietaryPreference;
+      delete updateData.otherDietaryPreference;
+    }
     const user = await User.findOne({ uid });
 
     if (!user) {
