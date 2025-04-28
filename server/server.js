@@ -337,6 +337,31 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
+const TransactionSchema = new mongoose.Schema({
+  transactionId: { type: String, required: true },
+  submittedAt: { type: Date, default: Date.now },
+});
+
+const Transaction = mongoose.model("Transaction", TransactionSchema);
+
+// API Route to Save Transaction ID
+app.post("/save-transaction-id", async (req, res) => {
+  const { transactionId } = req.body;
+
+  if (!transactionId) {
+    return res.status(400).json({ error: "Transaction ID is required" });
+  }
+
+  try {
+    const newTransaction = new Transaction({ transactionId });
+    await newTransaction.save();
+
+    res.status(200).json({ message: "Transaction ID saved successfully" });
+  } catch (err) {
+    console.error("Error saving transaction:", err);
+    res.status(500).json({ error: "Server error, please try again later." });
+  }
+});
 
 const User = mongoose.model("User", userSchema);
 app.post("/register", async (req, res) => {
