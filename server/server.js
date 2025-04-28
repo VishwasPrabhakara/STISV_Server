@@ -138,7 +138,8 @@ Order ID: ${orderId}`,
       return res.status(200).json({ status: "payment saved" });
     } catch (err) {
       console.error("❌ Webhook processing error:", err);
-      return res.status(500).json({ status: "error", error: err.message });
+      return res.status(200).json({ status: "error handled" });
+
     }
   }
 );
