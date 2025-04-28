@@ -556,6 +556,9 @@ app.post("/save-payment", async (req, res) => {
       category,
       currency,
       amount,
+      categoriesSelected: items, // 👈 save the full selectedItems here
+    paymentStatus: "Success",
+    createdAt: new Date(),
     } = req.body;
 
     // ✅ Basic validation
