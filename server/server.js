@@ -556,12 +556,9 @@ app.post("/save-payment", async (req, res) => {
       category,
       currency,
       amount,
-      categoriesSelected: items, // 👈 save the full selectedItems here
-    paymentStatus: "Success",
-    createdAt: new Date(),
+      categoriesSelected: items, // 👈 this is selectedItems array
     } = req.body;
 
-    // ✅ Basic validation
     if (
       !razorpay_payment_id ||
       !razorpay_order_id ||
@@ -574,13 +571,11 @@ app.post("/save-payment", async (req, res) => {
 
     console.log("🧾 Incoming payment:", req.body);
 
-    // ✅ Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // ✅ Prevent duplicate payments
     const alreadyExists = user.payments.find(
       (p) => p.paymentId === razorpay_payment_id
     );
@@ -588,7 +583,7 @@ app.post("/save-payment", async (req, res) => {
       return res.status(409).json({ message: "Payment already recorded." });
     }
 
-    // ✅ Append new payment
+    // ✅ Save new payment
     user.payments = user.payments || [];
     user.payments.push({
       paymentId: razorpay_payment_id,
@@ -601,10 +596,19 @@ app.post("/save-payment", async (req, res) => {
       timestamp: new Date(),
     });
 
-    await user.save();
-    console.log("✅ Payment saved to MongoDB for:", email);
+    // ✅ Update selectedCategory and selectedCategoryDetails from items
+    user.selectedCategory = category;
+    user.selectedCategoryDetails = {
+      baseFee: items.reduce((sum, item) => sum + (item.base || 0), 0),
+      gst: items.reduce((sum, item) => sum + (item.gst || 0), 0),
+      platform: items.reduce((sum, item) => sum + (item.platform || 0), 0),
+      totalAmount: amount,  // directly coming from frontend
+    };
 
-    // ✅ Attempt to update Google Sheet
+    await user.save();
+    console.log("✅ Payment and Category details saved to MongoDB for:", email);
+
+    // ✅ Google Sheet Update
     try {
       await appendPaymentToSheet({
         name,
@@ -620,10 +624,9 @@ app.post("/save-payment", async (req, res) => {
       console.log("✅ Payment appended to Google Sheets for:", email);
     } catch (sheetErr) {
       console.error("❌ Failed to append payment to Google Sheets:", sheetErr.message);
-      // You may choose to return 500 if this is critical
     }
 
-    // ✅ Email to user
+    // ✅ Email to User
     try {
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
@@ -648,7 +651,7 @@ STIS-V 2025 Organizing Team`,
       console.error("❌ Failed to send payment confirmation email:", emailErr.message);
     }
 
-    // ✅ Email to admin
+    // ✅ Email to Admin
     try {
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
@@ -679,7 +682,6 @@ STIS-V Payment System`,
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
-
 
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
