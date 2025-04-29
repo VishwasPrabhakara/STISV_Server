@@ -209,15 +209,15 @@ const upload = multer({
 app.use(express.json());
 app.use(cors({
   origin: [
-    'http://localhost:3000',              // local dev
-    'https://materials.iisc.ac.in',       // IISc domain
-    'https://stisv-1.onrender.com',       // old Render app (if used)
-    'https://stisv.vercel.app',
-    'https://stisv.onrender.com', // current frontend
+    "http://localhost:3000",
+    "https://stisv.vercel.app",
+    "https://stisv.onrender.com",
+    "https://materials.iisc.ac.in",
+    "https://stisv-1.onrender.com"
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 const razorpay = new Razorpay({
