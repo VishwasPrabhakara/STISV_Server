@@ -13,128 +13,85 @@ app.post(
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
 
-    try {
-      const expectedSignature = crypto
-        .createHmac("sha256", secret)
-        .update(req.body)
-        .digest("hex");
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(req.body)
+      .digest("hex");
 
-      if (signature !== expectedSignature) {
-        console.log("❌ Invalid Razorpay Webhook Signature");
-        return res.status(400).json({ status: "unauthorized" });
-      }
+    if (signature !== expectedSignature) {
+      console.log("❌ Invalid Razorpay Webhook Signature");
+      return res.status(400).json({ status: "unauthorized" });
+    }
 
-      const parsedBody = JSON.parse(req.body);
-      console.log("✅ Razorpay Webhook Verified");
+    // Respond early to Razorpay
+    res.status(200).json({ status: "received" });
 
-      const payment = parsedBody.payload.payment?.entity;
-      if (!payment || !payment.notes || !payment.notes.email) {
-        return res.status(400).json({ status: "invalid payload" });
-      }
-
-      const {
-        id: paymentId,
-        order_id: orderId,
-        currency,
-        amount,
-        status,
-        notes,
-      } = payment;
-
-      const { email, category, paymentMode = "online" } = notes;
-
-      const user = await User.findOne({ email });
-      if (!user) {
-        console.warn("⚠️ Webhook: User not found for email:", email);
-        return res.status(404).json({ status: "user not found" });
-      }
-
-      const alreadyExists = user.payments.find(p => p.paymentId === paymentId);
-      if (alreadyExists) {
-        console.log("ℹ️ Webhook: Payment already recorded");
-        return res.status(200).json({ status: "already recorded" });
-      }
-
-      // 🧮 Compute fees from backend
-      const today = new Date();
-      let period = "late";
-      if (today <= new Date("2025-07-15")) period = "early";
-      else if (today <= new Date("2025-11-20")) period = "regular";
-
-      const nationalFees = {
-        "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
-        "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
-        "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
-        "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
-      };
-      const internationalFees = {
-        "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
-        "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
-        "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
-        "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
-      };
-
-      let baseFee = 0, gst = 0, platform = 0;
-      if (currency === "INR" && nationalFees[category]) {
-        const fee = nationalFees[category][period];
-        baseFee = fee.base;
-        gst = fee.gst;
-        platform = paymentMode === "online" ? fee.platform : 0;
-      } else if (currency === "USD" && internationalFees[category]) {
-        const fee = internationalFees[category][period];
-        baseFee = fee.base;
-        gst = 0;
-        platform = paymentMode === "online" ? fee.platform : 0;
-      }
-
-      // ✅ Save Payment
-      user.payments.push({
-        paymentId,
-        orderId,
-        signature,
-        category,
-        currency,
-        amount: amount / 100,
-        status,
-        timestamp: new Date(),
-      });
-
-      // ✅ Save Fee breakdown to user
-      user.selectedCategory = category;
-      user.selectedCategoryDetails = {
-        baseFee,
-        gst,
-        platform,
-        totalAmount: baseFee + gst + platform,
-      };
-
-      await user.save();
-
-      // ✅ Google Sheet
+    // Defer processing to event loop
+    process.nextTick(async () => {
       try {
-        await appendPaymentToSheet({
-          name: user.fullName,
-          email,
-          phone: user.phone,
+        const parsedBody = JSON.parse(req.body);
+        const payment = parsedBody.payload.payment?.entity;
+        if (!payment || !payment.notes || !payment.notes.email) return;
+
+        const {
+          id: paymentId,
+          order_id: orderId,
+          currency,
+          amount,
+          status,
+          notes,
+        } = payment;
+
+        const { email, category } = notes;
+        const user = await User.findOne({ email });
+        if (!user) return console.warn("⚠️ Webhook: User not found:", email);
+
+        if (user.payments.some(p => p.paymentId === paymentId)) {
+          console.log("ℹ️ Webhook: Payment already recorded");
+          return;
+        }
+
+        user.payments.push({
+          paymentId,
+          orderId,
+          signature,
           category,
           currency,
           amount: amount / 100,
-          paymentId,
-          orderId,
           status,
+          timestamp: new Date(),
         });
-        console.log("✅ Webhook: Payment added to Google Sheet");
-      } catch (sheetErr) {
-        console.error("❌ Webhook: Google Sheet update failed:", sheetErr.message);
-      }
 
-      // ✅ Email to user
-      try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: "STIS-V 2025 – Payment Confirmation",
-          text: `Dear ${user.fullName},
+        // Optional: update selectedCategory if relevant
+        user.selectedCategory = category;
+
+        await user.save();
+
+        // Google Sheet
+        try {
+          await appendPaymentToSheet({
+            name: user.fullName,
+            email,
+            phone: user.phone,
+            category,
+            currency,
+            amount: amount / 100,
+            paymentId,
+            orderId,
+            status,
+          });
+          console.log("✅ Webhook: Added to Google Sheet");
+        } catch (err) {
+          console.error("❌ Google Sheets update failed:", err.message);
+        }
+
+        // Email to user
+        try {
+          await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "STIS-V 2025 – Payment Confirmation",
+            text: `Dear ${user.fullName},
 
 We have received your payment for STIS-V 2025.
 
@@ -147,38 +104,34 @@ Thank you for registering and supporting the event.
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-        });
-        console.log("✅ Webhook: Confirmation email sent to user");
-      } catch (emailErr) {
-        console.error("❌ Webhook: Failed to send email to user:", emailErr.message);
-      }
+          });
+          console.log("✅ Email sent to user");
+        } catch (err) {
+          console.error("❌ Email to user failed:", err.message);
+        }
 
-      // ✅ Email to admin
-      try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: "stis.mte@iisc.ac.in",
-          subject: `New Payment Received via Webhook - ${user.fullName}`,
-          text: `Name: ${user.fullName}
+        // Email to admin
+        try {
+          await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: "stis.mte@iisc.ac.in",
+            subject: `New Payment Received via Webhook - ${user.fullName}`,
+            text: `Name: ${user.fullName}
 Email: ${email}
 Phone: ${user.phone}
 Category: ${category}
 Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
 Payment ID: ${paymentId}
 Order ID: ${orderId}`,
-        });
-        console.log("✅ Webhook: Notification email sent to admin");
-      } catch (adminErr) {
-        console.error("❌ Webhook: Failed to notify admin:", adminErr.message);
+          });
+          console.log("✅ Email sent to admin");
+        } catch (err) {
+          console.error("❌ Admin email failed:", err.message);
+        }
+      } catch (err) {
+        console.error("❌ Webhook async error:", err.message);
       }
-
-      console.log("✅ Webhook: Payment saved to DB for", email);
-      return res.status(200).json({ status: "payment saved" });
-
-    } catch (err) {
-      console.error("❌ Webhook processing error:", err);
-      return res.status(200).json({ status: "error handled" });
-    }
+    });
   }
 );
 
