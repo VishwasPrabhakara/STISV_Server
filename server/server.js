@@ -8,15 +8,15 @@ const app = express();
 
 app.post(
   "/razorpay-webhook",
-  bodyParser.raw({ type: "application/json" }), // <-- Raw buffer for signature verification
+  bodyParser.raw({ type: "application/json" }),
   async (req, res) => {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET; // Use webhook secret, not key secret
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
 
     try {
       const expectedSignature = crypto
         .createHmac("sha256", secret)
-        .update(req.body) // req.body is raw buffer
+        .update(req.body)
         .digest("hex");
 
       if (signature !== expectedSignature) {
@@ -24,12 +24,10 @@ app.post(
         return res.status(400).json({ status: "unauthorized" });
       }
 
-      const parsedBody = JSON.parse(req.body); // Now parse the buffer to JSON
-
+      const parsedBody = JSON.parse(req.body);
       console.log("✅ Razorpay Webhook Verified");
 
       const payment = parsedBody.payload.payment?.entity;
-
       if (!payment || !payment.notes || !payment.notes.email) {
         return res.status(400).json({ status: "invalid payload" });
       }
@@ -43,10 +41,9 @@ app.post(
         notes,
       } = payment;
 
-      const { email, category } = notes;
+      const { email, category, paymentMode = "online" } = notes;
 
       const user = await User.findOne({ email });
-
       if (!user) {
         console.warn("⚠️ Webhook: User not found for email:", email);
         return res.status(404).json({ status: "user not found" });
@@ -58,6 +55,39 @@ app.post(
         return res.status(200).json({ status: "already recorded" });
       }
 
+      // 🧮 Compute fees from backend
+      const today = new Date();
+      let period = "late";
+      if (today <= new Date("2025-07-15")) period = "early";
+      else if (today <= new Date("2025-11-20")) period = "regular";
+
+      const nationalFees = {
+        "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
+        "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
+        "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+        "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+      };
+      const internationalFees = {
+        "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
+        "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
+        "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
+        "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
+      };
+
+      let baseFee = 0, gst = 0, platform = 0;
+      if (currency === "INR" && nationalFees[category]) {
+        const fee = nationalFees[category][period];
+        baseFee = fee.base;
+        gst = fee.gst;
+        platform = paymentMode === "online" ? fee.platform : 0;
+      } else if (currency === "USD" && internationalFees[category]) {
+        const fee = internationalFees[category][period];
+        baseFee = fee.base;
+        gst = 0;
+        platform = paymentMode === "online" ? fee.platform : 0;
+      }
+
+      // ✅ Save Payment
       user.payments.push({
         paymentId,
         orderId,
@@ -69,33 +99,42 @@ app.post(
         timestamp: new Date(),
       });
 
+      // ✅ Save Fee breakdown to user
+      user.selectedCategory = category;
+      user.selectedCategoryDetails = {
+        baseFee,
+        gst,
+        platform,
+        totalAmount: baseFee + gst + platform,
+      };
+
       await user.save();
 
-      // ✅ Append to Google Sheet
-try {
-  await appendPaymentToSheet({
-    name: user.fullName,
-    email,
-    phone: user.phone,
-    category,
-    currency,
-    amount: amount / 100,
-    paymentId,
-    orderId,
-    status,
-  });
-  console.log("✅ Webhook: Payment added to Google Sheet");
-} catch (sheetErr) {
-  console.error("❌ Webhook: Google Sheet update failed:", sheetErr.message);
-}
+      // ✅ Google Sheet
+      try {
+        await appendPaymentToSheet({
+          name: user.fullName,
+          email,
+          phone: user.phone,
+          category,
+          currency,
+          amount: amount / 100,
+          paymentId,
+          orderId,
+          status,
+        });
+        console.log("✅ Webhook: Payment added to Google Sheet");
+      } catch (sheetErr) {
+        console.error("❌ Webhook: Google Sheet update failed:", sheetErr.message);
+      }
 
-// ✅ Send confirmation email to user
-try {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "STIS-V 2025 – Payment Confirmation",
-    text: `Dear ${user.fullName},
+      // ✅ Email to user
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: "STIS-V 2025 – Payment Confirmation",
+          text: `Dear ${user.fullName},
 
 We have received your payment for STIS-V 2025.
 
@@ -108,41 +147,41 @@ Thank you for registering and supporting the event.
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-  });
-  console.log("✅ Webhook: Confirmation email sent to user");
-} catch (emailErr) {
-  console.error("❌ Webhook: Failed to send email to user:", emailErr.message);
-}
+        });
+        console.log("✅ Webhook: Confirmation email sent to user");
+      } catch (emailErr) {
+        console.error("❌ Webhook: Failed to send email to user:", emailErr.message);
+      }
 
-// ✅ Notify admin
-try {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: "stis.mte@iisc.ac.in",
-    subject: `New Payment Received via Webhook - ${user.fullName}`,
-    text: `Name: ${user.fullName}
+      // ✅ Email to admin
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: "stis.mte@iisc.ac.in",
+          subject: `New Payment Received via Webhook - ${user.fullName}`,
+          text: `Name: ${user.fullName}
 Email: ${email}
 Phone: ${user.phone}
 Category: ${category}
 Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
 Payment ID: ${paymentId}
 Order ID: ${orderId}`,
-  });
-  console.log("✅ Webhook: Notification email sent to admin");
-} catch (adminErr) {
-  console.error("❌ Webhook: Failed to notify admin:", adminErr.message);
-}
+        });
+        console.log("✅ Webhook: Notification email sent to admin");
+      } catch (adminErr) {
+        console.error("❌ Webhook: Failed to notify admin:", adminErr.message);
+      }
 
       console.log("✅ Webhook: Payment saved to DB for", email);
-
       return res.status(200).json({ status: "payment saved" });
+
     } catch (err) {
       console.error("❌ Webhook processing error:", err);
       return res.status(200).json({ status: "error handled" });
-
     }
   }
 );
+
 
 
 
@@ -556,35 +595,54 @@ app.post("/save-payment", async (req, res) => {
       category,
       currency,
       amount,
-      categoriesSelected: items, // 👈 this is selectedItems array
+      paymentMode, // 👈 Make sure this is sent from frontend
     } = req.body;
 
-    if (
-      !razorpay_payment_id ||
-      !razorpay_order_id ||
-      !razorpay_signature ||
-      !email ||
-      !amount
-    ) {
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !email || !amount) {
       return res.status(400).json({ message: "Missing required payment fields." });
     }
 
-    console.log("🧾 Incoming payment:", req.body);
-
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    const alreadyExists = user.payments.find(p => p.paymentId === razorpay_payment_id);
+    if (alreadyExists) return res.status(409).json({ message: "Payment already recorded." });
+
+    // Determine current period
+    const today = new Date();
+    let period = "late";
+    if (today <= new Date("2025-07-15")) period = "early";
+    else if (today <= new Date("2025-11-20")) period = "regular";
+
+    // Fee structures
+    const nationalFees = {
+      "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
+      "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
+      "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+      "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+    };
+
+    const internationalFees = {
+      "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
+      "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
+      "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
+      "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
+    };
+
+    let baseFee = 0, gst = 0, platform = 0;
+
+    if (currency === "INR" && nationalFees[category]) {
+      const fee = nationalFees[category][period];
+      baseFee = fee.base;
+      gst = fee.gst;
+      platform = paymentMode === "online" ? fee.platform : 0;
+    } else if (currency === "USD" && internationalFees[category]) {
+      const fee = internationalFees[category][period];
+      baseFee = fee.base;
+      gst = 0;
+      platform = paymentMode === "online" ? fee.platform : 0;
     }
 
-    const alreadyExists = user.payments.find(
-      (p) => p.paymentId === razorpay_payment_id
-    );
-    if (alreadyExists) {
-      return res.status(409).json({ message: "Payment already recorded." });
-    }
-
-    // ✅ Save new payment
-    user.payments = user.payments || [];
     user.payments.push({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
@@ -596,19 +654,17 @@ app.post("/save-payment", async (req, res) => {
       timestamp: new Date(),
     });
 
-    // ✅ Update selectedCategory and selectedCategoryDetails from items
     user.selectedCategory = category;
     user.selectedCategoryDetails = {
-      baseFee: items.reduce((sum, item) => sum + (item.base || 0), 0),
-      gst: items.reduce((sum, item) => sum + (item.gst || 0), 0),
-      platform: items.reduce((sum, item) => sum + (item.platform || 0), 0),
-      totalAmount: amount,  // directly coming from frontend
+      baseFee,
+      gst,
+      platform,
+      totalAmount: baseFee + gst + platform,
     };
 
     await user.save();
-    console.log("✅ Payment and Category details saved to MongoDB for:", email);
 
-    // ✅ Google Sheet Update
+    // Google Sheets
     try {
       await appendPaymentToSheet({
         name,
@@ -621,22 +677,20 @@ app.post("/save-payment", async (req, res) => {
         orderId: razorpay_order_id,
         status: "paid",
       });
-      console.log("✅ Payment appended to Google Sheets for:", email);
     } catch (sheetErr) {
-      console.error("❌ Failed to append payment to Google Sheets:", sheetErr.message);
+      console.error("❌ Google Sheets update failed:", sheetErr.message);
     }
 
-    // ✅ Email to User
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "STIS-V 2025 – Payment Confirmation",
-        text: `Dear ${name},
+    // Confirmation emails
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "STIS-V 2025 – Payment Confirmation",
+      text: `Dear ${name},
 
 We have received your payment successfully for STIS-V 2025.
 
-📄 Payment Details:
+Payment Details:
 - Payment ID: ${razorpay_payment_id}
 - Category: ${category}
 - Amount: ${currency === "INR" ? "₹" : "$"}${amount}
@@ -645,19 +699,13 @@ Thank you for registering and supporting the event.
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-      });
-      console.log("✅ Payment confirmation email sent to:", email);
-    } catch (emailErr) {
-      console.error("❌ Failed to send payment confirmation email:", emailErr.message);
-    }
+    });
 
-    // ✅ Email to Admin
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: "stis.mte@iisc.ac.in",
-        subject: `New Payment Received - ${name}`,
-        text: `A new payment was received:
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: "stis.mte@iisc.ac.in",
+      subject: `New Payment Received - ${name}`,
+      text: `A new payment was received:
 
 Name: ${name}
 Email: ${email}
@@ -669,11 +717,7 @@ Order ID: ${razorpay_order_id}
 
 Regards,  
 STIS-V Payment System`,
-      });
-      console.log("✅ Payment notification sent to admin.");
-    } catch (adminErr) {
-      console.error("❌ Failed to send payment notification to admin:", adminErr.message);
-    }
+    });
 
     res.status(200).json({ message: "Payment recorded and confirmation email sent." });
 
@@ -682,6 +726,7 @@ STIS-V Payment System`,
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
+
 
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
