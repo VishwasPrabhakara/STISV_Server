@@ -6,135 +6,132 @@ const crypto = require("crypto");
 // Initialize app FIRST
 const app = express();
 
-app.post(
-  "/razorpay-webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (req, res) => {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-    const signature = req.headers["x-razorpay-signature"];
+app.post("/razorpay-webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const signature = req.headers["x-razorpay-signature"];
 
-    try {
-      const expectedSignature = crypto
-        .createHmac("sha256", secret)
-        .update(req.body)
-        .digest("hex");
+  try {
+    const expectedSignature = crypto.createHmac("sha256", secret).update(req.body).digest("hex");
+    if (signature !== expectedSignature) {
+      return res.status(400).json({ status: "unauthorized" });
+    }
 
-      if (signature !== expectedSignature) {
-        console.log("❌ Invalid Razorpay Webhook Signature");
-        return res.status(400).json({ status: "unauthorized" });
+    const parsedBody = JSON.parse(req.body);
+    const payment = parsedBody.payload.payment?.entity;
+    if (!payment || !payment.notes?.email || !payment.notes?.categoriesSelected) {
+      return res.status(400).json({ status: "invalid payload" });
+    }
+
+    const { id: paymentId, order_id: orderId, currency, amount, status, notes } = payment;
+    const { email, categoriesSelected: catString } = notes;
+
+    const categoriesSelected = JSON.parse(catString);
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ status: "user not found" });
+
+    const alreadyExists = user.payments.some(p => p.paymentId === paymentId);
+    if (alreadyExists) return res.status(200).json({ status: "already recorded" });
+
+    const today = new Date();
+    let period = "late";
+    if (today <= new Date("2025-07-15")) period = "early";
+    else if (today <= new Date("2025-11-20")) period = "regular";
+
+    const nationalFees = { /* same as above */ };
+    const internationalFees = { /* same as above */ };
+
+    const feeDetails = categoriesSelected.map(item => {
+      const { key, currency: cur } = item;
+      let base = 0, gst = 0, platform = 0;
+      if (cur === "INR" && nationalFees[key]) {
+        const fee = nationalFees[key][period];
+        base = fee.base;
+        gst = fee.gst;
+        platform = fee.platform;
+      } else if (cur === "USD" && internationalFees[key]) {
+        const fee = internationalFees[key][period];
+        base = fee.base;
+        gst = 0;
+        platform = fee.platform;
       }
+      return {
+        category: key,
+        currency: cur,
+        baseFee: base,
+        gst,
+        platform,
+        totalAmount: base + gst + platform
+      };
+    });
 
-      const parsedBody = JSON.parse(req.body);
-      console.log("✅ Razorpay Webhook Verified");
-
-      const payment = parsedBody.payload.payment?.entity;
-      if (!payment || !payment.notes?.email) {
-        return res.status(400).json({ status: "invalid payload" });
-      }
-
-      const {
-        id: paymentId,
-        order_id: orderId,
-        currency,
-        amount,
-        status,
-        notes,
-      } = payment;
-
-      const { email, category } = notes;
-      const user = await User.findOne({ email });
-      if (!user) {
-        console.warn("⚠️ Webhook: User not found for email:", email);
-        return res.status(404).json({ status: "user not found" });
-      }
-
-      const alreadyExists = user.payments.some(p => p.paymentId === paymentId);
-      if (alreadyExists) {
-        console.log("ℹ️ Webhook: Payment already recorded");
-        return res.status(200).json({ status: "already recorded" });
-      }
-
-      // Use $push to add new payment atomically
-      await User.findOneAndUpdate(
-        { email },
-        {
-          $push: {
-            payments: {
-              paymentId,
-              orderId,
-              signature,
-              category,
-              currency,
-              amount: amount / 100,
-              status,
-              timestamp: new Date(),
-            }
-          }
-        },
-        { new: true }
-      );
-
-      process.nextTick(async () => {
-        try {
-          await appendPaymentToSheet({
-            name: user.fullName,
-            email,
-            phone: user.phone,
-            category,
-            currency,
-            amount: amount / 100,
+    await User.findOneAndUpdate(
+      { email },
+      {
+        $push: {
+          payments: {
             paymentId,
             orderId,
+            signature,
+            category: "Multi",
+            currency,
+            amount: amount / 100,
             status,
-          });
-          console.log("✅ Webhook: Payment added to Google Sheet");
+            timestamp: new Date(),
+          }
+        },
+        $set: {
+          selectedCategory: "Multi",
+          selectedCategoryDetails: { categories: feeDetails }
+        }
+      },
+      { new: true }
+    );
 
-          await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "STIS-V 2025 – Payment Confirmation",
-            text: `Dear ${user.fullName},
+    process.nextTick(async () => {
+      try {
+        await appendPaymentToSheet({
+          name: user.fullName,
+          email,
+          phone: user.phone,
+          category: "Multi",
+          currency,
+          amount: amount / 100,
+          paymentId,
+          orderId,
+          status,
+        });
+
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: "STIS-V 2025 – Payment Confirmation",
+          text: `Dear ${user.fullName},
 
 We have received your payment for STIS-V 2025.
 
-📄 Payment Details:
-- Payment ID: ${paymentId}
-- Category: ${category}
-- Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
+Payment ID: ${paymentId}
+Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
 
-Thank you for registering and supporting the event.
+Selected Categories:
+${feeDetails.map(f => `- ${f.category} (${currency === "INR" ? "₹" : "$"}${f.totalAmount})`).join('\n')}
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-          });
+        });
+      } catch (e) {
+        console.error("❌ Webhook post-tasks failed:", e.message);
+      }
+    });
 
-          await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: "stis.mte@iisc.ac.in",
-            subject: `New Payment Received via Webhook - ${user.fullName}`,
-            text: `Name: ${user.fullName}
-Email: ${email}
-Phone: ${user.phone}
-Category: ${category}
-Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
-Payment ID: ${paymentId}
-Order ID: ${orderId}`,
-          });
+    res.status(200).json({ status: "payment saved" });
 
-        } catch (err) {
-          console.error("❌ Webhook async task failed:", err.message);
-        }
-      });
-
-      console.log("✅ Webhook: Payment saved to DB for", email);
-      return res.status(200).json({ status: "payment saved" });
-
-    } catch (err) {
-      console.error("❌ Webhook processing error:", err);
-      return res.status(200).json({ status: "error handled" }); // Still 200 to avoid Razorpay retries
-    }
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+    res.status(200).json({ status: "error handled" });
   }
-);
+});
+
+
 
 
 
@@ -547,13 +544,13 @@ app.post("/save-payment", async (req, res) => {
       email,
       name,
       phone,
-      category,
+      categoriesSelected,
       currency,
       amount,
-      paymentMode, // 👈 Make sure this is sent from frontend
+      paymentMode,
     } = req.body;
 
-    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !email || !amount) {
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature || !email || !amount || !categoriesSelected) {
       return res.status(400).json({ message: "Missing required payment fields." });
     }
 
@@ -563,7 +560,7 @@ app.post("/save-payment", async (req, res) => {
     const alreadyExists = user.payments.find(p => p.paymentId === razorpay_payment_id);
     if (alreadyExists) return res.status(409).json({ message: "Payment already recorded." });
 
-    // Determine current period
+    // Fee breakdowns
     const today = new Date();
     let period = "late";
     if (today <= new Date("2025-07-15")) period = "early";
@@ -584,59 +581,59 @@ app.post("/save-payment", async (req, res) => {
       "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
     };
 
-    let baseFee = 0, gst = 0, platform = 0;
+     const feeDetails = categoriesSelected.map(item => {
+      const { key, currency: cur } = item;
+      let base = 0, gst = 0, platform = 0;
+      if (cur === "INR" && nationalFees[key]) {
+        const fee = nationalFees[key][period];
+        base = fee.base;
+        gst = fee.gst;
+        platform = paymentMode === "online" ? fee.platform : 0;
+      } else if (cur === "USD" && internationalFees[key]) {
+        const fee = internationalFees[key][period];
+        base = fee.base;
+        gst = 0;
+        platform = paymentMode === "online" ? fee.platform : 0;
+      }
+      return {
+        category: key,
+        currency: cur,
+        baseFee: base,
+        gst,
+        platform,
+        totalAmount: base + gst + platform
+      };
+    });
 
-    if (currency === "INR" && nationalFees[category]) {
-      const fee = nationalFees[category][period];
-      baseFee = fee.base;
-      gst = fee.gst;
-      platform = paymentMode === "online" ? fee.platform : 0;
-    } else if (currency === "USD" && internationalFees[category]) {
-      const fee = internationalFees[category][period];
-      baseFee = fee.base;
-      gst = 0;
-      platform = paymentMode === "online" ? fee.platform : 0;
-    }
-
+    // Add one payment record (but multiple categories stored inside notes)
     user.payments.push({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
       signature: razorpay_signature,
-      category,
+      category: "Multi",
       currency,
       amount,
       status: "paid",
       timestamp: new Date(),
     });
 
-    user.selectedCategory = category;
-    user.selectedCategoryDetails = {
-      baseFee,
-      gst,
-      platform,
-      totalAmount: baseFee + gst + platform,
-    };
+    user.selectedCategory = "Multi";
+    user.selectedCategoryDetails = { categories: feeDetails };
 
     await user.save();
 
-    // Google Sheets
-    try {
-      await appendPaymentToSheet({
-        name,
-        email,
-        phone,
-        category,
-        currency,
-        amount,
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
-        status: "paid",
-      });
-    } catch (sheetErr) {
-      console.error("❌ Google Sheets update failed:", sheetErr.message);
-    }
+    await appendPaymentToSheet({
+      name,
+      email,
+      phone,
+      category: "Multi",
+      currency,
+      amount,
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      status: "paid",
+    });
 
-    // Confirmation emails
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -645,33 +642,16 @@ app.post("/save-payment", async (req, res) => {
 
 We have received your payment successfully for STIS-V 2025.
 
-Payment Details:
-- Payment ID: ${razorpay_payment_id}
-- Category: ${category}
-- Amount: ${currency === "INR" ? "₹" : "$"}${amount}
+Payment ID: ${razorpay_payment_id}
+Amount: ${currency === "INR" ? "₹" : "$"}${amount}
+
+Selected Categories:
+${feeDetails.map(f => `- ${f.category} (${currency === "INR" ? "₹" : "$"}${f.totalAmount})`).join('\n')}
 
 Thank you for registering and supporting the event.
 
 Warm regards,  
 STIS-V 2025 Organizing Team`,
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "stis.mte@iisc.ac.in",
-      subject: `New Payment Received - ${name}`,
-      text: `A new payment was received:
-
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Category: ${category}
-Amount: ${currency === "INR" ? "₹" : "$"}${amount}
-Payment ID: ${razorpay_payment_id}
-Order ID: ${razorpay_order_id}
-
-Regards,  
-STIS-V Payment System`,
     });
 
     res.status(200).json({ message: "Payment recorded and confirmation email sent." });
@@ -681,7 +661,6 @@ STIS-V Payment System`,
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
-
 
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
