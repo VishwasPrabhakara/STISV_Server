@@ -13,61 +13,68 @@ app.post(
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
 
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(req.body)
-      .digest("hex");
+    try {
+      const expectedSignature = crypto
+        .createHmac("sha256", secret)
+        .update(req.body)
+        .digest("hex");
 
-    if (signature !== expectedSignature) {
-      console.log("❌ Invalid Razorpay Webhook Signature");
-      return res.status(400).json({ status: "unauthorized" });
-    }
+      if (signature !== expectedSignature) {
+        console.log("❌ Invalid Razorpay Webhook Signature");
+        return res.status(400).json({ status: "unauthorized" });
+      }
 
-    // Respond early to Razorpay
-    res.status(200).json({ status: "received" });
+      const parsedBody = JSON.parse(req.body);
+      console.log("✅ Razorpay Webhook Verified");
 
-    // Defer processing to event loop
-    process.nextTick(async () => {
-      try {
-        const parsedBody = JSON.parse(req.body);
-        const payment = parsedBody.payload.payment?.entity;
-        if (!payment || !payment.notes || !payment.notes.email) return;
+      const payment = parsedBody.payload.payment?.entity;
+      if (!payment || !payment.notes?.email) {
+        return res.status(400).json({ status: "invalid payload" });
+      }
 
-        const {
-          id: paymentId,
-          order_id: orderId,
-          currency,
-          amount,
-          status,
-          notes,
-        } = payment;
+      const {
+        id: paymentId,
+        order_id: orderId,
+        currency,
+        amount,
+        status,
+        notes,
+      } = payment;
 
-        const { email, category } = notes;
-        const user = await User.findOne({ email });
-        if (!user) return console.warn("⚠️ Webhook: User not found:", email);
+      const { email, category } = notes;
+      const user = await User.findOne({ email });
+      if (!user) {
+        console.warn("⚠️ Webhook: User not found for email:", email);
+        return res.status(404).json({ status: "user not found" });
+      }
 
-        if (user.payments.some(p => p.paymentId === paymentId)) {
-          console.log("ℹ️ Webhook: Payment already recorded");
-          return;
-        }
+      const alreadyExists = user.payments.some(p => p.paymentId === paymentId);
+      if (alreadyExists) {
+        console.log("ℹ️ Webhook: Payment already recorded");
+        return res.status(200).json({ status: "already recorded" });
+      }
 
-        user.payments.push({
-          paymentId,
-          orderId,
-          signature,
-          category,
-          currency,
-          amount: amount / 100,
-          status,
-          timestamp: new Date(),
-        });
+      // Use $push to add new payment atomically
+      await User.findOneAndUpdate(
+        { email },
+        {
+          $push: {
+            payments: {
+              paymentId,
+              orderId,
+              signature,
+              category,
+              currency,
+              amount: amount / 100,
+              status,
+              timestamp: new Date(),
+            }
+          }
+        },
+        { new: true }
+      );
 
-        // Optional: update selectedCategory if relevant
-        user.selectedCategory = category;
-
-        await user.save();
-
-        // Google Sheet
+      process.nextTick(async () => {
         try {
           await appendPaymentToSheet({
             name: user.fullName,
@@ -80,13 +87,8 @@ app.post(
             orderId,
             status,
           });
-          console.log("✅ Webhook: Added to Google Sheet");
-        } catch (err) {
-          console.error("❌ Google Sheets update failed:", err.message);
-        }
+          console.log("✅ Webhook: Payment added to Google Sheet");
 
-        // Email to user
-        try {
           await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
@@ -105,13 +107,7 @@ Thank you for registering and supporting the event.
 Warm regards,  
 STIS-V 2025 Organizing Team`,
           });
-          console.log("✅ Email sent to user");
-        } catch (err) {
-          console.error("❌ Email to user failed:", err.message);
-        }
 
-        // Email to admin
-        try {
           await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: "stis.mte@iisc.ac.in",
@@ -124,16 +120,22 @@ Amount: ${currency === "INR" ? "₹" : "$"}${amount / 100}
 Payment ID: ${paymentId}
 Order ID: ${orderId}`,
           });
-          console.log("✅ Email sent to admin");
+
         } catch (err) {
-          console.error("❌ Admin email failed:", err.message);
+          console.error("❌ Webhook async task failed:", err.message);
         }
-      } catch (err) {
-        console.error("❌ Webhook async error:", err.message);
-      }
-    });
+      });
+
+      console.log("✅ Webhook: Payment saved to DB for", email);
+      return res.status(200).json({ status: "payment saved" });
+
+    } catch (err) {
+      console.error("❌ Webhook processing error:", err);
+      return res.status(200).json({ status: "error handled" }); // Still 200 to avoid Razorpay retries
+    }
   }
 );
+
 
 
 
