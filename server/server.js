@@ -290,11 +290,19 @@ const userSchema = new mongoose.Schema({
     dietaryPreference: String,
   }],
   selectedCategory: { type: String, default: "" },
-  selectedCategoryDetails: {
-    baseFee: { type: Number, default: 0 },
-    gst: { type: Number, default: 0 },
-    totalAmount: { type: Number, default: 0 },
-  },
+ selectedCategoryDetails: {
+  baseFee: { type: Number, default: 0 },
+  gst: { type: Number, default: 0 },
+  totalAmount: { type: Number, default: 0 },
+  categories: [{
+    category: String,
+    currency: String,
+    baseFee: Number,
+    gst: Number,
+    platform: Number,
+    totalAmount: Number,
+  }]
+},
 
   abstractSubmissions: [{
     title: String,
