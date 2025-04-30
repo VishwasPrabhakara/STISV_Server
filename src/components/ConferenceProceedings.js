@@ -16,19 +16,18 @@ const ConferenceProceedings = () => {
       <section className="hero-banner-proceedings">
         
           <h1 className="proceedings-heading">Conference Proceedings</h1>
-          <p className="hero-subtext">
-            Elevate your research through international publication channels.
-          </p>
-      </section>
-
-      {/* Description */}
-      <section className="proceedings-content">
+          <section className="proceedings-content">
         <p>
-          All submitted papers or extended abstracts will undergo a thorough peer-review process. Accepted works will be
+          All submitted papers or extended abstracts will undergo a thorough peer-review process. Accepted papers or extended abstracts will be
           published in the official Conference Proceedings volume with an ISBN. Selected high-quality papers will be
           recommended for publication in reputed international journals, subject to their individual review policies.
         </p>
       </section>
+          
+      </section>
+
+      {/* Description */}
+      
 
         {/* Highlights + Timeline in 2-column layout */}
 <section className="proceedings-side-section">
@@ -39,13 +38,13 @@ const ConferenceProceedings = () => {
       <li>✅ Peer-reviewed submission process</li>
       <li>✅ Conference Proceedings with ISBN</li>
       <li>✅ Potential inclusion in Scopus/SCI indexed journals</li>
-      <li>✅ Certificate of Publication</li>
+      
     </ul>
   </div>
 
   {/* Timeline */}
   <div className="proceedings-timeline">
-    <h2>Submission & Review Timeline</h2>
+    <h2>Submission & Review Process</h2>
     <div className="timeline">
       <div className="timeline-step">
         <div className="step-circle">1</div>

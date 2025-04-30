@@ -23,6 +23,10 @@
     flex-direction: column;
     margin-bottom: 18px;
   }
+
+.step3-form-group select{
+    width: 700px;
+  }
   
   .step3-form-group label {
     font-weight: 600;
@@ -36,6 +40,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 15px;
+    width: 700px;
   }
   
   .step3-input:focus {
@@ -43,6 +48,7 @@
     outline: none;
     box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
   }
+
   
   .accompanying-summary {
     font-size: 16px;
@@ -61,8 +67,8 @@
   }
   
   .remove-button {
-    background-color: #ff4d4d;
-    color: white;
+    background:#d93636 !important;
+    color: white!important;
     padding: 8px 15px;
     border: none;
     border-radius: 6px;
@@ -70,13 +76,10 @@
     font-size: 14px;
     margin-top: 10px;
     align-self: flex-start;
-    transition: background-color 0.3s;
+    
   }
   
-  .remove-button:hover {
-    background-color: #d93636;
-  }
-  
+ 
   .add-person-button {
     background-color: #28a745;
     color: white;

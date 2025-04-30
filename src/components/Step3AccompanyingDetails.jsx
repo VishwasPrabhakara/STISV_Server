@@ -1,12 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Step3AccompanyingDetails.css";
 
 const Step3AccompanyingDetails = ({ formData, updateFormData }) => {
   const accompanyingPersons = formData.accompanyingPersons || [];
-
-  const validAccompanyingPersons = accompanyingPersons.filter(
-    (person) => person.name && person.relation
-  );
 
   const handleChange = (index, field, value) => {
     const updatedPersons = [...accompanyingPersons];
@@ -34,30 +30,8 @@ const Step3AccompanyingDetails = ({ formData, updateFormData }) => {
 
   return (
     <div className="step3-container">
-      <h2 className="step3-title">Accompanying Persons Details</h2>
+      <h2 className="step3-title">Personal Details of Accompanying Person</h2>
 
-      {/* Author's Dietary Preference */}
-      <div className="step3-form-group">
-        <label>Dietary Preference of Author</label>
-        <select
-          name="dietaryPreferenceAuthor"
-          value={formData.dietaryPreferenceAuthor || ""}
-          onChange={(e) => updateFormData({ dietaryPreferenceAuthor: e.target.value })}
-          className="step3-input"
-        >
-          <option value="">Select dietary preference</option>
-          <option value="Vegetarian">Vegetarian</option>
-          <option value="Non-Vegetarian">Non-Vegetarian</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      {/* Accompanying Persons Count */}
-      <div className="accompanying-summary">
-        <strong>Number of Accompanying Persons:</strong> {validAccompanyingPersons.length}
-      </div>
-
-      {/* Accompanying Persons Form */}
       {accompanyingPersons.map((person, idx) => (
         <div key={idx} className="accompanying-person-card">
           <div className="step3-form-group">
@@ -78,15 +52,27 @@ const Step3AccompanyingDetails = ({ formData, updateFormData }) => {
               value={person.relation || ""}
               onChange={(e) => handleChange(idx, "relation", e.target.value)}
               className="step3-input"
-              placeholder="Enter relation "
+              placeholder="Enter relation"
             />
           </div>
 
           <div className="step3-form-group">
             <label>Dietary Preference</label>
             <select
-              value={person.dietaryPreference || ""}
-              onChange={(e) => handleChange(idx, "dietaryPreference", e.target.value)}
+              value={
+                person.dietaryPreference === "Vegetarian" ||
+                person.dietaryPreference === "Non-Vegetarian"
+                  ? person.dietaryPreference
+                  : "Other"
+              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "Other") {
+                  handleChange(idx, "dietaryPreference", ""); // empty initially
+                } else {
+                  handleChange(idx, "dietaryPreference", value);
+                }
+              }}
               className="step3-input"
             >
               <option value="">Select dietary preference</option>
@@ -94,6 +80,28 @@ const Step3AccompanyingDetails = ({ formData, updateFormData }) => {
               <option value="Non-Vegetarian">Non-Vegetarian</option>
               <option value="Other">Other</option>
             </select>
+
+            {/* If Other, show input */}
+            {(
+              person.dietaryPreference !== "Vegetarian" &&
+              person.dietaryPreference !== "Non-Vegetarian"
+            ) && (
+              <div style={{ marginTop: "10px" }}>
+                <input
+                  type="text"
+                  value={person.dietaryPreference || ""}
+                  onChange={(e) => handleChange(idx, "dietaryPreference", e.target.value)}
+                  className="step3-input"
+                  placeholder="Please specify your dietary preference"
+                />
+                <p className="note">
+                  <strong>
+                    <span className="red-asterisk">*</span> Note:
+                  </strong>{" "}
+                  The organizers will make every effort to accommodate your request; however, it cannot be guaranteed.
+                </p>
+              </div>
+            )}
           </div>
 
           <button
@@ -101,7 +109,7 @@ const Step3AccompanyingDetails = ({ formData, updateFormData }) => {
             className="remove-button"
             onClick={() => handleRemovePerson(idx)}
           >
-            Remove
+            - Remove
           </button>
         </div>
       ))}

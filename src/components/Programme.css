@@ -1,159 +1,175 @@
-/* === General Page Layout === */
+/* === General Layout === */
 .programme-container {
-    font-family: 'Segoe UI', sans-serif;
-    color: #1a1a1a;
-    background-color: #ffffff;
-  }
-  
-  /* === Hero Section === */
-  .programme-hero {
-    background: linear-gradient(135deg, #003566, #0077b6);
-    color: white;
-    height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: .5rem;
-    margin-top: -4rem;
-  }
-  
-  .programme-hero-overlay {
-    max-width: 800px;
-    padding: 1rem;
-  }
-  
-  .programme-title {
-    font-size: 2.8rem;
-    font-weight: 700;
-    
-  }
-  
-  .programme-subtitle {
-    font-size: 1.25rem;
-    font-weight: 300;
-    color: #e0e0e0;
-;
-  }
-  
-  /* === Important Dates Section === */
-  .important-dates-section {
-    padding: 4rem 1rem;
-    background-color: #f9f9fb;
-    text-align: center;
-  }
-  
-  .important-dates-heading {
-    font-size: 2rem;
-    color: #003566;
-    margin-bottom: 2rem;
-    margin-top: -2rem;
-  }
-  
-  /* === Date Cards Grid === */
-  .dates-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  .date-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-left: 6px solid #0077b6;
-    border-radius: 8px;
-    padding: 2rem 1.5rem;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
-  }
-  
-  .date-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .date-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: #1a1a1a;
-  }
-  
-  .date-card p {
-    font-size: 1rem;
-    color: #0077b6;
-  }
-  
-  /* ================================
-   Responsive — Tablets (≤768px)
-================================ */
-@media (max-width: 768px) {
-  .programme-hero {
-    height: auto;
-    padding: 3rem 1.5rem;
-  }
+  font-family: 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  background: #f9f9fb;
+  position: relative;
+  overflow-x: hidden;
+}
 
+/* Particle Background */
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Hero Section */
+.programme-hero {
+  background: linear-gradient(135deg, #003566, #0077b6);
+  color: white;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: -2rem;
+}
+
+.programme-hero-overlay {
+  max-width: 800px;
+  padding: 1rem;
+}
+
+.programme-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.programme-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #e0e0e0;
+}
+
+/* Timeline Section */
+.timeline-section {
+  padding: 1rem 0.5rem;
+  margin-top: -2rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.strike {
+  text-decoration: line-through;
+  color: red;
+}
+
+
+.important-dates-heading {
+  font-size: 2rem;
+  color: #003566;
+  margin-bottom: 3rem;
+}
+
+/* === Grid Timeline === */
+.grid-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-timeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.timeline-card {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  min-width: 240px;
+  max-width: 280px;
+  text-align: center;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+.timeline-card h3 {
+  font-size: 1.1rem;
+  color: #003566;
+  margin-bottom: 0.6rem;
+}
+
+.timeline-card p {
+  font-size: 1rem;
+  color: #555;
+  font-weight: bold;
+}
+
+/* Arrows */
+.arrow {
+  font-size: 2rem;
+  color: #2196f3;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .grid-timeline-row {
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
   .programme-title {
     font-size: 2.2rem;
   }
 
   .programme-subtitle {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
 
   .important-dates-heading {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
   }
 
-  .date-card {
-    padding: 1.5rem 1.25rem;
+  .grid-timeline-row {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .date-card h3 {
-    font-size: 1.1rem;
+  .timeline-card {
+    min-width: 80%;
   }
 
-  .date-card p {
-    font-size: 0.95rem;
+  .arrow {
+    display: none;
   }
 }
 
-/* ================================
-   Responsive — Phones (≤480px)
-================================ */
 @media (max-width: 480px) {
   .programme-title {
     font-size: 1.8rem;
   }
 
   .programme-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .important-dates-heading {
     font-size: 1.5rem;
   }
 
-  .dates-cards-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .date-card {
-    padding: 1.2rem 1rem;
-  }
-
-  .date-card h3 {
-    font-size: 1rem;
-  }
-
-  .date-card p {
-    font-size: 0.9rem;
+  .timeline-card {
+    min-width: 90%;
   }
 }
-
-  
-  

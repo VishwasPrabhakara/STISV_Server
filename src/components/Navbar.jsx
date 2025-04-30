@@ -84,7 +84,7 @@ const Navbar = () => {
           { to: "/about", label: "About the Conference" },
           { to: "/message-to-chairman", label: "Chairman's Message" },
           { to: "/official-language", label: "Official Language" },
-          { to: "/announcements", label: "Announcements" },
+         
           { to: "/sponsors", label: "Sponsors" },
           { to: "/mediapartners", label: "Media Partner" }
         ])}
@@ -99,14 +99,24 @@ const Navbar = () => {
          
         ])}
 
-        {renderDropdown("Abstract", [
-          { to: "/abstract-submission", label: "Submit Abstract" },
-          { to: "/abstract-submission-status", label: "Submission Status" }
-        ])}
+        
 
-        <NavLink to="/conference-registration" onClick={() => handleNavClick("/conference-registration")}>
-          Registration
+        <NavLink to="/abstract-submission" onClick={() => handleNavClick("/abstract-submission")}>
+          Submit Abstract
         </NavLink>
+
+        {userName ? (
+  renderDropdown("Registration", [
+    { to: "/conference-registration", label: "Registration Information" },
+    { to: "/registration-form", label: "Registration Payment" },
+    { to: "/payment-receipts", label: "Payment Receipts" }
+  ])
+) : (
+  <NavLink to="/conference-registration" onClick={() => handleNavClick("/conference-registration")}>
+    Registration
+  </NavLink>
+)}
+
 
         <NavLink to="/sponsorship-opportunities" onClick={() => handleNavClick("/sponsorship-opportunities")}>
           Sponsorship Opportunities
@@ -127,6 +137,8 @@ const Navbar = () => {
         ])}
 
         {renderDropdown("Information", [
+           { to: "/announcements", label: "Latest Updates" },
+          { to: "/programme", label: "Important Dates"},
           { to: "/about-bengaluru", label: "About Bengaluru" },
           { to: "/weather", label: "Weather" },
           { to: "/travel-information", label: "Travel Information" },

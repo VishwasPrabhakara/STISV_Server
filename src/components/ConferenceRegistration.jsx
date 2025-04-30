@@ -26,9 +26,9 @@ const ConferenceRegistration = () => {
                 <thead>
                   <tr>
                     <th>Category</th>
-                    <th>Early Bird<br /><small>(Till 15th June, 2025)</small></th>
-                    <th>Regular<br /><small>(16th June - 20th Nov, 2025)</small></th>
-                    <th>After 20th Nov</th>
+                    <th>Early Bird<br /><small>(Till 15th July, 2025)</small></th>
+                    <th>Regular<br /><small>(16th July - 20th Nov, 2025)</small></th>
+                    <th>After 20th Nov &amp; Spot Registration</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -39,7 +39,7 @@ const ConferenceRegistration = () => {
                     <td>₹19,000 + ₹3,420 (18% GST) = <b>₹22,420</b></td>
                   </tr>
                   <tr>
-                    <td>Spouse / Partner</td>
+                    <td>Accompanying Person</td>
                     <td colSpan="2">₹7,000 + ₹1,260 (18% GST) = <b>₹8,260</b></td>
                     <td>₹9,000 + ₹1,620 (18% GST) = <b>₹10,620</b></td>
                   </tr>
@@ -62,9 +62,9 @@ const ConferenceRegistration = () => {
                 <thead>
                   <tr>
                     <th>Category</th>
-                    <th>Early Bird<br /><small>(Till 15th June, 2025)</small></th>
-                    <th>Regular<br /><small>(16th June - 20th Nov, 2025)</small></th>
-                    <th>After 20th Nov</th>
+                    <th>Early Bird<br /><small>(Till 15th July, 2025)</small></th>
+                    <th>Regular<br /><small>(16th July - 20th Nov, 2025)</small></th>
+                    <th>After 20th Nov &amp; Spot Registration</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,7 @@ const ConferenceRegistration = () => {
                     <td><b>$500</b></td>
                   </tr>
                   <tr>
-                    <td>Spouse / Partner</td>
+                    <td>Accompanying Person</td>
                     <td colSpan="2"><b>$200</b></td>
                     <td><b>$250</b></td>
                   </tr>
@@ -95,8 +95,30 @@ const ConferenceRegistration = () => {
           <p className="note">
             <strong>
               <span className="red-asterisk">*</span> Note:
-            </strong> All charges including GST(18%).
+            </strong> Fee includes GST(18%).
           </p>
+
+          <p className="note">
+            <strong>
+              <span className="red-asterisk">*</span> Note:
+            </strong> One registered author can present only one paper/poster.
+          </p>
+          <div className="important-section-container">
+  <div className="important-section">
+    <h4>Included in the Registration Fee for Speaker/Participant</h4>
+    <p>
+      The registration fee includes the admission to all technical sessions, lunches, conference banquet, dinner, and one copy of the conference proceedings.
+    </p>
+  </div>
+
+  <div className="important-section">
+    <h4>Included in the Registration Fee for Accompanying Person</h4>
+    <p>
+      The registration fee includes dinner, lunches, and participation in social events. Accompanying Persons must be registered by the delegate with whom they are attending and must pay the listed fee.
+    </p>
+  </div>
+</div>
+
 
           <div className="refund-policy-box">
             <h4>Refund & Cancellation Policy</h4>

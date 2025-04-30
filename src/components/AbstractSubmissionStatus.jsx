@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AbstractSubmissionStatus.css";
 import Navbar from "./Navbar";
@@ -6,7 +7,8 @@ import Footer from "./Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const DEADLINE = new Date("2025-04-30T23:59:59");
+const DEADLINE = new Date("2025-05-31T23:59:59"); // ✅ Updated to May 31
+
 
 const AbstractSubmissionStatus = () => {
   const [abstract, setAbstract] = useState(null);
@@ -19,23 +21,27 @@ const AbstractSubmissionStatus = () => {
   const [updating, setUpdating] = useState(false);
   const [showFinalizePopup, setShowFinalizePopup] = useState(false);
   const [showFinalizedMessage, setShowFinalizedMessage] = useState(false); // ✅ NEW
+  const navigate = useNavigate();
 
-  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-  const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
+
+
   const searchParams = new URLSearchParams(window.location.search);
   const abstractCode = searchParams.get("code");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const uid = localStorage.getItem("uid");
     const isLoggedIn = uid && token;
 
     if (!isLoggedIn) {
       setLoading(false);
       setError("Please log in to view your abstract submission status.");
       setTimeout(() => {
-        window.location.href = "/stis2025/login-signup";
-      }, 2000);
+        navigate("/login-signup?redirect=/stis2025/abstract-submission-status");
+      }, 2500);
       return;
     }
+    
 
     const fetchAbstract = async () => {
       try {
@@ -62,8 +68,9 @@ const AbstractSubmissionStatus = () => {
         if (err.response?.status === 401) {
           setError("Please log in to view your abstract submission status.");
           setTimeout(() => {
-            window.location.href = "/stis2025/login-signup";
+            navigate("/login-signup?redirect=/stis2025/abstract-submission-status");
           }, 2500);
+        
         } else {
           setError("Failed to load abstract.");
         }
@@ -73,13 +80,17 @@ const AbstractSubmissionStatus = () => {
     };
 
     fetchAbstract();
-  }, [uid, token, abstractCode]);
+  },  [abstractCode, navigate]);
 
   const handleFileChange = (e) => setNewFile(e.target.files[0]);
 
   const handleUpdate = async () => {
     setUpdating(true);
     try {
+      const uid = localStorage.getItem("uid");
+const token = localStorage.getItem("token");
+
+
       const formData = new FormData();
       formData.append("uid", uid);
       formData.append("abstractCode", abstract.abstractCode);
@@ -127,6 +138,8 @@ const AbstractSubmissionStatus = () => {
   const confirmFinalize = async () => {
     setFinalizing(true);
     try {
+      const uid = localStorage.getItem("uid");
+      const token = localStorage.getItem("token");
       await axios.post(
         "https://stisv.onrender.com/finalize-abstract",
         { uid, abstractCode: abstract.abstractCode },

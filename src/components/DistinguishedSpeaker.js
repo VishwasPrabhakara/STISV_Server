@@ -106,7 +106,7 @@ import Footer from "./Footer";
       imagePath: "/stis2025/assets/speakers_upscaled/Kazuki Morita.png"
     },
     {
-      name: " Geoffrey Brooks",
+      name: " G.A Brooks",
       affiliation: "Swinburne University, Australia",
       url: "https://www.swinburne.edu.au/research/our-research/access-our-research/find-a-researcher-or-supervisor/researcher-profile/?id=gbrooks/",
       imagePath: "/stis2025/assets/speakers_upscaled/Geoffrey Brooks.jpeg"
@@ -171,7 +171,7 @@ import Footer from "./Footer";
     },
 
     {
-      name: " GG Roy",
+      name: " Gour Gopal Roy",
       affiliation: "IIT Kharagpur, India",
       url: "http://www.metal.iitkgp.ac.in/People/facultyDetails/6",
       imagePath: "/stis2025/assets/speakers_upscaled/GG Roy.png"
@@ -185,7 +185,7 @@ import Footer from "./Footer";
     },
 
     {
-      name: " AK Singh",
+      name: " Amarendra K Singh",
       affiliation: " IIT Kanpur, India",
       url: "https://www.iitk.ac.in/new/amarendra-kumar-singh ",
       imagePath: "/stis2025/assets/speakers_upscaled/amrendra-singh.jpeg"
@@ -203,6 +203,41 @@ import Footer from "./Footer";
       affiliation: "Steel Dynamics",
       url: "https://www.linkedin.com/in/kamalesh-mandal-phd-49140626/",
       imagePath: "/stis2025/assets/speakers_upscaled/Kamalesh Mandal.jpeg"
+    },
+
+    {
+      name: " Seshadri Seetharaman ",
+      affiliation: "Emeritus Professor at the Royal Institute of Technology, KTH, Sweden",
+      url: "http://www.femri.org/team-detail-indiv-2.aspx#:~:text=Sheshadri%20Seetharaman,of%20Technology%2C%20KTH%2C%20Sweden",
+      imagePath: "/stis2025/assets/speakers_upscaled/Seshadri Seetharaman.jpeg"
+    },
+  
+    {
+      name: " Narasimha Mangadoddy",
+      affiliation: "Indian Institute of Technology, Hyderabad",
+      url: "https://www.iith.ac.in/che/narasimha/",
+      imagePath: "/stis2025/assets/speakers_upscaled/Dr. Narasimha Mangadoddy.jpeg"
+    },
+  
+    {
+      name: "Shatrughan Soren",
+      affiliation: "Indian Institute of Technology (Indian School of Mines), Dhanbad",
+      url: "https://www.iitism.ac.in/faculty-details?faculty=ssoren",
+      imagePath: "/stis2025/assets/speakers_upscaled/Dr. Shatrughan Soren.jpeg"
+    },
+  
+    {
+      name: "Nikhil Dhawan",
+      affiliation: "Indian Institute of Technology, Roorkee",
+      url: "https://iitr.ac.in/Departments/Metallurgical%20and%20Materials%20Engineering%20Department/People/Faculty/100714.html",
+      imagePath: "/stis2025/assets/speakers_upscaled/Dr. Nikhil Dhawan .jpeg"
+    },
+  
+    {
+      name: "Sabita Sarkar",
+      affiliation: "Indian Institute of Technology, Madras",
+      url: "https://mme.iitm.ac.in/faculty-inner.php?id=26&fc=1",
+      imagePath: "/stis2025/assets/speakers_upscaled/Dr. Sabita Sarkar.jpeg"
     },
   ];
   

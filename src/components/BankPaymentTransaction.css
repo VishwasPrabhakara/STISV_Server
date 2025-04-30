@@ -1,0 +1,69 @@
+.bank-transaction-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  h2 {
+    color: #003366;
+    margin-bottom: 20px;
+  }
+  
+  .transaction-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .transaction-form label {
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .transaction-form input[type="text"] {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .submit-button, .upload-button, .done-button {
+    padding: 12px 20px;
+    background: #0056b3;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    margin-top: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+    margin-right: 20px;
+  }
+  
+  .submit-button:hover, .upload-button:hover, .done-button:hover {
+    background-color: #003d80;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .instructions {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .confirmation-message {
+    margin-top: 30px;
+    background: #e6ffe6;
+    border: 1px solid #b3ffb3;
+    padding: 30px;
+    border-radius: 10px;
+  }
+  

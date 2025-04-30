@@ -11,7 +11,7 @@
 /* ===================== Hero Section ===================== */
 .about-page .about-hero-static {
   background: url('https://raw.githubusercontent.com/VishwasPrabhakara/STISV_Server/refs/heads/main/public/assets/about.jpg') no-repeat center center/cover;
-  height: 60vh;
+  height: 40vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,9 +27,10 @@
 }
 
 .about-page .about-title {
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  margin-top: -8px;
 }
 
 /* ===================== New Content Section ===================== */
@@ -38,10 +39,180 @@
   background-color: #ffffff;
   max-width: 1000px;
   margin: 0 auto;
+  margin-top: -60px;
 }
 
+/* ===================== Past Events Scrolling Photo Wall ===================== */
+.past-events-section {
+  padding: 3rem 1rem;
+  background: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+
+.past-events-scroll-container {
+  overflow: hidden;
+  width: 100%;
+  margin: 2rem 0;
+}
+
+.past-events-scroll-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scrollLeft 30s linear infinite;
+  width: max-content;
+}
+
+.photo-card-scroll {
+  position: relative;
+  min-width: 350px;
+  max-width: 350px;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Image wrapper for zoom and overlay */
+.photo-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.5s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.photo-card-scroll:hover .photo-image-container {
+  transform: scale(1.05);
+}
+
+.photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hover overlay */
+.photo-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 12px;
+}
+
+.photo-card-scroll:hover .photo-hover-overlay {
+  opacity: 1;
+}
+
+/* Static Info BELOW image now */
+.photo-static-info-below {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.photo-static-info-below h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #002244;
+}
+
+.photo-static-info-below p {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+  color: #555555;
+}
+
+/* Adjust Scroll Track */
+.past-events-scroll-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scrollLeft 30s linear infinite;
+  width: max-content;
+}
+
+
+
+/* Infinite Scroll Keyframes */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ===================== Responsive Media Queries ===================== */
+@media (max-width: 768px) {
+  .about-page .about-title {
+    font-size: 2rem;
+  }
+
+  .about-page .about-content {
+    padding: 3rem 1rem;
+  }
+
+  .about-page .about-text-block h2 {
+    font-size: 1.5rem;
+  }
+
+  .about-page .about-text-block p {
+    font-size: 1rem;
+  }
+
+  .about-page .parallax-text h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-page .parallax-text p {
+    font-size: 1rem;
+  }
+
+  .about-page .about-parallax {
+    background-attachment: fixed;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-page .about-title {
+    font-size: 1.6rem;
+  }
+
+  .about-page .about-content {
+    padding: 2.5rem 1rem;
+  }
+
+  .about-page .about-text-block h2 {
+    font-size: 1.3rem;
+  }
+
+  .about-page .about-text-block p {
+    font-size: 0.95rem;
+  }
+
+  .about-page .parallax-text h2 {
+    font-size: 1.3rem;
+  }
+
+  .about-page .parallax-text p {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===================== About Page Text Blocks ===================== */
 .about-page .about-text-block {
-  margin-bottom: 3rem;
+  margin-bottom: 1.2rem;
   text-align: justify;
 }
 
@@ -101,61 +272,4 @@
   font-size: 1.05rem;
   font-weight: 400;
   color: #ffffff;
-}
-
-/* ===================== Responsive Media Queries ===================== */
-@media (max-width: 768px) {
-  .about-page .about-title {
-    font-size: 2rem;
-  }
-
-  .about-page .about-content {
-    padding: 3rem 1rem;
-  }
-
-  .about-page .about-text-block h2 {
-    font-size: 1.5rem;
-  }
-
-  .about-page .about-text-block p {
-    font-size: 1rem;
-  }
-
-  .about-page .parallax-text h2 {
-    font-size: 1.6rem;
-  }
-
-  .about-page .parallax-text p {
-    font-size: 1rem;
-  }
-
-  .about-page .about-parallax {
-    background-attachment: fixed; /* fallback for mobile */
-  }
-}
-
-@media (max-width: 480px) {
-  .about-page .about-title {
-    font-size: 1.6rem;
-  }
-
-  .about-page .about-content {
-    padding: 2.5rem 1rem;
-  }
-
-  .about-page .about-text-block h2 {
-    font-size: 1.3rem;
-  }
-
-  .about-page .about-text-block p {
-    font-size: 0.95rem;
-  }
-
-  .about-page .parallax-text h2 {
-    font-size: 1.3rem;
-  }
-
-  .about-page .parallax-text p {
-    font-size: 0.9rem;
-  }
 }

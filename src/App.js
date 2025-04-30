@@ -49,6 +49,7 @@ import PaymentPage from './components/PaymentPage';
 import PaymentSuccess from './components/PaymentSuccess';
 import AllPayments from './components/AllPayments';
 import RegistrationForm from './components/RegistrationForm';
+import BankPaymentTransaction from './components/BankPaymentLink';
 
 
 const router = createBrowserRouter(
@@ -94,8 +95,9 @@ const router = createBrowserRouter(
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/sponsorship-opportunities" element={<SponsorshipOpportunities />} />
-      <Route path='/payment-reciepts' element={<AllPayments />} />
+      <Route path='/payment-receipts' element={<AllPayments />} />
       <Route path='/registration-form' element={<RegistrationForm />} />
+      <Route path='/bank-payment-upload' element={<BankPaymentTransaction />} />
     </>
   ),
   {

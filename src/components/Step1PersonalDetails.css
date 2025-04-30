@@ -1,7 +1,7 @@
 /* Step1PersonalDetails.css */
 
 .step1-container {
-    max-width: 700px;
+    max-width: 800px;
     margin: 40px auto;
     padding: 30px;
     background: #ffffff;
@@ -17,6 +17,16 @@
     text-align: center;
     color: #003366;
   }
+  .note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .red-asterisk {
+    color: red;
+  }
+  
   
   .step1-input:hover {
     transform: translateY(-2px);

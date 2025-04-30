@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Step4PaymentSelection.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import { faTrash, faCopy } from '@fortawesome/free-solid-svg-icons';
 
 const API_BASE_URL = "https://stisv.onrender.com";
 
 const Step4PaymentSelection = ({ formData, updateFormData }) => {
+  const [paymentMode, setPaymentMode] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState("");
+  const [isPaying, setIsPaying] = useState(false);
 
   const today = new Date();
-  const earlyBirdDeadline = new Date("2025-06-15");
+  const earlyBirdDeadline = new Date("2025-07-15");
   const regularDeadline = new Date("2025-11-20");
 
   const determinePeriod = () => {
@@ -20,60 +21,105 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
     if (today <= regularDeadline) return "regular";
     return "late";
   };
-
   const period = determinePeriod();
 
   const nationalFees = {
     "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
-    "Spouse / Partner": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
-    "Student / Speaker": { early: { base: 100, gst: 18, platform: 3 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
-    "Student / Participant": { early: { base: 4000, gst: 720, platform: 120 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+    "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
+    "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+    "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
   };
 
   const internationalFees = {
     "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
-    "Spouse / Partner": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
+    "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
     "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
     "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
+  };
+
+  const bankDetails = [
+    { label: "Account Name", value: "STIS" },
+    { label: "Account Number", value: "43706710216" },
+    { label: "Bank Name", value: "State Bank of India, IISc" },
+    { label: "SWIFT Code", value: "SBININBB425" },
+    { label: "IFSC Code", value: "SBIN0002215" },
+    { label: "Branch Code", value: "2215" },
+  ];
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
   };
 
   const getCategoryDetails = (key, currencyType) => {
     if (currencyType === "INR") {
       const { base, gst, platform } = nationalFees[key][period];
-      const total = base + gst + platform;
-      return { base, gst, platform, total, currency: "INR" };
+      const total = paymentMode === "online" ? base + gst + platform : base + gst;
+      return { base, gst, platform: paymentMode === "online" ? platform : 0, total, currency: "INR" };
     }
     if (currencyType === "USD") {
       const { base, platform } = internationalFees[key][period];
-      const total = base + platform;
-      return { base, gst: 0, platform, total, currency: "USD" };
+      const total = paymentMode === "online" ? base + platform : base;
+      return { base, gst: 0, platform: paymentMode === "online" ? platform : 0, total, currency: "USD" };
     }
     return { base: 0, gst: 0, platform: 0, total: 0, currency: currencyType };
   };
 
-  const toggleCategory = (key, currencyParam) => {
-    if (selectedItems.length > 0 && selectedItems[0].currency !== currencyParam) {
-      alert("You can only select categories within the same currency (either National or International).");
+  const toggleCategory = (key, currencyType) => {
+    if (selectedItems.length > 0 && selectedItems[0].currency !== currencyType) {
+      alert("You can only select categories within the same currency.");
       return;
     }
-
-    const { base, gst, platform, total, currency } = getCategoryDetails(key, currencyParam);
-    setSelectedItems([...selectedItems, { key, currency, base, gst, platform, total }]);
+    const item = getCategoryDetails(key, currencyType);
+    setSelectedItems([...selectedItems, {
+      key,
+      category: key,
+      currency: item.currency,
+      baseFee: item.base,
+      gst: item.gst,
+      platform: item.platform,
+      totalAmount: item.total
+    }]);
   };
 
   const removeItem = (index) => {
-    const updatedItems = [...selectedItems];
-    updatedItems.splice(index, 1);
-    setSelectedItems(updatedItems);
+    const updated = [...selectedItems];
+    updated.splice(index, 1);
+    setSelectedItems(updated);
   };
 
+  useEffect(() => {
+    const total = selectedItems.reduce((acc, item) => acc + item.totalAmount, 0);
+    updateFormData({
+      selectedCategoryDetails: {
+        categories: selectedItems,
+        totalAmount: total
+      }
+    });
+  }, [selectedItems]);
+
   const handlePayment = async () => {
+    if (!paymentMode) {
+      setError("Please select a payment mode first.");
+      return;
+    }
     if (selectedItems.length === 0) {
-      setError("Please select at least one category to proceed.");
+      setError("Please select at least one category.");
+      return;
+    }
+    if (totalPayable === 0) {
+      setError("Total payable cannot be zero.");
       return;
     }
 
-    const totalAmount = selectedItems.reduce((acc, item) => acc + item.total, 0);
+    setIsPaying(true);
+
+    if (paymentMode === "bank") {
+      window.location.href = "/stis2025/bank-payment-upload";
+      return;
+    }
+
+    const totalAmount = selectedItems.reduce((acc, item) => acc + item.totalAmount, 0);
     const currencyType = selectedItems[0].currency;
 
     try {
@@ -85,10 +131,6 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
       const res = await axios.post(`${API_BASE_URL}/create-order`, {
         amount: totalAmount,
         currency: currencyType,
-        name: storedName,
-        email: storedEmail,
-        phone: storedPhone,
-        category: selectedItems.map(item => item.key).join(", "),
       });
 
       const options = {
@@ -101,111 +143,174 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
         notes: {
           email: storedEmail,
           phone: storedPhone,
-          category: selectedItems.map(item => item.key).join(", "),
+          categoriesSelected: JSON.stringify(selectedItems),
+          paymentMode: paymentMode,
         },
         prefill: {
           name: storedName,
           email: storedEmail,
           contact: storedPhone,
         },
-        handler: function (response) {
-          window.location.href = `/stis2025/payment-success?paymentId=${response.razorpay_payment_id}`;
+        handler: async function (response) {
+          try {
+            await axios.post(`${API_BASE_URL}/save-payment`, {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              email: storedEmail,
+              name: storedName,
+              phone: storedPhone,
+              categoriesSelected: selectedItems,
+              currency: currencyType,
+              amount: totalAmount,
+              paymentMode: paymentMode,
+            });
+            window.location.href = `/stis2025/payment-success?paymentId=${response.razorpay_payment_id}`;
+          } catch (saveErr) {
+            if (saveErr.response && saveErr.response.status === 409) {
+              window.location.href = `/stis2025/payment-success?paymentId=${response.razorpay_payment_id}`;
+            } else {
+              console.error("Saving error:", saveErr);
+              alert("Payment save failed! Contact support.");
+            }
+          }
         },
-        theme: {
-          color: "#0056b3",
-        },
+        theme: { color: "#0056b3" },
       };
 
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
-      console.error("Payment initiation failed", err);
-      setError("Something went wrong. Please try again.");
+      console.error(err);
+      setError("Payment initiation failed.");
+    } finally {
+      setIsPaying(false);
     }
   };
 
-  const totalPayable = selectedItems.reduce((acc, item) => acc + item.total, 0);
+  const totalPayable = selectedItems.reduce((acc, item) => acc + item.totalAmount, 0);
 
   return (
     <div className="step4-container">
       <h2 className="step4-title">Payment</h2>
-    <p> Please select multiple categories if you wish to make a combined payment for all individuals.</p>
-      <div className="columns-container">
-        {/* National Delegates */}
-        <div className="column">
-          <h3 className="column-title">National Delegates (INR)</h3>
-          <div className="registration-grid">
-            {Object.keys(nationalFees).map((key) => {
-              const { base, gst, platform, total } = getCategoryDetails(key, "INR");
-              return (
-                <div
-                  key={key}
-                  className="registration-tile"
-                  onClick={() => toggleCategory(key, "INR")}
-                >
-                  <div className="tile-header">{key}</div>
-                  <div className="tile-splitup">Registration Fee: ₹{base}</div>
-                  <div className="tile-splitup">GST (18%): ₹{gst}</div>
-                  <div className="tile-splitup">Platform Charges: ₹{platform}</div>
-                  <div className="tile-total">Total Payable: ₹{total}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* International Delegates */}
-        <div className="column">
-          <h3 className="column-title">International Delegates (USD)</h3>
-          <div className="registration-grid">
-            {Object.keys(internationalFees).map((key) => {
-              const { base, platform, total } = getCategoryDetails(key, "USD");
-              return (
-                <div
-                  key={key}
-                  className="registration-tile"
-                  onClick={() => toggleCategory(key, "USD")}
-                >
-                  <div className="tile-header">{key}</div>
-                  <div className="tile-splitup">Registration Fee: ${base}</div>
-                  <div className="tile-splitup">Platform Charges: ${platform}</div>
-                  <div className="tile-total">Total Payable: ${total}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <div className="payment-tabs">
+        <button className={paymentMode === "bank" ? "active-tab" : ""} onClick={() => { setPaymentMode("bank"); setSelectedItems([]); }}>
+          Direct Bank Transfer<br/>(No Platform Fees)
+        </button>
+        <button className={paymentMode === "online" ? "active-tab" : ""} onClick={() => { setPaymentMode("online"); setSelectedItems([]); }}>
+          Payment Gateway<br/>(Platform Fees Included)
+        </button>
       </div>
 
-      {/* Cart Summary */}
-      <div className="cart-summary">
-        <h3 className="cart-summary-title">Total Registration Fees Payable</h3>
-        <tbody>
-      {selectedItems.map((item, idx) => (
-        <tr key={idx}>
-          <td>{item.key}</td>
-          <td>{item.currency === "INR" ? `₹${item.total}` : `$${item.total}`}</td>
-          <td>
-            <button className="remove-button" onClick={() => removeItem(idx)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-        <div className="total-payable">
-          {selectedItems.length > 0 &&
-            (selectedItems[0].currency === "INR"
-              ? `₹${totalPayable}`
-              : `$${totalPayable}`)}
+      {paymentMode && (
+        <>
+          <div className="columns-container">
+            <div className="column">
+              <h3 className="column-title">National Delegates (INR)</h3>
+              <div className="registration-grid">
+                {Object.keys(nationalFees).map((key) => {
+                  const { base, gst, platform, total } = getCategoryDetails(key, "INR");
+                  return (
+                    <div key={key} className="registration-tile" onClick={() => toggleCategory(key, "INR")}>
+                      <div className="tile-header">{key}</div>
+                      <div>Base: ₹{base}</div>
+                      <div>GST: ₹{gst}</div>
+                      {paymentMode === "online" && <div>Platform: ₹{platform}</div>}
+                      <div><b>Total: ₹{total}</b></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="column">
+              <h3 className="column-title">International Delegates (USD)</h3>
+              <div className="registration-grid">
+                {Object.keys(internationalFees).map((key) => {
+                  const { base, platform, total } = getCategoryDetails(key, "USD");
+                  return (
+                    <div key={key} className="registration-tile" onClick={() => toggleCategory(key, "USD")}>
+                      <div className="tile-header">{key}</div>
+                      <div>Base: ${base}</div>
+                      {paymentMode === "online" && <div>Platform: ${platform}</div>}
+                      <div><b>Total: ${total}</b></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {selectedItems.length > 0 && (
+            <div className="cart-summary">
+              <h3 className="cart-summary-title">Selected Items</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Base</th>
+                    <th>GST</th>
+                    <th>Platform</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedItems.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.category}</td>
+                      <td>{item.currency === "INR" ? `₹${item.baseFee}` : `$${item.baseFee}`}</td>
+                      <td>{item.currency === "INR" ? `₹${item.gst}` : "-"}</td>
+                      <td>{item.currency === "INR" ? `₹${item.platform}` : `$${item.platform}`}</td>
+                      <td>{item.currency === "INR" ? `₹${item.totalAmount}` : `$${item.totalAmount}`}</td>
+                      <td>
+                        <button className="remove-button" onClick={() => removeItem(idx)}>
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="total-payable">
+                Grand Total: {selectedItems[0]?.currency === "INR" ? `₹${totalPayable}` : `$${totalPayable}`}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {paymentMode === "bank" && (
+        <div className="bank-details">
+          <h3>Bank Details for Transfer</h3>
+          <div className="bank-details-table">
+            {bankDetails.map((item, idx) => (
+              <div key={idx} className="bank-details-row">
+                <div className="bank-label">{item.label}</div>
+                <div className="bank-value">
+                  {item.value}
+                  <FontAwesomeIcon icon={faCopy} className="copy-icon" onClick={() => handleCopy(item.value)} title="Copy" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {error && <p className="error-message">{error}</p>}
-
-      <button className="payment-button" onClick={handlePayment}>
-        Proceed to Payment
-      </button>
+      {paymentMode && (
+        <>
+          {paymentMode === "bank" && (
+            <p className="bank-note" style={{ marginTop: "10px", color: "#b33", fontSize: "18px", fontWeight: "bold" }}>
+              ⚠️ Please ensure that you transfer the amount to the provided bank account and then click proceed.
+            </p>
+          )}
+          <button className="payment-button" onClick={handlePayment} disabled={isPaying}>
+            {isPaying ? "Processing..." : (paymentMode === "online" ? "Proceed to Pay" : "Proceed to upload details")}
+          </button>
+        </>
+      )}
     </div>
   );
 };

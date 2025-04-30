@@ -67,6 +67,20 @@
   background-color: #005a8d;
 }
 
+.note-box {
+  background: #fff8c5;
+  color: #333;
+  border-left: 5px solid #ffcc00;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+
 
 .abstract-actions {
   margin-top: 2.5rem;

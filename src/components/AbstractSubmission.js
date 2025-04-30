@@ -46,6 +46,17 @@ const AbstractSubmission = () => {
     }
   };
 
+  const handleRegisterRedirect = () => {
+    if (isAuthenticated) {
+      navigate('/registration-form');
+    } else {
+      setErrorMessage('Please log in before registering for the conference.');
+      setTimeout(() => {
+        navigate('/login-signup?redirect=/registration-form');
+      }, 2000);
+    }
+  };
+
   const handleViewStatus = (abstractCode) => {
     navigate(`/abstract-submission-status?code=${abstractCode}`);
   };
@@ -56,7 +67,7 @@ const AbstractSubmission = () => {
       <div className='abstract-submission'>
         <div className="marquee-banner" onClick={handleSubmitRedirect}>
           <div className="marquee-text">
-            Abstract Submission Open! — Submit before April 30, 2025 — Click here to submit your abstract now!
+            Abstract Submission Open! — Submit before May 31, 2025 — Click here to submit your abstract now!
           </div>
         </div>
 
@@ -69,51 +80,58 @@ const AbstractSubmission = () => {
             </p>
           </header>
 
+          <div className="note-box">
+            <strong>Note: One registered author can present only one paper/poster</strong>
+          </div>
+
           {/* === Abstract Actions === */}
           <section className="abstract-actions">
-            <h2 className="section-subtitle">Your Submissions</h2>
+            {isAuthenticated && (
+              <>
+                <h2 className="section-subtitle">Your Submissions</h2>
 
-            {loading ? (
-              <p>Loading your abstracts...</p>
-            ) : abstracts.length > 0 ? (
-              <>
-                <ul className="submitted-abstracts-list">
-                  {abstracts.map((abs, index) => (
-                    <li key={index} className="abstract-entry">
-                      <strong>{abs.title || `Abstract ${index + 1}`}</strong><br />
-                      Code: <code>{abs.abstractCode}</code><br />
-                      <button
-                        className="btn btn-primary small"
-                        onClick={() => handleViewStatus(abs.abstractCode)}
-                      >
-                        View Abstract Status
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                <div className="button-group center-buttons">
-                  <button className="btn btn-primary" onClick={handleSubmitRedirect}>
-                    Submit Another Abstract
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p>No abstracts submitted yet.</p>
-                <div className="button-group center-buttons">
-                  <button className="btn btn-primary" onClick={handleSubmitRedirect}>
-                    Submit Abstract Now
-                  </button>
-                  <a
-                    className="btn btn-secondary"
-                    href="/stis2025/assets/Abstract-Template.docx"
-                    download
-                  >
-                    Download Abstract Template
-                  </a>
-                </div>
+                {loading ? (
+                  <p>Loading your abstracts...</p>
+                ) : abstracts.length > 0 ? (
+                  <>
+                    <ul className="submitted-abstracts-list">
+                      {abstracts.map((abs, index) => (
+                        <li key={index} className="abstract-entry">
+                          <strong>{abs.title || `Abstract ${index + 1}`}</strong><br />
+                          Code: <code>{abs.abstractCode}</code><br />
+                          <button
+                            className="btn btn-primary small"
+                            onClick={() => handleViewStatus(abs.abstractCode)}
+                          >
+                            View Abstract Status
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p>You have not submitted any abstracts yet.</p>
+                )}
               </>
             )}
+
+            {/* This part always visible */}
+            <h2>Kindly submit your abstract in accordance with the provided abstract template.</h2>
+            <div className="button-group center-buttons">
+              <button className="btn btn-primary" onClick={handleSubmitRedirect}>
+                Submit Abstract Now
+              </button>
+              <button className="btn btn-primary" onClick={handleRegisterRedirect}>
+                Proceed to Payment
+              </button>
+              <a
+                className="btn btn-secondary"
+                href="/stis2025/assets/Abstract-Template.docx"
+                download
+              >
+                Download Abstract Template
+              </a>
+            </div>
 
             {errorMessage && <p className="error-message centered-text">{errorMessage}</p>}
           </section>

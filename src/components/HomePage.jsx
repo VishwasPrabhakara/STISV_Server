@@ -115,7 +115,7 @@ const speakers = [
     imagePath: "/stis2025/assets/speakers_upscaled/Kazuki Morita.png"
   },
   {
-    name: " Geoffrey Brooks",
+    name: "G.A Brooks",
     affiliation: "Swinburne University, Australia",
     url: "https://www.swinburne.edu.au/research/our-research/access-our-research/find-a-researcher-or-supervisor/researcher-profile/?id=gbrooks/",
     imagePath: "/stis2025/assets/speakers_upscaled/Geoffrey Brooks.jpeg"
@@ -180,7 +180,7 @@ const speakers = [
   },
 
   {
-    name: " GG Roy",
+    name: "Gour Gopal Roy",
     affiliation: "IIT Kharagpur, India",
     url: "http://www.metal.iitkgp.ac.in/People/facultyDetails/6",
     imagePath: "/stis2025/assets/speakers_upscaled/GG Roy.png"
@@ -194,7 +194,7 @@ const speakers = [
   },
 
   {
-    name: " AK Singh",
+    name: " Amarendra K Singh",
     affiliation: " IIT Kanpur, India",
     url: "https://www.iitk.ac.in/new/amarendra-kumar-singh ",
     imagePath: "/stis2025/assets/speakers_upscaled/amrendra-singh.jpeg"
@@ -212,6 +212,41 @@ const speakers = [
     affiliation: "Steel Dynamics",
     url: "https://www.linkedin.com/in/kamalesh-mandal-phd-49140626/",
     imagePath: "/stis2025/assets/speakers_upscaled/Kamalesh Mandal.jpeg"
+  },
+
+  {
+    name: " Seshadri Seetharaman ",
+    affiliation: "Emeritus Professor at the Royal Institute of Technology, KTH, Sweden",
+    url: "http://www.femri.org/team-detail-indiv-2.aspx#:~:text=Sheshadri%20Seetharaman,of%20Technology%2C%20KTH%2C%20Sweden",
+    imagePath: "/stis2025/assets/speakers_upscaled/Seshadri Seetharaman.jpeg"
+  },
+
+  {
+    name: " Narasimha Mangadoddy",
+    affiliation: "Indian Institute of Technology, Hyderabad",
+    url: "https://www.iith.ac.in/che/narasimha/",
+    imagePath: "/stis2025/assets/speakers_upscaled/Dr. Narasimha Mangadoddy.jpeg"
+  },
+
+  {
+    name: "Shatrughan Soren",
+    affiliation: "Indian Institute of Technology (Indian School of Mines), Dhanbad",
+    url: "https://www.iitism.ac.in/faculty-details?faculty=ssoren",
+    imagePath: "/stis2025/assets/speakers_upscaled/Dr. Shatrughan Soren.jpeg"
+  },
+
+  {
+    name: "Nikhil Dhawan",
+    affiliation: "Indian Institute of Technology, Roorkee",
+    url: "https://iitr.ac.in/Departments/Metallurgical%20and%20Materials%20Engineering%20Department/People/Faculty/100714.html",
+    imagePath: "/stis2025/assets/speakers_upscaled/Dr. Nikhil Dhawan .jpeg"
+  },
+
+  {
+    name: "Sabita Sarkar",
+    affiliation: "Indian Institute of Technology, Madras",
+    url: "https://mme.iitm.ac.in/faculty-inner.php?id=26&fc=1",
+    imagePath: "/stis2025/assets/speakers_upscaled/Dr. Sabita Sarkar.jpeg"
   },
 ];
 
@@ -236,14 +271,16 @@ const HomePage = () => {
       <Navbar />
 
       {/* Announcement Banner (Scrolling) */}
-      <div className="announcement-bar">
-        <marquee behavior="scroll" direction="left" scrollamount="15">
-          📢 Last Date of Abstract Submission: 30th April 2025
-          &nbsp;&nbsp;&nbsp; • Acceptance Notification: 30th May 2025
-          &nbsp;&nbsp;&nbsp; • Final Submission: 30th September 2025
-          &nbsp;&nbsp;&nbsp; • Abstract Template is now available for download
-        </marquee>
-      </div>
+      <div class="announcement-wrapper">
+  <div class="announcement-track">
+    📢 <span class="highlight-flash">Abstract Submission Deadline Extended</span> 
+    &nbsp;&nbsp;&nbsp; • Last Date of Abstract Submission: <span class="highlight-flash">31st May 2025</span>
+    &nbsp;&nbsp;&nbsp; • Acceptance Notification: <span class="highlight-flash">25th June 2025</span>
+    &nbsp;&nbsp;&nbsp; • Final Submission: <span class="highlight-flash">15th October 2025</span>
+    &nbsp;&nbsp;&nbsp; • Abstract Template is now available for download
+    &nbsp;&nbsp;&nbsp; • Registration Details Updated
+  </div>
+</div>
 
       {/* Hero Section */}
       <section className={`hero-section ${fadeIn ? 'fade-in' : ''}`}>
@@ -288,22 +325,8 @@ const HomePage = () => {
             </a>
           </div>
 
-          {/* Countdown Timer */}
-          <div className="countdown-wrapper">
-            {['days', 'hours', 'minutes', 'seconds'].map((unit) => (
-              <div className="countdown-box" key={unit}>
-                <span className="countdown-value">
-                  {String(timeRemaining[unit]).padStart(2, '0')}
-                </span>
-                <span className="countdown-label">
-                  {unit.charAt(0).toUpperCase() + unit.slice(1)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <section className="speakers-section">
-  <h2 className="section-title">Our Esteemed Speakers</h2>
+          <section className="speakers-section">
+
   <div className="speakers-marquee">
   <div className="speakers-track">
   {[...speakers, ...speakers].map((speaker, idx) => (
@@ -320,6 +343,10 @@ const HomePage = () => {
 </div>
   </div>
 </section>
+
+       
+        </div>
+     
       </section>
       {/* Speakers Section */}
 

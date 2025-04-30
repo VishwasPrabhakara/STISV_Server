@@ -78,12 +78,13 @@
 .announcement-board {
   background: #f8fbff;
   padding: 4rem 1rem;
-  margin-top: 3rem;
+  margin-top: -2rem;
 }
 
 .announcement-container {
   max-width: 960px;
   margin: 0 auto;
+  margin-top: -3rem;
   background: #ffffff;
   padding: 2.5rem 2rem;
   border-radius: 12px;

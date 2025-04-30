@@ -13,6 +13,7 @@
   color: #003366;
   border-bottom: 1px solid #e0e0e0;
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+  margin-bottom: -2rem;
 }
 
 .proceedings-heading {
@@ -33,11 +34,13 @@
 /* MAIN PARAGRAPH */
 .proceedings-content {
   max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+  margin: 20px auto;
+  padding: 0 10px;
   font-size: 1.05rem;
   line-height: 1.7;
   color: #333;
+  text-align: justify;
+  margin-bottom: -2rem;
 }
 
 /* TWO-COLUMN SECTION */

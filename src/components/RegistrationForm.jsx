@@ -6,22 +6,20 @@ import Step1PersonalDetails from "./Step1PersonalDetails";
 import Step2AbstractDetails from "./Step2AbstractDetails";
 import Step3AccompanyingDetails from "./Step3AccompanyingDetails";
 import Step4PaymentSelection from "./Step4PaymentSelection";
-import ConfirmationModal from "./ConfirmationModal";
+
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "./RegistrationForm.css";
 
-// 🔥 BASE URL of your backend (Render)
 const API_BASE_URL = "https://stisv.onrender.com";
-
-const steps = ["Personal Details", "Abstract Details", "Accompanying Persons", "Payment"];
+const steps = ["Author Details", "Abstract Details", "Accompanying Person", "Payment"];
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [abstractsError, setAbstractsError] = useState(false); // 🆕 Added for duplicate authors
+  const [abstractsError, setAbstractsError] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -38,17 +36,15 @@ const RegistrationForm = () => {
     accompanyingPersons: [],
     selectedCategory: "",
     selectedCategoryDetails: {
-      baseFee: 0,
-      gst: 0,
       totalAmount: 0,
+      categories: [],
     },
-    abstractSubmissions: [], // 🆕 Make sure this is here
+    abstractSubmissions: [],
   });
 
   useEffect(() => {
     const storedUid = sessionStorage.getItem("uid");
     if (!storedUid) {
-      console.warn("User not logged in. Redirecting...");
       window.location.href = `/stis2025/login-signup?redirect=/stis2025/registration-form`;
     } else {
       fetchUserInfo(storedUid);
@@ -59,10 +55,7 @@ const RegistrationForm = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
       if (response.data) {
-        setFormData(prev => ({
-          ...prev,
-          ...response.data,
-        }));
+        setFormData(prev => ({ ...prev, ...response.data }));
       }
     } catch (error) {
       console.error("❌ Error fetching user info:", error.message);
@@ -75,9 +68,7 @@ const RegistrationForm = () => {
     try {
       const storedUid = sessionStorage.getItem("uid");
       if (!storedUid) return;
-
       await axios.put(`${API_BASE_URL}/user-info/update/${storedUid}`, updatedFields);
-      console.log("✅ User info updated successfully!");
     } catch (error) {
       console.error("❌ Error updating user info:", error.message);
     }
@@ -85,12 +76,11 @@ const RegistrationForm = () => {
 
   const nextStep = async () => {
     if (abstractsError && step === 1) {
-      alert("❌ Please ensure each abstract has a different Presenting Author before proceeding.");
+      alert("❌ Please ensure each abstract has a different Presenting Author.");
       return;
     }
-
     if (step < steps.length - 1) {
-      await updateUserInfo(formData); // Save before moving
+      await updateUserInfo(formData);
       setStep(prev => prev + 1);
     } else {
       setShowConfirmation(true);
@@ -98,9 +88,7 @@ const RegistrationForm = () => {
   };
 
   const prevStep = () => {
-    if (step > 0) {
-      setStep(prev => prev - 1);
-    }
+    if (step > 0) setStep(prev => prev - 1);
   };
 
   const updateFormData = (newData) => {
@@ -111,11 +99,10 @@ const RegistrationForm = () => {
     try {
       const storedUid = sessionStorage.getItem("uid");
       if (!storedUid) {
-        console.error("User ID missing. Cannot submit final form.");
+        console.error("User ID missing. Cannot submit.");
         return;
       }
-
-      await updateUserInfo(formData); // Final save
+      await updateUserInfo(formData);
       alert("✅ Registration Form Saved Successfully!");
       navigate("/stis2025/payment");
     } catch (error) {
@@ -124,9 +111,7 @@ const RegistrationForm = () => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
@@ -142,28 +127,28 @@ const RegistrationForm = () => {
 
         <div className="form-content">
           {step === 0 && (
-            <Step1PersonalDetails 
-              formData={formData} 
-              updateFormData={updateFormData} 
+            <Step1PersonalDetails
+              formData={formData}
+              updateFormData={updateFormData}
             />
           )}
           {step === 1 && (
-            <Step2AbstractDetails 
-              formData={formData} 
-              updateFormData={updateFormData} 
-              setAbstractsError={setAbstractsError} // 🆕 Pass down
+            <Step2AbstractDetails
+              formData={formData}
+              updateFormData={updateFormData}
+              setAbstractsError={setAbstractsError}
             />
           )}
           {step === 2 && (
-            <Step3AccompanyingDetails 
-              formData={formData} 
-              updateFormData={updateFormData} 
+            <Step3AccompanyingDetails
+              formData={formData}
+              updateFormData={updateFormData}
             />
           )}
           {step === 3 && (
-            <Step4PaymentSelection 
-              formData={formData} 
-              updateFormData={updateFormData} 
+            <Step4PaymentSelection
+              formData={formData}
+              updateFormData={updateFormData}
             />
           )}
         </div>
@@ -174,21 +159,18 @@ const RegistrationForm = () => {
               Previous
             </button>
           )}
-          {step < steps.length - 1 && (
+          {step < steps.length - 1 ? (
             <button className="nav-button" onClick={nextStep}>
               Next
             </button>
+          ) : (
+            showConfirmation && (
+              <button className="nav-button" onClick={handleSubmitFinalForm}>
+                Final Submit
+              </button>
+            )
           )}
-         
         </div>
-
-        {showConfirmation && (
-          <ConfirmationModal
-            formData={formData}
-            closeModal={() => setShowConfirmation(false)}
-            submitForm={handleSubmitFinalForm}
-          />
-        )}
       </div>
       <br />
       <br />

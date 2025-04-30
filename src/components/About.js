@@ -3,6 +3,58 @@ import './About.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+const pastPhotos = [
+  {
+    imagePath: "/stis2025/assets/atis2009/1.jpg",
+    eventName: "ATIS 2009",
+    location: "IISc Bengaluru",
+    websiteLink:"https://materials.iisc.ac.in/~atis2009/"
+  },
+  {
+    imagePath: "/stis2025/assets/atis2009/6.jpg",
+    eventName: "ATIS 2009",
+    location: "IISc Bengaluru",
+    websiteLink:"https://materials.iisc.ac.in/~atis2009/"
+  },
+
+  
+  {
+    imagePath: "/stis2025/assets/atis2009/9.jpg",
+    eventName: "ATIS 2009",
+    location: "IISc Bengaluru",
+    websiteLink:"https://materials.iisc.ac.in/~atis2009/"
+  },
+
+  {
+    imagePath: "/stis2025/assets/4.jpeg",
+    eventName: "STIS-III 2017",
+    location: "IIT Kanpur",
+  },
+
+  {
+    imagePath: "/stis2025/assets/stis2022/1.JPG",
+    eventName: "STIS-IV 2022",
+    location: "IIT Bombay",
+    websiteLink:"https://stis2022.org/"
+  },
+
+  {
+    imagePath: "/stis2025/assets/stis2022/2.jpg",
+    eventName: "STIS-IV 2022",
+    location: "IIT Bombay",
+    websiteLink:"https://stis2022.org/"
+  },
+  {
+    imagePath: "/stis2025/assets/stis2022/3.JPG",
+    eventName: "STIS-IV 2022",
+    location: "IIT Bombay",
+    websiteLink:"https://stis2022.org/"
+  },
+  
+  
+];
+
+
 const About = () => {
   return (
     <>
@@ -23,6 +75,44 @@ const About = () => {
               This Conference was initiated by India when there was dwindling manpower and lack of technology development in the area of ironmaking and steelmaking. The first Conference entitled <strong>Advances in the Theory of Ironmaking and Steelmaking (ATIS)</strong> was held in 2009 at the Indian Institute of Science (IISc), Bangalore, focussing on the theoretical aspects of iron- and steel making, as envisioned by Professor A. Ghosh, Professor Emeritus, Indian Institute of Technology (IIT), Kanpur, India. The overwhelming success achieved by its organization, resulted in the Conference becoming a quadrennial event and was rechristened as <strong>Science and Technology of Ironmaking and Steelmaking (STIS)</strong> to include technology. The Second, Third, and Fourth STIS Conferences were organised at Jamshedpur in 2013 (by National Metallurgical Laboratory (NML)/Tata Steel), IIT Kanpur in 2017, and IIT Bombay in 2022, respectively.
             </p>
           </div>
+
+          <section className="past-events-section">
+  <h2 className="section-title">Glimpses of Our Past Conferences</h2>
+
+  <div className="past-events-scroll-container">
+  <div className="past-events-scroll-track">
+    {[...pastPhotos, ...pastPhotos].map((photo, idx) => (
+      <a 
+        key={idx} 
+        href={photo.websiteLink} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="photo-card-scroll"
+      >
+        <div className="photo-image-container">
+          <img src={photo.imagePath} alt={photo.eventName} className="photo-image" />
+
+          {/* Hover Overlay inside image */}
+          <div className="photo-hover-overlay">
+            <h4>Learn More</h4>
+          </div>
+        </div>
+
+        {/* Static info separately below image */}
+        <div className="photo-static-info-below">
+          <h3>{photo.eventName}</h3>
+          <p>{photo.location}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</div>
+
+
+
+</section>
+
+
 
           <div className="about-text-block">
             <h2>STIS-V 2025</h2>

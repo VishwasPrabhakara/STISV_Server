@@ -123,7 +123,7 @@ const Step2AbstractDetails = ({ formData, updateFormData, setAbstractsError }) =
       )}
 
       <div className="abstract-note">
-        📌 <i>Each abstract requires a separate registration. Only one presenter is permitted per abstract.</i>
+        📌 <i>One registered author can present only one paper/poster</i>
       </div>
     </div>
   );
