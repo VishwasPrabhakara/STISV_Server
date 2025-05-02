@@ -590,7 +590,8 @@ app.post("/save-payment", async (req, res) => {
     };
 
      const feeDetails = categoriesSelected.map(item => {
-      const { key, currency: cur } = item;
+      const key = item.category;  // ✅ Corrected
+  const cur = item.currency;  // ✅ Corrected
       let base = 0, gst = 0, platform = 0;
       if (cur === "INR" && nationalFees[key]) {
         const fee = nationalFees[key][period];
