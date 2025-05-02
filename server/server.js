@@ -2,10 +2,23 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
+const cors = require("cors");
 
 // Initialize app FIRST
 const app = express();
-
+app.options("*", cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://stisv.vercel.app",
+    "https://stisv.onrender.com",
+    "https://materials.iisc.ac.in",
+    "https://stisv-1.onrender.com"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.post("/razorpay-webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
   const signature = req.headers["x-razorpay-signature"];
@@ -139,7 +152,7 @@ STIS-V 2025 Organizing Team`,
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const cors = require("cors");
+
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
@@ -207,18 +220,7 @@ const upload = multer({
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://stisv.vercel.app",
-    "https://stisv.onrender.com",
-    "https://materials.iisc.ac.in",
-    "https://stisv-1.onrender.com"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -568,18 +570,18 @@ app.post("/save-payment", async (req, res) => {
     const alreadyExists = user.payments.find(p => p.paymentId === razorpay_payment_id);
     if (alreadyExists) return res.status(409).json({ message: "Payment already recorded." });
 
-    // Fee breakdowns
+    // Fee Period
     const today = new Date();
     let period = "late";
     if (today <= new Date("2025-07-15")) period = "early";
     else if (today <= new Date("2025-11-20")) period = "regular";
 
-    // Fee structures
+    // Fee Structures
     const nationalFees = {
       "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
       "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
-      "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
-      "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+      "Student / Speaker": { early: { base: 1000, gst: 180, platform: 30 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+      "Student / Participant": { early: { base: 4000, gst: 720, platform: 120 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
     };
 
     const internationalFees = {
@@ -589,9 +591,12 @@ app.post("/save-payment", async (req, res) => {
       "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
     };
 
-     const feeDetails = categoriesSelected.map(item => {
-      const { key, currency: cur } = item;
+    // Recompute fee details backend-side (ignore frontend values)
+    const feeDetails = categoriesSelected.map(item => {
+      const key = item.category || item.key;
+      const cur = item.currency;
       let base = 0, gst = 0, platform = 0;
+
       if (cur === "INR" && nationalFees[key]) {
         const fee = nationalFees[key][period];
         base = fee.base;
@@ -603,6 +608,7 @@ app.post("/save-payment", async (req, res) => {
         gst = 0;
         platform = paymentMode === "online" ? fee.platform : 0;
       }
+
       return {
         category: key,
         currency: cur,
@@ -613,7 +619,7 @@ app.post("/save-payment", async (req, res) => {
       };
     });
 
-    // Add one payment record (but multiple categories stored inside notes)
+    // Push to user.payments
     user.payments.push({
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
@@ -654,7 +660,7 @@ Payment ID: ${razorpay_payment_id}
 Amount: ${currency === "INR" ? "₹" : "$"}${amount}
 
 Selected Categories:
-${feeDetails.map(f => `- ${f.category} (${currency === "INR" ? "₹" : "$"}${f.totalAmount})`).join('\n')}
+${feeDetails.map(f => `- ${f.category} (${f.currency === "INR" ? "₹" : "$"}${f.totalAmount})`).join('\n')}
 
 Thank you for registering and supporting the event.
 
@@ -669,6 +675,7 @@ STIS-V 2025 Organizing Team`,
     res.status(500).json({ message: "Saving payment failed", error: err.message });
   }
 });
+
 
 
 app.get("/get-payments/:uid", verifyToken, async (req, res) => {
