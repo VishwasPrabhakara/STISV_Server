@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
+const cors = require("cors");
 
 // Initialize app FIRST
 const app = express();
@@ -151,7 +152,7 @@ STIS-V 2025 Organizing Team`,
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const cors = require("cors");
+
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
