@@ -61,9 +61,19 @@ app.post("/razorpay-webhook", bodyParser.raw({ type: "application/json" }), asyn
     let period = "late";
     if (today <= new Date("2025-07-15")) period = "early";
     else if (today <= new Date("2025-11-20")) period = "regular";
+const nationalFees = {
+  "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
+  "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
+  "Student / Speaker": { early: { base: 1000, gst: 180, platform: 30 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+  "Student / Participant": { early: { base: 4, gst: 7, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+};
 
-    const nationalFees = { /* same as above */ };
-    const internationalFees = { /* same as above */ };
+const internationalFees = {
+  "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
+  "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
+  "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
+  "Student / Participant": { early: { base: 150, platform: 5 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
+};
 
     const feeDetails = categoriesSelected.map(item => {
       const { key, currency: cur } = item;
