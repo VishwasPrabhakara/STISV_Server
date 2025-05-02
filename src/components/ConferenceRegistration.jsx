@@ -2,8 +2,12 @@ import React from "react";
 import "./ConferenceRegistration.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { useNavigate } from 'react-router-dom';
 
 const ConferenceRegistration = () => {
+  const navigate = useNavigate();
+  const handleRedirect = () => navigate('/registration-form');
+
   return (
     <>
       <Navbar />
@@ -13,7 +17,7 @@ const ConferenceRegistration = () => {
         <section className="registration-info-box">
           <h3>Registration Information</h3>
           <p>
-            Welcome to the registration portal for <strong>STIS 2025</strong>.
+            Welcome to the registration portal for <strong>STIS-V 2025</strong>.
             Below are the detailed categories and applicable charges.
           </p>
 
@@ -133,9 +137,17 @@ const ConferenceRegistration = () => {
             </ol>
           </div>
         </section>
+        <br />
+        <br/>
+        <button className="btn btn-primary" onClick={handleRedirect}>
+                Proceed to Register and Pay
+      </button>
       </div>
+
+      
       <br />
       <br />
+      
       <br />
       <br />
       <Footer />

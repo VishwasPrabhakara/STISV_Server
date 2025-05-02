@@ -92,6 +92,11 @@
   margin-top: 20px;
 }
 
+.registration-container .btn-primary{
+  text-align: center;
+  margin-left: 38%;
+}
+
 .important-section {
   background-color: #f0f8ff;
   padding: 20px;

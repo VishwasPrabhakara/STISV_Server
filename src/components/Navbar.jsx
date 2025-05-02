@@ -112,9 +112,10 @@ const Navbar = () => {
     { to: "/payment-receipts", label: "Payment Receipts" }
   ])
 ) : (
-  <NavLink to="/conference-registration" onClick={() => handleNavClick("/conference-registration")}>
-    Registration
-  </NavLink>
+  renderDropdown("Registration", [
+    { to: "/conference-registration", label: "Registration Information" },
+    { to: "/registration-form", label: "Registration Payment" }
+  ])
 )}
 
 

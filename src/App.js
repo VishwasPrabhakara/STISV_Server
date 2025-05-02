@@ -45,7 +45,7 @@ import ChairmanMessage from './components/ChairmanMessage';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import SponsorshipOpportunities from './components/SponsorshipOpportunities';
-import PaymentPage from './components/PaymentPage';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import PaymentSuccess from './components/PaymentSuccess';
 import AllPayments from './components/AllPayments';
 import RegistrationForm from './components/RegistrationForm';
@@ -73,7 +73,7 @@ const router = createBrowserRouter(
       <Route path="/accomodation" element={<Accomodation />} />
       <Route path="/tours-and-social-events" element={<Tours />} />
       <Route path="/travel-information" element={<Travel />} />
-      <Route path='/conference-payment' element={<PaymentPage />} />
+      <Route path='/privacy' element={<PrivacyPolicy/>}  />
       <Route path="/official-language" element={<Language />} />
       <Route path="/about-bengaluru" element={<Bengaluru />} />
       <Route path="/weather" element={<Weather />} />
@@ -81,7 +81,7 @@ const router = createBrowserRouter(
       <Route path="/international-travel" element={<InternationalTravel />} />
       <Route path="/transport" element={<Transport />} />
       <Route path="/local-bengaluru" element={<Local />} />
-      <Route path='//payment-success' element={<PaymentSuccess />} />
+      <Route path='/payment-success' element={<PaymentSuccess />} />
       <Route path="/electricity" element={<Electricity />} />
       <Route path="/reach-iisc" element={<ReachIisc />} />
       <Route path="/login-signup" element={<MemberAccess />} />

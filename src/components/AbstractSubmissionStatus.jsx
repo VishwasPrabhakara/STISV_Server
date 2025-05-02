@@ -80,7 +80,7 @@ const AbstractSubmissionStatus = () => {
     };
 
     fetchAbstract();
-  },  [abstractCode, navigate]);
+  }, );
 
   const handleFileChange = (e) => setNewFile(e.target.files[0]);
 
@@ -180,9 +180,18 @@ const token = localStorage.getItem("token");
   );
 
   const renderOtherAuthors = () => {
-    const authors = editMode ? updatedAbstract.otherAuthors : abstract.otherAuthors;
-    const isArray = Array.isArray(authors);
-    const safeAuthors = isArray ? authors : [];
+    let authors = editMode ? updatedAbstract.otherAuthors : abstract.otherAuthors;
+  
+    if (typeof authors === "string") {
+      try {
+        authors = JSON.parse(authors);
+      } catch (e) {
+        authors = [];
+      }
+    }
+  
+    const safeAuthors = Array.isArray(authors) ? authors : [];
+  
 
     return (
       <div className="abstract-row">

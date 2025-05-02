@@ -11,6 +11,8 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState("");
   const [isPaying, setIsPaying] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
 
   const today = new Date();
   const earlyBirdDeadline = new Date("2025-07-15");
@@ -26,8 +28,8 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
   const nationalFees = {
     "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
     "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
-    "Student / Speaker": { early: { base: 10, gst: 1, platform: 1 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
-    "Student / Participant": { early: { base: 4, gst: 1, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+    "Student / Speaker": { early: { base: 1000, gst: 180, platform: 30 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
+    "Student / Participant": { early: { base: 4, gst: 7, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
   };
 
   const internationalFees = {
@@ -152,7 +154,13 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
           contact: storedPhone,
         },
         handler: async function (response) {
+          setIsRedirecting(true);
           try {
+            console.log("Sending to save-payment:", {
+              categoriesSelected: selectedItems,
+              amount: totalAmount
+            });
+            
             await axios.post(`${API_BASE_URL}/save-payment`, {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
@@ -191,6 +199,13 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
   const totalPayable = selectedItems.reduce((acc, item) => acc + item.totalAmount, 0);
 
   return (
+  <>
+    {isRedirecting && (
+      <div className="redirect-overlay">
+        <div className="spinner"></div>
+        <div>Redirecting to payment success...</div>
+      </div>
+    )}
     <div className="step4-container">
       <h2 className="step4-title">Payment</h2>
 
@@ -312,6 +327,7 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
         </>
       )}
     </div>
+    </>
   );
 };
 
