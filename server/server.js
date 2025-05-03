@@ -967,6 +967,24 @@ try {
   }
 });
 
+// Image-specific file filter for receipt uploads (JPG/PNG only)
+const imageFileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid image file type. Only JPG and PNG are allowed.'), false);
+  }
+};
+
+// Separate multer instance for image receipts
+const imageUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB
+});
+
+
 const cloudinaryReceipts = require("cloudinary").v2;
 
 cloudinaryReceipts.config({
@@ -975,7 +993,7 @@ cloudinaryReceipts.config({
   api_secret: process.env.CLOUDINARY_RECEIPT_API_SECRET,
 });
     
-app.post("/upload-receipt", upload.single("receiptFile"), async (req, res) => {
+app.post("/upload-receipt", imageUpload.single("receiptFile"), async (req, res) => {
   const { transactionId } = req.body;
 
   if (!transactionId || !req.file) {
