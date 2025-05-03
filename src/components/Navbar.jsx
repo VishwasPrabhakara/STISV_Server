@@ -92,6 +92,7 @@ const Navbar = () => {
       <NavLink to="/distinguished-speaker" end onClick={() => handleNavClick("/distinguished-speaker")}>Speakers</NavLink>
 
         {renderDropdown("Programme", [
+          { to: "/announcements",  label:"Latest Updates"},
           { to: "/conference-themes", label: "Themes & Topics" },
           { to: "/conference-schedule", label: "Schedule" },
           { to: "/conference-proceedings", label: "Conference Proceedings" },
