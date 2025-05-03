@@ -6,7 +6,6 @@ import "./PaymentSuccess.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import receiptHeader from "../assets/STISV_HEADER.png";
-import receiptFooter from "../assets/STISV_FOOTER.png";
 import rupeeSymbol from "../assets/symbols/rupee.jpeg";
 import dollarSymbol from "../assets/symbols/dollar.jpeg";
 
@@ -34,7 +33,6 @@ const PaymentSuccess = () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
         const user = res.data;
-
         if (user && user.payments?.length > 0) {
           const latestPayment = user.payments[user.payments.length - 1];
           latestPayment.selectedCategoryDetails = user.selectedCategoryDetails;
@@ -57,107 +55,157 @@ const PaymentSuccess = () => {
 
   const handleDownloadPDF = () => {
     if (!paymentData) return;
-
+  
     const doc = new jsPDF("p", "mm", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-
+  
     const name = sessionStorage.getItem("fullName") || "N/A";
     const email = sessionStorage.getItem("email") || "N/A";
-    const phone = sessionStorage.getItem("phone") || "N/A";
+    const phone = "+91 8792826161";
     const country = sessionStorage.getItem("country") || "N/A";
-    const date = new Date(paymentData.timestamp).toLocaleDateString();
-
+    const dateObj = new Date(paymentData.timestamp);
+    const date = `${String(dateObj.getDate()).padStart(2, '0')}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${dateObj.getFullYear()}`;
+    const confirmationNumber = `STISV_2025${Math.floor(1000 + Math.random() * 9000)}`;
+  
     const getSymbolImage = (currency) => currency === "INR" ? rupeeSymbol : dollarSymbol;
-
+  
     const header = new Image();
-    const footer = new Image();
-    let imagesLoaded = 0;
-
+    let headerLoaded = false;
+  
     const renderPDF = () => {
-      doc.addImage(header, "PNG", 0, 0, pageWidth, 30);
-      doc.setFontSize(16);
-      doc.setTextColor(34, 82, 160);
-      doc.text("Registration Fee Payment Receipt/Invoice", pageWidth / 2, 42, null, null, "center");
-
-      // === Participant Details ===
-    doc.setFontSize(13);
-    doc.setFont(undefined, "bold");
-    doc.text("Participant Details", 15, 50);
-    doc.setLineWidth(0.5);
-    doc.line(15, 52, pageWidth - 15, 52);
-
-    doc.setFontSize(11);
-    doc.setFont(undefined, "normal");
-    doc.text(`Name: ${name}`, 15, 60);
-    doc.text(`Email: ${email}`, 15, 67);
-    doc.text(`Phone: ${phone}`, 15, 74);
-    doc.text(`Country: ${country}`, 15, 81);
-
-    // === Payment Details ===
-    doc.setFontSize(13);
-    doc.setFont(undefined, "bold");
-    doc.text("Payment Details", 15, 90 );
-    doc.line(15, 92, pageWidth - 15, 92);
-
-    doc.setFontSize(11);
-    doc.setFont(undefined, "normal");
-    doc.text(`Payment ID: ${paymentData.paymentId}`, 15, 100);
-    doc.text(`Order ID: ${paymentData.orderId}`, 15, 107);
-    doc.text(`Date: ${date}`, 15, 114);
-
-      let yPos = 125;
+      if (header.complete && header.naturalWidth !== 0) {
+        doc.addImage(header, "PNG", 0, 0, pageWidth, 30);
+      }
+  
+      // Heading
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.setTextColor(0, 51, 153);
+      doc.text("STIS-V 2025 – Registration Fee Payment Receipt", pageWidth / 2, 40, { align: "center" });
+  
+      // Participant Details
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
-      doc.setFont(undefined, "bold");
-      doc.text("Fee Breakdown:", 15, yPos);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Participant Details", 15, 52);
+      doc.line(15, 54, pageWidth - 15, 54);
+  
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text(`Name: ${name}`, 15, 61);
+      doc.text(`Email: ${email}`, 15, 68);
+      doc.text(`Phone: ${phone}`, 15, 75);
+      doc.text(`Country: ${country}`, 15, 82);
+  
+      // Payment Details
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("Payment Details", 15, 92);
+      doc.line(15, 94, pageWidth - 15, 94);
+  
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text(`Payment ID: ${paymentData.paymentId}`, 15, 101);
+      doc.text(`Order ID: ${paymentData.orderId}`, 15, 108);
+      doc.text(`Date: ${date}`, 15, 115);
+      doc.text(`Confirmation Number: ${confirmationNumber}`, 15, 122);
+  
+      // === Fee Breakdown Table ===
+      let y = 135;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("Fee Breakdown", 15, y);
+      y += 5;
+  
+      // Table Borders & Headers
+      const col1X = 15, col2X = pageWidth - 55, tableWidth = pageWidth - 30;
+      doc.setDrawColor(0);
+      doc.setFillColor(220, 230, 241);
+      doc.rect(col1X, y, tableWidth, 8, "FD");
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Type", col1X + 2, y + 6);
+      doc.text("Amount", col2X + 2, y + 6);
+      y += 8;
+  
+      let grandTotal = 0;
+      const items = paymentData.selectedCategoryDetails?.categories || [];
       
-      yPos += 8;
-
-      const items = paymentData.categoriesSelected || [];
-
       items.forEach((item) => {
-        const sym = getSymbolImage(item.currency);
-        doc.setFont(undefined, "bold");
-        doc.text(`Registration Fee for ${item.category}`, 15, yPos);
-        doc.addImage(sym, "PNG", pageWidth - 30, yPos - 3, 3, 3);
-        doc.text(`${item.baseFee}`, pageWidth - 25, yPos, { align: "left" });
-        yPos += 7;
+        const symbol = getSymbolImage(item.currency);
+        const rowHeight = 7;
+  
+        // Registration Fee
+        doc.setDrawColor(180);
+        doc.setLineWidth(0.1);
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Registration Fee for ${item.category}`, col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.baseFee}`, col2X + 2, y + 5);
+        y += rowHeight;
+  
+        // GST
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.setFont("helvetica", "normal");
+        doc.text("GST (18%)", col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.gst}`, col2X + 2, y + 5);
+        y += rowHeight;
+  
+        // Platform
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.text("Platform Fee", col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.platform}`, col2X + 2, y + 5);
+        y += rowHeight;
+  
+        grandTotal += item.baseFee + item.gst + item.platform;
+         // vertical separator between columns
 
-        doc.setFont(undefined, "normal");
-        if (item.gst > 0) {
-          doc.text("GST (18%)", 15, yPos);
-          doc.addImage(sym, "PNG", pageWidth - 30, yPos - 3, 3, 3);
-          doc.text(`${item.gst}`, pageWidth - 25, yPos, { align: "left" });
-          yPos += 7;
-        }
-
-        if (item.platform > 0) {
-          doc.text("Platform Fee", 15, yPos);
-          doc.addImage(sym, "PNG", pageWidth - 30, yPos - 3, 3, 3);
-          doc.text(`${item.platform}`, pageWidth - 25, yPos, { align: "left" });
-          yPos += 7;
-        }
-
-        doc.setDrawColor(200);
-        doc.line(15, yPos, pageWidth - 15, yPos);
-        yPos += 8;
       });
-
-      const sym = getSymbolImage(paymentData.currency);
-      doc.setFont(undefined, "bold");
-      doc.text("Grand Total", 15, yPos);
-      doc.addImage(sym, "PNG", pageWidth - 30, yPos - 3, 3, 3);
-      doc.text(`${paymentData.amount}`, pageWidth - 25, yPos, { align: "left" });
-
-      doc.addImage(footer, "PNG", 0, pageHeight - 30, pageWidth, 30);
+  
+      // === Grand Total (outside table) ===
+      y += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("Grand Total", col1X+100, y);
+      doc.addImage(getSymbolImage(paymentData.currency), "PNG", col2X - 6, y - 3, 3, 3);
+      doc.text(`${grandTotal}`, col2X + 2, y);
+  
+      // === Footer: STISV Conference ===
+      y += 15;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("Conference Secretariat", pageWidth / 2, y, { align: "center" });
+      y += 6;
+  
+      doc.setFont("helvetica", "normal");
+      doc.text("STIS-V 2025", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Department of Materials Engineering", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Indian Institute of Science (IISc), Bengaluru – 560012, India", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Webpage: https://materials.iisc.ac.in/stis2025/", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Email: stis.mte@iisc.ac.in, Phone: +91-80-22933240", pageWidth / 2, y, { align: "center" });
+  
       doc.save(`STIS2025_Receipt_${paymentData.paymentId}.pdf`);
     };
-
+  
+    header.onload = () => {
+      headerLoaded = true;
+      renderPDF();
+    };
+  
+    header.onerror = () => {
+      console.warn("❌ Header image failed to load.");
+      renderPDF();
+    };
+  
+    setTimeout(() => {
+      if (!headerLoaded) renderPDF();
+    }, 2000);
+  
     header.src = receiptHeader;
-    footer.src = receiptFooter;
-    header.onload = () => ++imagesLoaded === 2 && renderPDF();
-    footer.onload = () => ++imagesLoaded === 2 && renderPDF();
   };
+  
 
   return (
     <>
