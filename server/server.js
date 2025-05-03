@@ -362,6 +362,7 @@ const userSchema = new mongoose.Schema({
 
 const TransactionSchema = new mongoose.Schema({
   transactionId: { type: String, required: true },
+  receiptUrl: { type: String, required: true }, // ✅ Add this
   submittedAt: { type: Date, default: Date.now },
 });
 
@@ -854,6 +855,51 @@ app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (
 if (!user) {
   return res.status(404).json({ message: "User not found" });
 }
+
+app.post("/upload-receipt", upload.single("receiptFile"), async (req, res) => {
+  const { transactionId } = req.body;
+
+  if (!transactionId || !req.file) {
+    return res.status(400).json({ message: "Transaction ID and file are required." });
+  }
+
+  const uploadToCloudinary = () => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "raw",               // For .pdf/.docx etc.
+          folder: "receipts",                 // ✅ Folder for receipts
+          use_filename: true,
+          unique_filename: false,
+          public_id: req.file.originalname,   // e.g. Receipt123.docx
+          overwrite: true
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+  };
+
+  try {
+    const result = await uploadToCloudinary();
+
+    const newTransaction = new Transaction({
+      transactionId,
+      receiptUrl: result.secure_url
+    });
+
+    await newTransaction.save();
+    res.status(200).json({ message: "Receipt uploaded successfully", url: result.secure_url });
+  } catch (error) {
+    console.error("❌ Cloudinary upload failed:", error);
+    res.status(500).json({ message: "Upload failed", error: error.message });
+  }
+});
+
+
 
 // Create new abstract object
 const newAbstract = {
