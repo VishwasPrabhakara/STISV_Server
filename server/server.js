@@ -13,6 +13,7 @@ app.use(cors({
     "https://stisv.vercel.app",
     "https://stisv.onrender.com",
     "https://materials.iisc.ac.in",
+     "https://materials.iisc.ac.in/stis2025",
     "https://stisv-1.onrender.com"
   ],
   credentials: true,
