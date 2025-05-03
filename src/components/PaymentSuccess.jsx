@@ -22,6 +22,19 @@ const PaymentSuccess = () => {
   const token = sessionStorage.getItem("token");
   const API_BASE_URL = "https://stisv.onrender.com";
 
+  const generateConfirmationNumber = (paymentId) => {
+    if (!paymentId || paymentId.length < 4) return "STISV_20250000";
+    const last4 = paymentId.slice(-4);
+    const asciiSum = last4
+      .split("")
+      .reduce((sum, ch) => sum + ch.charCodeAt(0), 0)
+      .toString()
+      .padStart(4, "0")
+      .slice(0, 4); // Ensure it's exactly 4 digits
+    return `STISV_2025${asciiSum}`;
+  };
+  
+
   useEffect(() => {
     const fetchPaymentInfo = async () => {
       if (!uid || !token) {
@@ -53,6 +66,8 @@ const PaymentSuccess = () => {
     else setLoading(false);
   }, [uid, token, status]);
 
+  
+
   const handleDownloadPDF = () => {
     if (!paymentData) return;
   
@@ -65,7 +80,7 @@ const PaymentSuccess = () => {
     const country = sessionStorage.getItem("country") || "N/A";
     const dateObj = new Date(paymentData.timestamp);
     const date = `${String(dateObj.getDate()).padStart(2, '0')}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${dateObj.getFullYear()}`;
-    const confirmationNumber = `STISV_2025${Math.floor(1000 + Math.random() * 9000)}`;
+  
   
     const getSymbolImage = (currency) => currency === "INR" ? rupeeSymbol : dollarSymbol;
   
@@ -81,37 +96,39 @@ const PaymentSuccess = () => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(18);
       doc.setTextColor(0, 51, 153);
-      doc.text("STIS-V 2025 – Registration Fee Payment Receipt", pageWidth / 2, 40, { align: "center" });
+      doc.text("STIS-V 2025 – Registration Fee Payment Receipt", pageWidth / 2, 44, { align: "center" });
   
       // Participant Details
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
       doc.setTextColor(0, 0, 0);
-      doc.text("Participant Details", 15, 52);
-      doc.line(15, 54, pageWidth - 15, 54);
+      doc.text("Participant Details", 15, 56);
+      doc.line(15, 58, pageWidth - 15, 58);
   
       doc.setFont("helvetica", "normal");
       doc.setFontSize(11);
-      doc.text(`Name: ${name}`, 15, 61);
-      doc.text(`Email: ${email}`, 15, 68);
-      doc.text(`Phone: ${phone}`, 15, 75);
-      doc.text(`Country: ${country}`, 15, 82);
+      doc.text(`Name: ${name}`, 15, 65);
+      doc.text(`Email: ${email}`, 15, 72);
+      doc.text(`Phone: ${phone}`, 15, 79);
+      doc.text(`Country: ${country}`, 15, 86);
   
       // Payment Details
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
-      doc.text("Payment Details", 15, 92);
-      doc.line(15, 94, pageWidth - 15, 94);
+      doc.text("Payment Details", 15, 96);
+      doc.line(15, 98, pageWidth - 15, 98);
   
       doc.setFont("helvetica", "normal");
       doc.setFontSize(11);
-      doc.text(`Payment ID: ${paymentData.paymentId}`, 15, 101);
-      doc.text(`Order ID: ${paymentData.orderId}`, 15, 108);
-      doc.text(`Date: ${date}`, 15, 115);
-      doc.text(`Confirmation Number: ${confirmationNumber}`, 15, 122);
+      doc.text(`Payment ID: ${paymentData.paymentId}`, 15, 105);
+      doc.text(`Order ID: ${paymentData.orderId}`, 15, 112);
+      doc.text(`Date: ${date}`, 15, 119);
+      const confirmationNumber = generateConfirmationNumber(paymentData.paymentId);
+
+      doc.text(`Confirmation Number: ${confirmationNumber}`, 15, 126);
   
       // === Fee Breakdown Table ===
-      let y = 135;
+      let y = 139;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
       doc.text("Fee Breakdown", 15, y);
@@ -122,7 +139,7 @@ const PaymentSuccess = () => {
       doc.setDrawColor(0);
       doc.setFillColor(220, 230, 241);
       doc.rect(col1X, y, tableWidth, 8, "FD");
-      doc.setFontSize(11);
+      doc.setFontSize(12);
       doc.setTextColor(0, 0, 0);
       doc.text("Type", col1X + 2, y + 6);
       doc.text("Amount", col2X + 2, y + 6);
@@ -140,6 +157,7 @@ const PaymentSuccess = () => {
         doc.setLineWidth(0.1);
         doc.rect(col1X, y, tableWidth, rowHeight);
         doc.setFont("helvetica", "bold");
+        
         doc.text(`Registration Fee for ${item.category}`, col1X + 2, y + 5);
         doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
         doc.text(`${item.baseFee}`, col2X + 2, y + 5);
@@ -150,6 +168,7 @@ const PaymentSuccess = () => {
         doc.setFont("helvetica", "normal");
         doc.text("GST (18%)", col1X + 2, y + 5);
         doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        
         doc.text(`${item.gst}`, col2X + 2, y + 5);
         y += rowHeight;
   
@@ -168,12 +187,12 @@ const PaymentSuccess = () => {
       // === Grand Total (outside table) ===
       y += 10;
       doc.setFont("helvetica", "bold");
-      doc.text("Grand Total", col1X+100, y);
+      doc.text("Grand Total", col1X+105, y);
       doc.addImage(getSymbolImage(paymentData.currency), "PNG", col2X - 6, y - 3, 3, 3);
       doc.text(`${grandTotal}`, col2X + 2, y);
   
       // === Footer: STISV Conference ===
-      y += 15;
+      y += 30;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
       doc.text("Conference Secretariat", pageWidth / 2, y, { align: "center" });

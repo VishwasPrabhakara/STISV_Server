@@ -80,9 +80,14 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="footer-base">
-        <p>&copy; {new Date().getFullYear()} STIS-V 2025. All rights reserved.</p>
-      
-      </div>
+  <p className="footer-copy">
+    &copy; {new Date().getFullYear()} STIS-V 2025. All rights reserved.&nbsp; |&nbsp;&nbsp;
+  </p>
+  <p className="footer-credit">
+    Designed & Developed by <a href="https://linktr.ee/VishwasPrabhakara" target="_blank" rel="noopener noreferrer">Vishwas Prabhakara</a>
+  </p>
+</div>
+
     </footer>
   );
 };

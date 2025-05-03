@@ -236,7 +236,7 @@ const token = localStorage.getItem("token");
                 ))}
               </tbody>
             </table>
-            {safeAuthors.length < 5 && (
+            {safeAuthors.length < 10 && (
               <button className="add-author-btn" onClick={() => {
                 const updated = [...safeAuthors, { name: "", affiliation: "" }];
                 setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });

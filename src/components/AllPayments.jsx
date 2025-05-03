@@ -1,35 +1,46 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "./AllPayments.css";
+import receiptHeader from "../assets/STISV_HEADER.png";
+import rupeeSymbol from "../assets/symbols/rupee.jpeg";
+import dollarSymbol from "../assets/symbols/dollar.jpeg";
 
 const AllPayments = () => {
-  const [payments, setPayments] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const uid = sessionStorage.getItem("uid") || localStorage.getItem("uid");
+  const uid = sessionStorage.getItem("uid");
   const token = localStorage.getItem("token");
   const API_BASE_URL = "https://stisv.onrender.com";
 
   useEffect(() => {
-    if (!sessionStorage.getItem("email")) {
-      window.location.href = `/stis2025/login-signup?redirect=/stis2025/payment-reciepts`;
-      return;
-    }
-
     const fetchPayments = async () => {
+      if (!uid || !token) {
+        setError("You are not logged in.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const res = await axios.get(`${API_BASE_URL}/get-payments/${uid}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setPayments(res.data.payments || []);
+        const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
+        const user = res.data;
+
+        if (user?.payments?.length > 0) {
+          const enrichedPayments = user.payments.map(pmt => ({
+            ...pmt,
+            selectedCategoryDetails: user.selectedCategoryDetails,
+            categoriesSelected: user.selectedCategoryDetails?.categories || []
+          }));
+          setPaymentData(enrichedPayments);
+        } else {
+          setError("No payment records found.");
+        }
       } catch (err) {
-        setError("Failed to load payments");
+        setError("Failed to load payment info.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -39,118 +50,138 @@ const AllPayments = () => {
     fetchPayments();
   }, [uid, token]);
 
+  const generateConfirmationNumber = (paymentId) => {
+    if (!paymentId || paymentId.length < 4) return "STISV_20250000";
+    const last4 = paymentId.slice(-4);
+    const asciiSum = last4
+      .split("")
+      .reduce((sum, ch) => sum + ch.charCodeAt(0), 0)
+      .toString()
+      .padStart(4, "0")
+      .slice(0, 4);
+    return `STISV_2025${asciiSum}`;
+  };
+
+  const formatTimestamp = (timestamp) => {
+    const d = new Date(timestamp);
+    return `${String(d.getDate()).padStart(2, "0")}-${String(d.getMonth() + 1).padStart(2, "0")}-${d.getFullYear()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
+  };
+
   const generatePDF = (payment) => {
     const doc = new jsPDF("p", "mm", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    const userName = sessionStorage.getItem("fullName") || "N/A";
-    const userEmail = sessionStorage.getItem("email") || "N/A";
-    const userPhone = sessionStorage.getItem("phone") || "N/A";
+    const name = sessionStorage.getItem("fullName") || "N/A";
+    const email = sessionStorage.getItem("email") || "N/A";
+    const phone = "+91 8792826161";
+    const country = sessionStorage.getItem("country") || "N/A";
+    const dateObj = new Date(payment.timestamp);
+    const date = `${String(dateObj.getDate()).padStart(2, '0')}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${dateObj.getFullYear()}`;
+    const confirmationNumber = generateConfirmationNumber(payment.paymentId);
+    const getSymbolImage = (currency) => currency === "INR" ? rupeeSymbol : dollarSymbol;
 
-    // --- Header
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.setTextColor(34, 82, 160);
-    doc.text("STIS-V 2025", pageWidth / 2, 20, { align: "center" });
+    const header = new Image();
+    header.src = receiptHeader;
 
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Contact Information:", 14, 28);
-    doc.text("Phone: [Update Phone]", 14, 32);
-    doc.text("Email: [Update Email]", 14, 36);
-    doc.text("Website: [Update Website URL]", 14, 40);
+    header.onload = () => {
+      doc.addImage(header, "PNG", 0, 0, pageWidth, 30);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.setTextColor(0, 51, 153);
+      doc.text("STIS-V 2025 – Registration Fee Payment Receipt", pageWidth / 2, 44, { align: "center" });
 
-    // --- Summary
-    doc.setFontSize(14);
-    doc.text("Summary", 14, 50);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Participant Details", 15, 56);
+      doc.line(15, 58, pageWidth - 15, 58);
 
-    doc.setFontSize(10);
-    doc.text(`Payment Date: ${new Date(payment.timestamp).toLocaleDateString()}`, 14, 58);
-    doc.text(`Total Value: ₹${payment.amount}`, 14, 62);
-    doc.text(`Payment Processed: ₹${payment.amount}`, 14, 66);
-    doc.text(`Ref. Number: ${payment.paymentId}`, 14, 70);
-    doc.text(`Bank Auth: ${payment.bankAuth || "N/A"}`, 14, 74);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text(`Name: ${name}`, 15, 65);
+      doc.text(`Email: ${email}`, 15, 72);
+      doc.text(`Phone: ${phone}`, 15, 79);
+      doc.text(`Country: ${country}`, 15, 86);
 
-    // --- Receipt Table
-    doc.setFontSize(14);
-    doc.text("Receipt", 14, 84);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("Payment Details", 15, 96);
+      doc.line(15, 98, pageWidth - 15, 98);
 
-    const tableRows = [];
+      doc.setFont("helvetica", "normal");
+      doc.text(`Payment ID: ${payment.paymentId}`, 15, 105);
+      doc.text(`Order ID: ${payment.orderId}`, 15, 112);
+      doc.text(`Date: ${date}`, 15, 119);
+      doc.text(`Confirmation Number: ${confirmationNumber}`, 15, 126);
 
-    if (payment.items && payment.items.length > 0) {
-      payment.items.forEach((item) => {
-        tableRows.push([`${item.key} - Registration Fee`, 1, `₹${item.base}`, `₹${item.base}`]);
-        if (item.gst && item.gst > 0) {
-          tableRows.push(["GST (18%)", 1, `₹${item.gst}`, `₹${item.gst}`]);
-        }
-        if (item.platform && item.platform > 0) {
-          tableRows.push(["Platform Fee", 1, `₹${item.platform}`, `₹${item.platform}`]);
-        }
+      let y = 139;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("Fee Breakdown", 15, y);
+      y += 5;
+
+      const col1X = 15, col2X = pageWidth - 55, tableWidth = pageWidth - 30;
+      doc.setDrawColor(0);
+      doc.setFillColor(220, 230, 241);
+      doc.rect(col1X, y, tableWidth, 8, "FD");
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Type", col1X + 2, y + 6);
+      doc.text("Amount", col2X + 2, y + 6);
+      y += 8;
+
+      let grandTotal = 0;
+      const items = payment.selectedCategoryDetails?.categories || [];
+
+      items.forEach((item) => {
+        const symbol = getSymbolImage(item.currency);
+        const rowHeight = 7;
+
+        doc.setDrawColor(180);
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Registration Fee for ${item.category}`, col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.baseFee}`, col2X + 2, y + 5);
+        y += rowHeight;
+
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.setFont("helvetica", "normal");
+        doc.text("GST (18%)", col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.gst}`, col2X + 2, y + 5);
+        y += rowHeight;
+
+        doc.rect(col1X, y, tableWidth, rowHeight);
+        doc.text("Platform Fee", col1X + 2, y + 5);
+        doc.addImage(symbol, "PNG", col2X - 4, y + 1.5, 3, 3);
+        doc.text(`${item.platform}`, col2X + 2, y + 5);
+        y += rowHeight;
+
+        grandTotal += item.baseFee + item.gst + item.platform;
       });
-    } else {
-      // fallback if items not present
-      tableRows.push(["Registration Fee", 1, `₹${payment.amount}`, `₹${payment.amount}`]);
-    }
 
-    autoTable(doc, {
-      startY: 88,
-      head: [["Description", "Quantity", "Unit Amount", "Amount"]],
-      body: tableRows,
-      theme: "grid",
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [22, 160, 133] },
-    });
+      y += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("Grand Total", col1X + 105, y);
+      doc.addImage(getSymbolImage(payment.currency), "PNG", col2X - 6, y - 3, 3, 3);
+      doc.text(`${grandTotal}`, col2X + 2, y);
 
-    const finalY = doc.lastAutoTable.finalY + 5;
+      y += 30;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("Conference Secretariat", pageWidth / 2, y, { align: "center" });
+      y += 6;
 
-    // --- Grand Total
-    doc.setFontSize(10);
-    doc.text(`Grand Total: ₹${payment.amount}`, 14, finalY + 5);
+      doc.setFont("helvetica", "normal");
+      doc.text("STIS-V 2025", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Department of Materials Engineering", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Indian Institute of Science (IISc), Bengaluru – 560012, India", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Webpage: https://materials.iisc.ac.in/stis2025/", pageWidth / 2, y, { align: "center" }); y += 6;
+      doc.text("Email: stis.mte@iisc.ac.in, Phone: +91-80-22933240", pageWidth / 2, y, { align: "center" });
 
-    // --- Tax Summary
-    doc.setFontSize(14);
-    doc.text("Tax Summary", 14, finalY + 15);
-
-    doc.setFontSize(10);
-    if (payment.items && payment.items.length > 0) {
-      const totalGst = payment.items.reduce((sum, item) => sum + (item.gst || 0), 0);
-      doc.text(`* GST Included: ₹${totalGst}`, 14, finalY + 22);
-    } else {
-      doc.text("* GST Included: ₹0", 14, finalY + 22);
-    }
-
-    // --- Booking Confirmation
-    doc.setFontSize(14);
-    doc.text("Booking Confirmation", 14, finalY + 32);
-
-    doc.setFontSize(10);
-    doc.text(`Conference: STIS-V 2025`, 14, finalY + 40);
-    doc.text(`Dates: 9-12 December, 2025`, 14, finalY + 44);
-    doc.text(`Venue: IISc, Bengaluru`, 14, finalY + 48);
-    doc.text(`Reference Code: ${payment.orderId}`, 14, finalY + 52);
-
-    // --- Attendee Details
-    doc.setFontSize(14);
-    doc.text("Attendee Details", 14, finalY + 62);
-
-    doc.setFontSize(10);
-    doc.text(`First Name: ${userName.split(" ")[0]}`, 14, finalY + 70);
-    doc.text(`Last Name: ${userName.split(" ")[1] || ""}`, 14, finalY + 74);
-    doc.text(`Email: ${userEmail}`, 14, finalY + 78);
-    doc.text(`Phone: ${userPhone}`, 14, finalY + 82);
-    doc.text(`University/Organization: [Update University]`, 14, finalY + 86);
-    doc.text(`Designation: [Update Designation]`, 14, finalY + 90);
-
-    // --- Refund Policy
-    doc.setFontSize(14);
-    doc.text("Refund Policy", 14, finalY + 100);
-
-    doc.setFontSize(10);
-    doc.text("To request a refund, please contact the event coordinator with your name,", 14, finalY + 108);
-    doc.text("email address, invoice/receipt number, and reason for request.", 14, finalY + 112);
-    doc.text("Approval of refund is at the discretion of organizers.", 14, finalY + 116);
-
-    doc.save(`STISV2025_Receipt_${payment.paymentId}.pdf`);
+      doc.save(`STIS2025_Receipt_${payment.paymentId}.pdf`);
+    };
   };
 
   return (
@@ -159,33 +190,35 @@ const AllPayments = () => {
       <div className="all-payments-container">
         <h2>Your Payment History</h2>
         {loading ? (
-          <p className="loading">Loading...</p>
+          <p>Loading...</p>
         ) : error ? (
-          <p className="error">{error}</p>
-        ) : payments.length === 0 ? (
+          <p className="error-text">{error}</p>
+        ) : paymentData.length === 0 ? (
           <p>No payments found.</p>
         ) : (
           <table className="payments-table">
             <thead>
               <tr>
-                <th>Payment ID</th>
-                <th>Order ID</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Category</th>
-                <th>Timestamp</th>
-                <th>Receipt</th>
+                <th style={{ width: "15%" }}>Payment ID</th>
+                <th style={{ width: "15%" }}>Confirmation No.</th>
+                <th style={{ width: "10%" }}>Amount</th>
+                <th style={{ width: "30%" }}>Categories</th>
+                <th style={{ width: "20%" }}>Timestamp</th>
+                <th style={{ width: "15%" }}>Receipt</th>
               </tr>
             </thead>
             <tbody>
-              {payments.map((pmt, index) => (
-                <tr key={index}>
+              {paymentData.map((pmt, idx) => (
+                <tr key={idx}>
                   <td>{pmt.paymentId}</td>
-                  <td>{pmt.orderId}</td>
-                  <td>{pmt.amount} {pmt.currency === "INR" ? "Rupees" : "USD"}</td>
-                  <td>{pmt.status}</td>
-                  <td>{pmt.category}</td>
-                  <td>{new Date(pmt.timestamp).toLocaleString()}</td>
+                  <td>{generateConfirmationNumber(pmt.paymentId)}</td>
+                  <td>{pmt.currency === "INR" ? "₹" : "$"}{pmt.amount}</td>
+                  <td style={{ whiteSpace: "pre-wrap" }}>
+                    {(pmt.categoriesSelected || pmt.selectedCategoryDetails?.categories || [])
+                      .map(cat => cat.category)
+                      .join("\n")}
+                  </td>
+                  <td>{formatTimestamp(pmt.timestamp)}</td>
                   <td>
                     <button onClick={() => generatePDF(pmt)}>Download Receipt</button>
                   </td>
@@ -195,8 +228,8 @@ const AllPayments = () => {
           </table>
         )}
       </div>
-      <br />
-      <br />
+      <br /><br />
+      <br /><br />
       <Footer />
     </>
   );

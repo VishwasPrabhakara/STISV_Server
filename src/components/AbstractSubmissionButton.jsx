@@ -59,7 +59,7 @@ const SubmitAbstractForm = () => {
   };
 
   const addOtherAuthorField = () => {
-    if (formData.otherAuthors.length < 5) {
+    if (formData.otherAuthors.length < 10) {
       setFormData({
         ...formData,
         otherAuthors: [...formData.otherAuthors, { name: "", affiliation: "" }]
@@ -227,7 +227,7 @@ const SubmitAbstractForm = () => {
                 </div>
               </div>
             ))}
-            {formData.otherAuthors.length < 5 && (
+            {formData.otherAuthors.length < 10 && (
               <div className="add-author-btn-wrapper">
                 <button type="button" className="add-author-btn" onClick={addOtherAuthorField}>
                   + Add Another Author
