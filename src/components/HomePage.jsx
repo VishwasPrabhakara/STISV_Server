@@ -248,6 +248,20 @@ const speakers = [
     url: "https://mme.iitm.ac.in/faculty-inner.php?id=26&fc=1",
     imagePath: "/stis2025/assets/speakers_upscaled/Dr. Sabita Sarkar.jpeg"
   },
+
+  {
+    name: "A.K. Shukla",
+    affiliation: "Indian Institute of Technology, Madras",
+    url: "https://mme.iitm.ac.in/faculty-inner.php?id=25&fc=1",
+    imagePath: "/stis2025/assets/speakers_upscaled/AK Shukla.jpeg"
+  },
+
+  {
+    name: "Haijuan Wang",
+    affiliation: "University of Science and Technology, Beijing",
+    url: "https://scholar.google.com/citations?user=JB_hNRgAAAAJ&hl=zh-CN",
+    imagePath: "/stis2025/assets/speakers_upscaled/Prof. Haijuan Wang.jpeg"
+  },
 ];
 
 
