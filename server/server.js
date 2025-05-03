@@ -856,6 +856,14 @@ if (!user) {
   return res.status(404).json({ message: "User not found" });
 }
 
+const cloudinaryReceipts = require("cloudinary").v2;
+
+cloudinaryReceipts.config({
+  cloud_name: process.env.CLOUDINARY_RECEIPT_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_RECEIPT_API_KEY,
+  api_secret: process.env.CLOUDINARY_RECEIPT_API_SECRET,
+});
+    
 app.post("/upload-receipt", upload.single("receiptFile"), async (req, res) => {
   const { transactionId } = req.body;
 
