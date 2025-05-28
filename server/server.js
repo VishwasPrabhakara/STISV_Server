@@ -73,7 +73,7 @@ const internationalFees = {
   "Speaker / Participant": { early: { base: 350, platform: 13 }, regular: { base: 400, platform: 14 }, late: { base: 500, platform: 18 } },
   "Accompanying Person": { early: { base: 200, platform: 7 }, regular: { base: 250, platform: 9 }, late: { base: 250, platform: 9 } },
   "Student / Speaker": { early: { base: 100, platform: 4 }, regular: { base: 100, platform: 4 }, late: { base: 100, platform: 4 } },
-  "Student / Participant": { early: { base: 3, platform: 0 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
+  "Student / Participant": { early: { base: 2, platform: 1 }, regular: { base: 150, platform: 5 }, late: { base: 150, platform: 5 } },
 };
 
     const feeDetails = categoriesSelected.map(item => {
