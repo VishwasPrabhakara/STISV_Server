@@ -544,6 +544,7 @@ cloudinaryStudent.config({
 });
 
 // POST /api/upload-student-docs
+// POST /api/upload-student-docs
 app.post(
   "/api/upload-student-docs",
   studentUpload.array("docs"),
@@ -556,32 +557,38 @@ app.post(
 
       const uploads = await Promise.all(
         req.files.map((file, idx) => {
-          const originalName = file.originalname;              
-          const basename     = originalName.replace(/\.[^.]+$/, "");
-          // new separate folder for student docs:
-          const folder       = `student_docs/${categories[idx]
-            .replace(/\s+/g, "_")
-            .replace(/\//g, "_")}`;
+          // Keep the full original filename (with extension)
+          const originalName = file.originalname; // e.g. "myID.pdf"
+          // Build a safe folder name per category
+          const folder = `student_docs/${
+            categories[idx]
+              .replace(/\s+/g, "_")
+              .replace(/\//g, "_")
+          }`; // e.g. "student_docs/Student_Speaker"
 
+          // Wrap Cloudinary upload in a Promise
           return new Promise((resolve, reject) => {
             const stream = cloudinaryStudent.uploader.upload_stream(
               {
-                folder,                     // e.g. STISV2025/student_docs/Student_Speaker
-                resource_type:  "auto",
-                use_filename:   true,       // preserve originalName
-                unique_filename:false,
-                public_id:      basename,
-                overwrite:      true
+                resource_type: "raw",      // handle PDFs, DOCXs, JPGs, PNGs, etc.
+                folder,                    // dynamic folder per category
+                use_filename: true,        // keep the file name
+                unique_filename: false,    // no random suffix
+                public_id: originalName,   // full originalName including extension
+                overwrite: true            // allow re‐upload under same public_id
               },
               (err, result) => {
                 if (err) return reject(err);
+                // attach a download_url for forced‐download or preview
+                result.download_url = result.secure_url;
                 resolve({
                   category: categories[idx],
-                  url:      result.secure_url,
+                  url:      result.download_url,
                   publicId: result.public_id
                 });
               }
             );
+            // Kick off the upload
             stream.end(file.buffer);
           });
         })
@@ -594,6 +601,7 @@ app.post(
     }
   }
 );
+
 
 
 // Login User
