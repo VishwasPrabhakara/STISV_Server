@@ -520,6 +520,80 @@ app.put("/user-info/update/:uid", async (req, res) => {
   }
 });
 
+const studentUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/jpeg',
+      'image/png'
+    ];
+    cb(null, allowed.includes(file.mimetype));
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
+
+const cloudinaryStudent = require("cloudinary").v2;
+// and you’ve done:
+cloudinaryStudent.config({
+  cloud_name: process.env.CLOUDINARY_RECEIPT_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_RECEIPT_API_KEY,
+  api_secret: process.env.CLOUDINARY_RECEIPT_API_SECRET,
+});
+
+// POST /api/upload-student-docs
+app.post(
+  "/api/upload-student-docs",
+  studentUpload.array("docs"),
+  async (req, res) => {
+    try {
+      const categories = JSON.parse(req.body.categories || "[]");
+      if (categories.length !== req.files.length) {
+        return res.status(400).json({ message: "Must send one category per file." });
+      }
+
+      const uploads = await Promise.all(
+        req.files.map((file, idx) => {
+          const originalName = file.originalname;              
+          const basename     = originalName.replace(/\.[^.]+$/, "");
+          // new separate folder for student docs:
+          const folder       = `student_docs/${categories[idx]
+            .replace(/\s+/g, "_")
+            .replace(/\//g, "_")}`;
+
+          return new Promise((resolve, reject) => {
+            const stream = cloudinaryStudent.uploader.upload_stream(
+              {
+                folder,                     // e.g. STISV2025/student_docs/Student_Speaker
+                resource_type:  "auto",
+                use_filename:   true,       // preserve originalName
+                unique_filename:false,
+                public_id:      basename,
+                overwrite:      true
+              },
+              (err, result) => {
+                if (err) return reject(err);
+                resolve({
+                  category: categories[idx],
+                  url:      result.secure_url,
+                  publicId: result.public_id
+                });
+              }
+            );
+            stream.end(file.buffer);
+          });
+        })
+      );
+
+      return res.json({ uploaded: uploads });
+    } catch (err) {
+      console.error("❌ /api/upload-student-docs error:", err);
+      return res.status(500).json({ message: "Upload failed" });
+    }
+  }
+);
 
 
 // Login User
