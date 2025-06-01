@@ -7,27 +7,21 @@ import Footer from "./Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const DEADLINE = new Date("2025-05-31T23:59:59"); // ✅ Updated to May 31
-
+// Deadline for finalization (May 31, 2025 11:59:59 PM)
+const DEADLINE = new Date("2025-05-31T23:59:59");
 
 const AbstractSubmissionStatus = () => {
   const [abstract, setAbstract] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [updatedAbstract, setUpdatedAbstract] = useState({});
-  const [newFile, setNewFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [finalizing, setFinalizing] = useState(false);
-  const [updating, setUpdating] = useState(false);
-  const [showFinalizePopup, setShowFinalizePopup] = useState(false);
-  const [showFinalizedMessage, setShowFinalizedMessage] = useState(false); // ✅ NEW
+  const [showFinalizedMessage, setShowFinalizedMessage] = useState(false);
+
   const navigate = useNavigate();
-
-
-
   const searchParams = new URLSearchParams(window.location.search);
-  const abstractCode = searchParams.get("code");
+  const abstractCodeParam = searchParams.get("code");
 
+  // Fetch abstract (latest by user or by code), then force‐finalize if past deadline
   useEffect(() => {
     const token = localStorage.getItem("token");
     const uid = localStorage.getItem("uid");
@@ -41,28 +35,31 @@ const AbstractSubmissionStatus = () => {
       }, 2500);
       return;
     }
-    
 
     const fetchAbstract = async () => {
       try {
-        const url = abstractCode
-          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCode}`
+        const url = abstractCodeParam
+          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCodeParam}`
           : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
 
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const abstractData = abstractCode
+        // If a specific code was requested, res.data.abstract will hold one object.
+        // Otherwise, grab the last‐submitted one from res.data.abstracts.
+        const fetched = abstractCodeParam
           ? res.data.abstract
           : res.data.abstracts?.slice(-1)[0] || null;
 
-        if (!abstractData) {
+        if (!fetched) {
           setError("No abstracts submitted yet.");
-        } else {
-          setAbstract(abstractData);
-          setUpdatedAbstract(abstractData);
+          setLoading(false);
+          return;
         }
+
+        setAbstract(fetched);
+        setLoading(false);
       } catch (err) {
         console.error("AxiosError", err);
         if (err.response?.status === 401) {
@@ -70,212 +67,81 @@ const AbstractSubmissionStatus = () => {
           setTimeout(() => {
             navigate("/login-signup?redirect=/stis2025/abstract-submission-status");
           }, 2500);
-        
         } else {
           setError("Failed to load abstract.");
         }
-      } finally {
         setLoading(false);
       }
     };
 
     fetchAbstract();
-  }, );
+  }, [abstractCodeParam, navigate]);
 
-  const handleFileChange = (e) => setNewFile(e.target.files[0]);
+  // Once we have `abstract`, if the deadline has passed and it's not finalized, finalize automatically
+  useEffect(() => {
+    if (!abstract) return;
 
-  const handleUpdate = async () => {
-    setUpdating(true);
-    try {
-      const uid = localStorage.getItem("uid");
-const token = localStorage.getItem("token");
+    const now = new Date();
+    if (now <= DEADLINE) {
+      // Still before or exactly at deadline—do nothing.
+      return;
+    }
 
+    // If past deadline and not yet finalized, send finalize request once.
+    if (!abstract.isFinalized) {
+      const autoFinalize = async () => {
+        setFinalizing(true);
+        try {
+          const uid = localStorage.getItem("uid");
+          const token = localStorage.getItem("token");
 
-      const formData = new FormData();
-      formData.append("uid", uid);
-      formData.append("abstractCode", abstract.abstractCode);
+          await axios.post(
+            "https://stisv.onrender.com/finalize-abstract",
+            { uid, abstractCode: abstract.abstractCode },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
-      const fields = [
-        "title", "scope", "presentingType", "firstAuthorName", "firstAuthorAffiliation",
-        "presentingAuthorName", "presentingAuthorAffiliation", "mainBody"
-      ];
-
-      fields.forEach((field) => {
-        if (updatedAbstract[field]) {
-          formData.append(field, updatedAbstract[field]);
+          // Locally mark as finalized
+          setAbstract((prev) => ({ ...prev, isFinalized: true }));
+          setShowFinalizedMessage(true);
+        } catch (err) {
+          console.error("Auto‐finalize error:", err);
+          // (We choose not to set a user‐facing error here—backend could already be finalized.)
+        } finally {
+          setFinalizing(false);
         }
-      });
+      };
 
-      formData.append("otherAuthors", JSON.stringify(updatedAbstract.otherAuthors || []));
-
-      if (newFile) {
-        formData.append("abstractFile", newFile);
-      }
-
-      const res = await axios.put("https://stisv.onrender.com/update-abstract", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const updated = res.data.abstract;
-      const parsedAuthors = typeof updated.otherAuthors === "string"
-        ? JSON.parse(updated.otherAuthors)
-        : updated.otherAuthors;
-
-      const cleanUpdated = { ...updated, otherAuthors: parsedAuthors || [] };
-
-      setAbstract(cleanUpdated);
-      setUpdatedAbstract(cleanUpdated);
-      setEditMode(false);
-      setError(null);
-    } catch (err) {
-      console.error("Update error:", err);
-      setError("Failed to update.");
-    } finally {
-      setUpdating(false);
+      autoFinalize();
     }
-  };
+  }, [abstract]);
 
-  const confirmFinalize = async () => {
-    setFinalizing(true);
-    try {
-      const uid = localStorage.getItem("uid");
-      const token = localStorage.getItem("token");
-      await axios.post(
-        "https://stisv.onrender.com/finalize-abstract",
-        { uid, abstractCode: abstract.abstractCode },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setAbstract((prev) => ({ ...prev, isFinalized: true }));
-      setShowFinalizePopup(false);
-      setShowFinalizedMessage(true); // ✅ NEW
-    } catch {
-      setError("Finalization failed.");
-    } finally {
-      setFinalizing(false);
-    }
-  };
-
+  // Copy code to clipboard
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(abstract.abstractCode);
-    alert("Copied to clipboard!");
-  };
-
-  const renderField = (label, key, type = "text") => (
-    <div className="abstract-row" key={key}>
-      <strong>{label}:</strong>
-      {editMode ? (
-        type === "textarea" ? (
-          <textarea value={updatedAbstract[key] || ""} onChange={(e) =>
-            setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })} />
-        ) : (
-          <input type={type} value={updatedAbstract[key] || ""} onChange={(e) =>
-            setUpdatedAbstract({ ...updatedAbstract, [key]: e.target.value })} />
-        )
-      ) : (
-        <span style={{ whiteSpace: "pre-line" }}>
-          {abstract[key]?.length > 0 ? abstract[key] : "-"}
-        </span>
-      )}
-    </div>
-  );
-
-  const renderOtherAuthors = () => {
-    let authors = editMode ? updatedAbstract.otherAuthors : abstract.otherAuthors;
-  
-    if (typeof authors === "string") {
-      try {
-        authors = JSON.parse(authors);
-      } catch (e) {
-        authors = [];
-      }
+    if (abstract?.abstractCode) {
+      navigator.clipboard.writeText(abstract.abstractCode);
+      alert("Copied to clipboard!");
     }
-  
-    const safeAuthors = Array.isArray(authors) ? authors : [];
-  
-
-    return (
-      <div className="abstract-row">
-        <strong>Other Authors:</strong>
-        {editMode ? (
-          <>
-            <table className="authors-table">
-              <thead><tr><th>Name</th><th>Affiliation</th><th>Action</th></tr></thead>
-              <tbody>
-                {safeAuthors.map((author, i) => (
-                  <tr key={i}>
-                    <td>
-                      <input
-                        type="text"
-                        value={author.name || ""}
-                        onChange={(e) => {
-                          const updated = [...safeAuthors];
-                          updated[i].name = e.target.value;
-                          setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={author.affiliation || ""}
-                        onChange={(e) => {
-                          const updated = [...safeAuthors];
-                          updated[i].affiliation = e.target.value;
-                          setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <button onClick={() => {
-                        const updated = [...safeAuthors];
-                        updated.splice(i, 1);
-                        setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
-                      }} style={{ color: "red" }}>✖</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {safeAuthors.length < 10 && (
-              <button className="add-author-btn" onClick={() => {
-                const updated = [...safeAuthors, { name: "", affiliation: "" }];
-                setUpdatedAbstract({ ...updatedAbstract, otherAuthors: updated });
-              }} style={{ marginTop: "1rem" }}>+ Add Author</button>
-            )}
-          </>
-        ) : (
-          safeAuthors.length > 0 ? (
-            <table className="authors-table">
-              <thead><tr><th>Name</th><th>Affiliation</th></tr></thead>
-              <tbody>
-                {safeAuthors.map((a, i) => (
-                  <tr key={i}>
-                    <td>{a.name || "-"}</td>
-                    <td>{a.affiliation || "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <span>No additional authors</span>
-          )
-        )}
-      </div>
-    );
   };
 
-  const goHome = () => window.location.href = "/stis2025/";
+  // “Back to Home” button
+  const goHome = () => {
+    window.location.href = "/stis2025/";
+  };
 
   return (
     <>
       <Navbar />
+
       <div className="abstract-status-container">
         <h2>Abstract Submission Status</h2>
+
         {loading && <p>Loading...</p>}
         {error && <p className="error-message">{error}</p>}
 
         {abstract && (
           <>
+            {/* Abstract Code + Copy Icon */}
             <div className="abstract-row abstract-code-row">
               <strong>Abstract Code:</strong>
               <div className="abstract-code-box">
@@ -284,23 +150,99 @@ const token = localStorage.getItem("token");
               </div>
             </div>
 
-            {renderField("Title", "title")}
-            {renderField("Theme", "scope")}
-            {renderField("Presentation Type", "presentingType")}
-            {renderField("First Author", "firstAuthorName")}
-            {renderField("First Affiliation", "firstAuthorAffiliation")}
-            {renderOtherAuthors()}
-            {renderField("Presenting Author", "presentingAuthorName")}
-            {renderField("Presenting Affiliation", "presentingAuthorAffiliation")}
-            {renderField("Main Abstract", "mainBody", "textarea")}
+            {/* Title, Theme, Presentation Type, etc. */}
+            <div className="abstract-row">
+              <strong>Title:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.title || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>Theme:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.scope || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>Presentation Type:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.presentingType || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>First Author:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.firstAuthorName || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>First Affiliation:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.firstAuthorAffiliation || "-"}
+              </span>
+            </div>
+
+            {/* Other Authors (always read‐only) */}
+            <div className="abstract-row">
+              <strong>Other Authors:</strong>
+              {Array.isArray(abstract.otherAuthors) && abstract.otherAuthors.length > 0 ? (
+                <table className="authors-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Affiliation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {abstract.otherAuthors.map((a, i) => (
+                      <tr key={i}>
+                        <td>{a.name || "-"}</td>
+                        <td>{a.affiliation || "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <span>No additional authors</span>
+              )}
+            </div>
+
+            <div className="abstract-row">
+              <strong>Presenting Author:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.presentingAuthorName || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>Presenting Affiliation:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.presentingAuthorAffiliation || "-"}
+              </span>
+            </div>
+
+            <div className="abstract-row">
+              <strong>Main Abstract:</strong>
+              <span style={{ whiteSpace: "pre-line" }}>
+                {abstract.mainBody || "-"}
+              </span>
+            </div>
 
             <div className="abstract-row">
               <strong>Status:</strong>
-              <span className={
-                abstract.status === "Approved" ? "status-accepted"
-                  : abstract.status === "Rejected" ? "status-rejected"
+              <span
+                className={
+                  abstract.status === "Approved"
+                    ? "status-accepted"
+                    : abstract.status === "Rejected"
+                    ? "status-rejected"
                     : "status-pending"
-              }>
+                }
+              >
                 {abstract.status}
               </span>
             </div>
@@ -312,59 +254,41 @@ const token = localStorage.getItem("token");
               </div>
             )}
 
+            {/* Show success message if auto‐finalized */}
             {showFinalizedMessage && (
               <div className="success-message">
-                ✅ Your abstract has been successfully submitted.
+                ✅ Your abstract has been successfully submitted. Our team is reviewing your abstract and will get back to you with an update by June 25th, 2025.
               </div>
             )}
 
             <div className="abstract-row">
               <strong>Abstract File:</strong>
               {abstract.abstractFile ? (
-                <a href={abstract.abstractFile} target="_blank" rel="noreferrer">Download</a>
-              ) : <span>No file uploaded</span>}
+                <a href={abstract.abstractFile} target="_blank" rel="noreferrer">
+                  Download
+                </a>
+              ) : (
+                <span>No file uploaded</span>
+              )}
               <span> (Open the downloaded file in .docx format.)</span>
             </div>
 
-            {editMode ? (
-              <>
-                <div className="abstract-row">
-                  <strong>Upload New File:</strong>
-                  <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
-                </div>
-                <div className="edit-action-row">
-                  <button onClick={handleUpdate} disabled={updating}>
-                    {updating ? "Saving..." : "Save Changes"}
-                  </button>
-                  <button onClick={() => setEditMode(false)}>Cancel</button>
-                </div>
-              </>
-            ) : (
-              <div className="main-action-row">
-                <button onClick={() => setEditMode(true)}>Edit / Resubmit Abstract</button>
-                {!abstract.isFinalized && (
-                  <button onClick={() => setShowFinalizePopup(true)}>Submit Abstract</button>
-                )}
-                <button onClick={goHome}>Back to Home</button>
-              </div>
-            )}
+            {/* 
+              === REMOVED ===
+              • “Edit / Resubmit Abstract” button 
+              • Manual “Submit Abstract” button 
+              Since all abstracts are now automatically finalized past the deadline. 
+            */}
 
-            {showFinalizePopup && (
-              <div className="popup-overlay">
-                <div className="popup">
-                  <h3>Submit Abstract?</h3>
-                  <p>You can still edit until April 30.</p>
-                  <button onClick={confirmFinalize} disabled={finalizing}>
-                    {finalizing ? "Submitting..." : "Yes, Submit"}
-                  </button>
-                  <button onClick={() => setShowFinalizePopup(false)}>Cancel</button>
-                </div>
-              </div>
-            )}
+            <div className="main-action-row">
+              <button onClick={goHome}>Back to Home</button>
+            </div>
           </>
         )}
       </div>
-      <br /><br />
+
+      <br />
+      <br />
       <Footer />
     </>
   );

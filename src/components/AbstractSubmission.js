@@ -41,7 +41,7 @@ const AbstractSubmission = () => {
     if (isAuthenticated) {
       navigate('/submit-abstract');
     } else {
-      setErrorMessage('Please log in before submitting an abstract.');
+      setErrorMessage('Redirecting you to login...');
       setTimeout(() => navigate('/login-signup'), 2000);
     }
   };
@@ -65,9 +65,9 @@ const AbstractSubmission = () => {
     <>
       <Navbar />
       <div className='abstract-submission'>
-        <div className="marquee-banner" onClick={handleSubmitRedirect}>
+        <div className="marquee-banner" >
           <div className="marquee-text">
-            Abstract Submission Open! — Submit before May 31, 2025 — Click here to submit your abstract now!
+            Abstract Submission Closed! — The deadline was May 31, 2025 — Thank you for your interest!
           </div>
         </div>
 
@@ -76,7 +76,7 @@ const AbstractSubmission = () => {
           <header className="abstract-header">
             <h1>Abstract Submission</h1>
             <p className="abstract-description">
-              Submit your abstract aligned with the conference themes.
+              <br></br>Abstract submissions are now closed. Thank you to everyone who submitted abstracts. <br/> Your submission is currently under review, and you will receive an update by June 25, 2025.
             </p>
           </header>
 
@@ -116,22 +116,29 @@ const AbstractSubmission = () => {
             )}
 
             {/* This part always visible */}
-            <h2>Kindly submit your abstract in accordance with the provided abstract template.</h2>
-            <div className="button-group center-buttons">
-              <button className="btn btn-primary" onClick={handleSubmitRedirect}>
-                Submit Abstract Now
-              </button>
-              <button className="btn btn-primary" onClick={handleRegisterRedirect}>
-                Proceed to Payment
-              </button>
-              <a
-                className="btn btn-secondary"
-                href="/stis2025/assets/Abstract-Template.docx"
-                download
-              >
-                Download Abstract Template
-              </a>
-            </div>
+            {!isAuthenticated ? (
+              <>
+                <h2>To view the status of your submitted abstracts, please log in to your account.</h2>
+                <div className="button-group center-buttons">
+                  <button className="btn btn-secondary" onClick={handleSubmitRedirect}>
+                    Login
+                  </button>
+                   <button className="btn btn-primary" onClick={handleRegisterRedirect}>
+                    Proceed to Payment
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                
+                <div className="button-group center-buttons">
+                  <button className="btn btn-primary" onClick={handleRegisterRedirect}>
+                    Proceed to Payment
+                  </button>
+                </div>
+              </>
+            )}
+
 
             {errorMessage && <p className="error-message centered-text">{errorMessage}</p>}
           </section>

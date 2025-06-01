@@ -84,8 +84,16 @@ const Footer = () => {
     &copy; {new Date().getFullYear()} STIS-V 2025. All rights reserved.&nbsp; |&nbsp;&nbsp;
   </p>
   <p className="footer-credit">
-    Designed & Developed by <a href="https://linktr.ee/VishwasPrabhakara" target="_blank" rel="noopener noreferrer">Vishwas Prabhakara</a>
-  </p>
+  Designed & Developed by{" "}
+  <a href="https://linktr.ee/VishwasPrabhakara" target="_blank" rel="noopener noreferrer">
+    Vishwas Prabhakara
+  </a>{" "}
+  &{" "}
+  <a href="https://www.linkedin.com/in/swaraj-kumar-89ab501b7/" target="_blank" rel="noopener noreferrer">
+    Swaraj Kumar
+  </a>
+</p>
+
 </div>
 
     </footer>

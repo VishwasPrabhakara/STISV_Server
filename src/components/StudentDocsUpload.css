@@ -1,0 +1,158 @@
+/* StudentDocsUpload.css */
+
+
+.student-upload-container {
+  max-width: 600px;
+  margin: 1.5rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.student-upload-container h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.student-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.category-block {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.category-block legend {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.student-upload-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #444;
+}
+
+.student-upload-form input[type="file"] {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  color: #b33;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.student-upload-form button {
+  align-self: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.student-upload-form button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.student-upload-form button:hover:not(:disabled),
+.student-upload-form button:focus:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.upload-results {
+  margin-top: 1.5rem;
+}
+
+.upload-results ul {
+  list-style: none;
+  padding: 0;
+}
+
+.upload-results li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.upload-results a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.upload-results a:hover,
+.upload-results a:focus {
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  
+}
+
+.edit-button,
+.continue-button {
+  padding: 0.6rem 1.1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+  
+}
+
+.edit-button {
+  background-color: #6c757d;
+  color: #fff;
+  
+}
+
+.continue-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.edit-button:hover,
+.continue-button:hover,
+.edit-button:focus,
+.continue-button:focus {
+  filter: brightness(0.9);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .student-upload-container {
+    margin: 1rem;
+    padding: 0.75rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .student-upload-form button,
+  .edit-button,
+  .continue-button {
+    width: 100%;
+    text-align: center;
+  }
+}

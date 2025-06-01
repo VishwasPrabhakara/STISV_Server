@@ -48,11 +48,11 @@ const ConferenceRegistration = () => {
                     <td>₹9,000 + ₹1,620 (18% GST) = <b>₹10,620</b></td>
                   </tr>
                   <tr>
-                    <td>Student / Speaker</td>
+                    <td><span className="red-asterisk">** </span> Student / Speaker</td>
                     <td colSpan="3">₹1,000 + ₹180 (18% GST) = <b>₹1,180</b></td>
                   </tr>
                   <tr>
-                    <td>Student / Participant</td>
+                    <td><span className="red-asterisk">** </span> Student / Participant</td>
                     <td colSpan="3">₹4,000 + ₹720 (18% GST) = <b>₹4,720</b></td>
                   </tr>
                 </tbody>
@@ -84,11 +84,11 @@ const ConferenceRegistration = () => {
                     <td><b>$250</b></td>
                   </tr>
                   <tr>
-                    <td>Student / Speaker</td>
+                    <td><span className="red-asterisk">** </span> Student / Speaker</td>
                     <td colSpan="3"><b>$100</b></td>
                   </tr>
                   <tr>
-                    <td>Student / Participant</td>
+                    <td><span className="red-asterisk">** </span> Student / Participant</td>
                     <td colSpan="3"><b>$150</b></td>
                   </tr>
                 </tbody>
@@ -104,7 +104,13 @@ const ConferenceRegistration = () => {
 
           <p className="note">
             <strong>
-              <span className="red-asterisk">*</span> Note:
+              <span className="red-asterisk">**</span> Note:
+            </strong> Students need to upload their  valid <strong>Institute ID</strong> and <strong>Bonafide Certificate</strong> from Institute / University.
+          </p>
+
+          <p className="note">
+            <strong>
+              <span ></span> Note:
             </strong> One registered author can present only one paper/poster.
           </p>
           <div className="important-section-container">

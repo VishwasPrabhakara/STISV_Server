@@ -34,10 +34,10 @@ const Bengaluru = () => {
             displayLink: "Explore Freedom Park Details →"
         },
         {
-            title: "Bangalore Palace",
+            title: "Bengaluru Palace",
             description: "Drawing inspiration from England's Windsor Castle, this majestic palace showcases stunning Tudor-style architecture with ornate turreted parapets, fortified towers, battlements, and Gothic windows. Its sprawling courtyard serves as a premier venue for international concerts, art exhibitions, and cultural celebrations.",
             link: "https://bangalorepalace.in/",
-            displayLink: "Visit Bangalore Palace Website →"
+            displayLink: "Visit Bengaluru Palace Website →"
         },
         {
             title: "Tipu Sultan's Summer Palace",
@@ -189,7 +189,7 @@ const Bengaluru = () => {
             title: "National Gallery of Modern Art",
             description: "Housed in a colonial-era mansion, this gallery showcases an extraordinary collection of Indian art from the 18th century onwards, featuring works by masters like Raja Ravi Varma, Amrita Sher-Gil, and Rabindranath Tagore.",
             link: "http://ngmaindia.gov.in/bengaluru.asp",
-            displayLink: "Visit NGMA Bangalore →"
+            displayLink: "Visit NGMA Bengaluru →"
         },
         {
             title: "Indian Music Experience",
@@ -225,7 +225,7 @@ const Bengaluru = () => {
         },
         {
             title: "St. Mary's Basilica",
-            description: "Established in 1818 and renovated in 1874, this Gothic-style basilica features stunning stained-glass windows and impressive Corinthian columns. It stands as Bangalore's oldest church and hosts the famous St. Mary's Feast.",
+            description: "Established in 1818 and renovated in 1874, this Gothic-style basilica features stunning stained-glass windows and impressive Corinthian columns. It stands as Bengaluru's oldest church and hosts the famous St. Mary's Feast.",
             link: "https://www.bangalorebasilia.org/",
             displayLink: "Learn About St. Mary's Basilica →"
         },
@@ -237,13 +237,13 @@ const Bengaluru = () => {
         },
         {
             title: "Jamia Masjid",
-            description: "Bangalore's largest mosque, built with white Rajasthani marble, can accommodate 10,000 worshippers. The five-story architectural masterpiece stands as a symbol of religious harmony and architectural excellence.",
+            description: "Bengaluru's largest mosque, built with white Rajasthani marble, can accommodate 10,000 worshippers. The five-story architectural masterpiece stands as a symbol of religious harmony and architectural excellence.",
             link: "https://www.karnatakatourism.org/tour-item/jamia-masjid/",
             displayLink: "Visit Jamia Masjid →"
         },
         {
             title: "Guru Singh Sabha Gurudwara",
-            description: "Established in 1943 on the serene banks of Ulsoor Lake, this largest Sikh shrine in Bangalore combines spiritual significance with community service. The Gurudwara features stunning white marble architecture, hosts daily langar (community kitchen), and operates various educational and charitable initiatives for the local community.",
+            description: "Established in 1943 on the serene banks of Ulsoor Lake, this largest Sikh shrine in Bengaluru combines spiritual significance with community service. The Gurudwara features stunning white marble architecture, hosts daily langar (community kitchen), and operates various educational and charitable initiatives for the local community.",
             link: "https://www.sikhgurudwarabangalore.com",
             displayLink: "Visit Gurudwara Website →"
         }
@@ -319,7 +319,7 @@ const Bengaluru = () => {
         },
         {
             title: "Golf Courses",
-            description: "Bengaluru's golf scene features world-class facilities including the Karnataka Golf Association's championship 18-hole course and the historic Bangalore Golf Club, established in 1876. These courses offer challenging terrains for both amateur and professional golfers.",
+            description: "Bengaluru's golf scene features world-class facilities including the Karnataka Golf Association's championship 18-hole course and the historic Bengaluru Golf Club, established in 1876. These courses offer challenging terrains for both amateur and professional golfers.",
             link: "https://www.kga.in/",
             displayLink: "Explore Golf Courses →"
         }

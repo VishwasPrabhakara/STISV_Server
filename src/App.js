@@ -49,6 +49,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import PaymentSuccess from './components/PaymentSuccess';
 import AllPayments from './components/AllPayments';
 import RegistrationForm from './components/RegistrationForm';
+import StudentDocsUpload from './components/StudentDocsUpload';
 import BankPaymentTransaction from './components/BankPaymentLink';
 
 
@@ -98,6 +99,7 @@ const router = createBrowserRouter(
       <Route path='/payment-receipts' element={<AllPayments />} />
       <Route path='/registration-form' element={<RegistrationForm />} />
       <Route path='/bank-payment-upload' element={<BankPaymentTransaction />} />
+      <Route path='/upload-docs' element={<StudentDocsUpload />} />
     </>
   ),
   {

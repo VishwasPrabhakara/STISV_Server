@@ -39,7 +39,7 @@ const toursData = {
   other: [
     {
       id: 5,
-      title: 'Bangalore City Sightseeing',
+      title: 'Bengaluru City Sightseeing',
       departure: 'To be updated',
       return: 'To be updated',
       notes: ['A/C Bus', 'Minimum 10 people required'],

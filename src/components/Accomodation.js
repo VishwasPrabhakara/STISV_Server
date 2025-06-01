@@ -98,18 +98,19 @@ const Accommodation = () => {
     },
     {
       id: 6,
-      name: "The Green Path Eco Apartments",
-      category: "Service Apartment",
-      website: "https://thegreenpath.in/",
-      distance: "2-3 km from Venue",
+      name: "Radisson Blu Atria Bengaluru",
+      category: "5★",
+      website: "https://www.radissonhotels.com/en-us/hotels/radisson-blu-bengaluru-atria",
+      distance: "4-5 km from Venue",
       description: "Eco-friendly service apartments providing comfort and self-catering options.",
       
       amenities: [
-        { name: "Breakfast Included", icon: Coffee },
-        { name: "Full Kitchen", icon: Utensils },
+        { name: "Breakfast ", icon: Coffee },
+        { name: "Dining", icon: Utensils },
         { name: "WiFi", icon: Wifi },
         { name: "Workspace", icon: Building2 },
-        { name: "Premium Facilities", icon: Home }
+        { name: "Premium Facilities", icon: Home },
+        { name: "Parking", icon: Car }
       ]
     },
     {

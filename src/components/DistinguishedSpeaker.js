@@ -101,7 +101,7 @@ import Footer from "./Footer";
     },
     {
       name: " Kazuki Morita",
-      affiliation: "Tokyo, Japan",
+      affiliation: "The University of Tokyo, Japan",
       url: "https://www.material.t.u-tokyo.ac.jp/faculty/morita_e.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Kazuki Morita.png"
     },
@@ -145,8 +145,8 @@ import Footer from "./Footer";
     {
       name: " Charlotte Anderson",
       affiliation: "Lulea University of Technology, Sweden",
-      url: "https://www.physicaltherapy.utoronto.ca/charlotte-anderson",
-      imagePath: "/stis2025/assets/speakers_upscaled/Charlotte Anderson.jpg"
+      url: "",
+      imagePath: "/stis2025/assets/speakers_upscaled/Charlotte.jpg"
     },
 
     {
@@ -200,7 +200,7 @@ import Footer from "./Footer";
 
     {
       name: " Kamalesh Mandal",
-      affiliation: "Steel Dynamics",
+      affiliation: "Steel Dynamics, USA",
       url: "https://www.linkedin.com/in/kamalesh-mandal-phd-49140626/",
       imagePath: "/stis2025/assets/speakers_upscaled/Kamalesh Mandal.jpeg"
     },
@@ -214,44 +214,71 @@ import Footer from "./Footer";
   
     {
       name: " Narasimha Mangadoddy",
-      affiliation: "Indian Institute of Technology, Hyderabad",
+      affiliation: "IIT Hyderabad, India",
       url: "https://www.iith.ac.in/che/narasimha/",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Narasimha Mangadoddy.jpeg"
     },
   
     {
       name: "Shatrughan Soren",
-      affiliation: "Indian Institute of Technology (Indian School of Mines), Dhanbad",
+      affiliation: "IIT (ISM) Dhanbad, India",
       url: "https://www.iitism.ac.in/faculty-details?faculty=ssoren",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Shatrughan Soren.jpeg"
     },
   
     {
       name: "Nikhil Dhawan",
-      affiliation: "Indian Institute of Technology, Roorkee",
+      affiliation: "IIT Roorkee, India",
       url: "https://iitr.ac.in/Departments/Metallurgical%20and%20Materials%20Engineering%20Department/People/Faculty/100714.html",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Nikhil Dhawan .jpeg"
     },
   
     {
       name: "Sabita Sarkar",
-      affiliation: "Indian Institute of Technology, Madras",
+      affiliation: "IIT Madras, India",
       url: "https://mme.iitm.ac.in/faculty-inner.php?id=26&fc=1",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Sabita Sarkar.jpeg"
     },
 
     {
       name: "A.K. Shukla",
-      affiliation: "Indian Institute of Technology, Madras",
+      affiliation: "IIT Madras, India",
       url: "https://mme.iitm.ac.in/faculty-inner.php?id=25&fc=1",
       imagePath: "/stis2025/assets/speakers_upscaled/AK Shukla.jpeg"
     },
   
     {
       name: "Haijuan Wang",
-      affiliation: "University of Science and Technology, Beijing",
+      affiliation: "University of Science and Technology, Beijing, China",
       url: "https://scholar.google.com/citations?user=JB_hNRgAAAAJ&hl=zh-CN",
       imagePath: "/stis2025/assets/speakers_upscaled/Prof. Haijuan Wang.jpeg"
+    },
+
+    // added
+    {
+      name: "Warren Flentje",
+      affiliation: "CSIRO, Australia",
+      url: "https://people.csiro.au/f/w/warren-flentje",
+      imagePath: "/stis2025/assets/speakers_upscaled/Warren.png"
+    },
+
+    {
+      name: "Viswanathan Nurni",
+      affiliation: "Sajjan Jindal Steel Chair Professor",
+      url: "https://www.mems.iitb.ac.in/~vichu/",
+      imagePath: "/stis2025/assets/speakers_upscaled/Viswanathan.jpg"
+    },
+    {
+      name: "Sripriya R",
+      affiliation: "Tata Steel, The Netherland",
+      url: "https://www.linkedin.com/in/sripriya-r-88486139/?originalSubdomain=nl",
+      imagePath: "/stis2025/assets/speakers_upscaled/sripriya.jpg"
+    },
+    {
+      name: "Bharat Bhushan",
+      affiliation: "Tata Steel Downstream Products Limited",
+      url: "",
+      imagePath: "/stis2025/assets/speakers_upscaled/Bharat Bhushan.jpg"
     },
   ];
   

@@ -4,26 +4,26 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Programme = () => {
-  useEffect(() => {
-    const loadParticles = async () => {
-      await import('particles.js');
+  // useEffect(() => {
+  //   const loadParticles = async () => {
+  //     await import('particles.js');
 
-      window.particlesJS('particles-js', {
-        particles: {
-          number: { value: 70 },
-          size: { value: 3 },
-          move: { speed: 1 },
-          line_linked: { enable: true, opacity: 0.2 },
-          color: { value: "#2196f3" },
-        },
-        interactivity: {
-          events: { onhover: { enable: true, mode: "repulse" } }
-        }
-      });
-    };
+  //     window.particlesJS('particles-js', {
+  //       particles: {
+  //         number: { value: 70 },
+  //         size: { value: 3 },
+  //         move: { speed: 1 },
+  //         line_linked: { enable: true, opacity: 0.2 },
+  //         color: { value: "#2196f3" },
+  //       },
+  //       interactivity: {
+  //         events: { onhover: { enable: true, mode: "repulse" } }
+  //       }
+  //     });
+  //   };
 
-    loadParticles();
-  }, []);
+  //   loadParticles();
+  // }, []);
 
   return (
     <>

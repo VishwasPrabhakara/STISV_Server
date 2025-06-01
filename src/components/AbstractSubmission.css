@@ -37,35 +37,67 @@
 
 /* ============ Marquee Banner ============ */
 .marquee-banner {
-  background-color: #0077b6;
-  color: white;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
   overflow: hidden;
+  width: 100%;
+  background: linear-gradient(270deg, #e6f7ff, #fff8e1, #e6f7ff);
+  background-size: 600% 600%;
+  animation: backgroundShift 20s ease infinite;
+  padding: 15px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #002244;
+  cursor: pointer;
   position: relative;
 }
 
 .marquee-text {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee-scroll 15s linear infinite;
-  font-weight: 500;
-  font-size: 1rem;
+  padding-left: 100%;
+  animation: scrollText 15s linear infinite;
+  color: darkred;
+  font-weight: bold;
 }
 
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(100%);
-  }
+.highlight-flash {
+  color: darkred;
+  font-weight: 800;
+  animation: flash 1s infinite;
+}
 
+/* Soft flash animation */
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Smooth background movement */
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Smooth horizontal scrolling */
+@keyframes scrollText {
+  0% {
+    transform: translateX(0%);
+  }
   100% {
     transform: translateX(-100%);
   }
 }
 
-.marquee-banner:hover {
-  background-color: #005a8d;
-}
 
 .note-box {
   background: #fff8c5;

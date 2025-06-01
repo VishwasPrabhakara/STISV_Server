@@ -49,7 +49,7 @@ Benefits:
 • Ravindra Kalakshetra - Traditional performances
 • Chowdiah Memorial Hall - Classical music concerts
 • National Gallery of Modern Art
-• Bangalore Palace - Historical architecture
+• Bengaluru Palace - Historical architecture
 • Karnataka Chitrakala Parishath - Art exhibitions
 
 Annual Events:

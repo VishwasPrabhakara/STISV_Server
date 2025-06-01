@@ -47,12 +47,28 @@
 }
 
 /* Sponsor Logo */
-.sponsor-logo img {
+/* .sponsor-logo img {
   width: 180px;
   height: 220px;
   object-fit: contain;
   margin-bottom: 1.5rem;
+} */
+
+
+.sponsor-logo img {
+  max-width: 300px;  /* Increase from original size, e.g., 150px */
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 1rem; /* Optional: reduce spacing below image */
 }
+
+.sponsor-logo {
+  text-align: center;
+  margin-bottom: 0.5rem; /* Reduce spacing between logo and text */
+}
+
 
 /* Fallback */
 .fallback-image {

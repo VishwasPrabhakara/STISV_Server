@@ -1,5 +1,21 @@
 /* Step4PaymentSelection.css */
 
+/* Note added for payment*/
+.payment-note {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: justify;
+  text-justify: inter-word;
+  margin: 0 auto 20px auto;
+  max-width: 700px; 
+}
+
+
 /* Main Container */
 .step4-container {
   max-width: 1200px;
