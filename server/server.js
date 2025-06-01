@@ -66,7 +66,7 @@ const nationalFees = {
   "Speaker / Participant": { early: { base: 13000, gst: 2340, platform: 360 }, regular: { base: 16000, gst: 2880, platform: 420 }, late: { base: 19000, gst: 3420, platform: 500 } },
   "Accompanying Person": { early: { base: 7000, gst: 1260, platform: 200 }, regular: { base: 9000, gst: 1620, platform: 300 }, late: { base: 9000, gst: 1620, platform: 300 } },
   "Student / Speaker": { early: { base: 1000, gst: 180, platform: 30 }, regular: { base: 1000, gst: 180, platform: 30 }, late: { base: 1000, gst: 180, platform: 30 } },
-  "Student / Participant": { early: { base: 4, gst: 7, platform: 1 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
+  "Student / Participant": { early: { base: 4000, gst: 720, platform: 120 }, regular: { base: 4000, gst: 720, platform: 120 }, late: { base: 4000, gst: 720, platform: 120 } },
 };
 
 const internationalFees = {
@@ -519,6 +519,88 @@ app.put("/user-info/update/:uid", async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
+const studentUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/jpeg',
+      'image/png'
+    ];
+    cb(null, allowed.includes(file.mimetype));
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
+
+const cloudinaryStudent = require("cloudinary").v2;
+// and you’ve done:
+cloudinaryStudent.config({
+  cloud_name: process.env.CLOUDINARY_RECEIPT_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_RECEIPT_API_KEY,
+  api_secret: process.env.CLOUDINARY_RECEIPT_API_SECRET,
+});
+
+// POST /api/upload-student-docs
+// POST /api/upload-student-docs
+app.post(
+  "/api/upload-student-docs",
+  studentUpload.array("docs"),
+  async (req, res) => {
+    try {
+      const categories = JSON.parse(req.body.categories || "[]");
+      if (categories.length !== req.files.length) {
+        return res.status(400).json({ message: "Must send one category per file." });
+      }
+
+      const uploads = await Promise.all(
+        req.files.map((file, idx) => {
+          // Keep the full original filename (with extension)
+          const originalName = file.originalname; // e.g. "myID.pdf"
+          // Build a safe folder name per category
+          const folder = `student_docs/${
+            categories[idx]
+              .replace(/\s+/g, "_")
+              .replace(/\//g, "_")
+          }`; // e.g. "student_docs/Student_Speaker"
+
+          // Wrap Cloudinary upload in a Promise
+          return new Promise((resolve, reject) => {
+            const stream = cloudinaryStudent.uploader.upload_stream(
+              {
+                resource_type: "raw",      // handle PDFs, DOCXs, JPGs, PNGs, etc.
+                folder,                    // dynamic folder per category
+                use_filename: true,        // keep the file name
+                unique_filename: false,    // no random suffix
+                public_id: originalName,   // full originalName including extension
+                overwrite: true            // allow re‐upload under same public_id
+              },
+              (err, result) => {
+                if (err) return reject(err);
+                // attach a download_url for forced‐download or preview
+                result.download_url = result.secure_url;
+                resolve({
+                  category: categories[idx],
+                  url:      result.download_url,
+                  publicId: result.public_id
+                });
+              }
+            );
+            // Kick off the upload
+            stream.end(file.buffer);
+          });
+        })
+      );
+
+      return res.json({ uploaded: uploads });
+    } catch (err) {
+      console.error("❌ /api/upload-student-docs error:", err);
+      return res.status(500).json({ message: "Upload failed" });
+    }
+  }
+);
 
 
 
