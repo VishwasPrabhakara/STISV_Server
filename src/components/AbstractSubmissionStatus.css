@@ -4,6 +4,7 @@
 .abstract-status-container {
   max-width: 980px;
   margin: 0 auto;
+  margin-top: -1.5 rem;
   padding: 2.5rem 1.5rem;
   font-family: 'Segoe UI', Roboto, sans-serif;
   color: #1a1a1a;
@@ -35,6 +36,26 @@
   margin-bottom: 2rem;
   color: #003566;
   font-weight: 700;
+}
+
+/* Center the status row content */
+.status-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Status pill box styling */
+.status-box {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  min-width: 120px;
+  text-align: center;
 }
 
 /* ============================

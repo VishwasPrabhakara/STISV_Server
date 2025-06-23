@@ -150,6 +150,23 @@ const AbstractSubmissionStatus = () => {
               </div>
             </div>
 
+            <div className="abstract-row abstract-code-row">
+              <strong>Status:</strong>
+              <div
+                className={
+                  "abstract-code-box " +
+                  (abstract.status === "Approved"
+                    ? "status-accepted"
+                    : abstract.status === "Rejected"
+                    ? "status-rejected"
+                    : "status-pending")
+                }
+              >
+                {abstract.status}
+              </div>
+            </div>
+
+
             {/* Title, Theme, Presentation Type, etc. */}
             <div className="abstract-row">
               <strong>Title:</strong>
@@ -232,20 +249,7 @@ const AbstractSubmissionStatus = () => {
               </span>
             </div>
 
-            <div className="abstract-row">
-              <strong>Status:</strong>
-              <span
-                className={
-                  abstract.status === "Approved"
-                    ? "status-accepted"
-                    : abstract.status === "Rejected"
-                    ? "status-rejected"
-                    : "status-pending"
-                }
-              >
-                {abstract.status}
-              </span>
-            </div>
+           
 
             {abstract.remarks && (
               <div className="abstract-row">
