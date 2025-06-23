@@ -265,7 +265,7 @@ const AbstractSubmissionStatus = () => {
               </div>
             )}
 
-            <div className="abstract-row">
+            <div className="abstract-row abstract-file-row">
               <strong>Abstract File:</strong>
               {abstract.abstractFile ? (
                 <a href={abstract.abstractFile} target="_blank" rel="noreferrer">

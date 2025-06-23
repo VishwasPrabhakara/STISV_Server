@@ -4,11 +4,37 @@
 .abstract-status-container {
   max-width: 980px;
   margin: 0 auto;
-  margin-top: -1.5 rem;
+  margin-top: -1.5rem;
   padding: 2.5rem 1.5rem;
   font-family: 'Segoe UI', Roboto, sans-serif;
   color: #1a1a1a;
 }
+
+/* Make Abstract File row span full width and center content */
+.abstract-file-row {
+  grid-column: 1 / 3;
+  width: 50%;       /* Half of 1st column */
+  margin-left: 50%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  justify-content: center;
+  
+}
+
+.abstract-file-row strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.abstract-file-row a,
+.abstract-file-row span {
+  font-size: 1rem;
+  color: #0077b6;
+  font-weight: 500;
+}
+
 
 .abstract-status-container h2 {
   text-align: center;
@@ -85,7 +111,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .abstract-code-box {
@@ -307,7 +333,7 @@ button:hover {
 .abstract-status-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem 2rem; /* row-gap and column-gap */
+  gap: .5rem 1rem; /* row-gap and column-gap */
 }
 
 /* 2. Force headline, code row, success box, and action row to span full width */
