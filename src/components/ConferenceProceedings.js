@@ -27,18 +27,28 @@ const ConferenceProceedings = () => {
       </section>
 
       {/* Description */}
-      
-
-        {/* Highlights + Timeline in 2-column layout */}
 <section className="proceedings-side-section">
   {/* Highlights Section */}
+  
+  <div className="proceedings-journals">
+    <h2>Journals for Publication</h2>
+    <p>
+      Selected high-quality papers will be published in these reputed international journals, subject to their individual review policies:
+    </p>
+    <ul className="journal-list">
+      <li>📘 <span className="journal-name">Ironmaking & Steelmaking</span></li>
+      <li>📘 <span className="journal-name">Materials and Manufacturing Processes</span></li>
+      <li>📘 <span className="journal-name">Surface Engineering</span></li>
+      <li>📘 <span className="journal-name">Steel Research International</span></li>
+    </ul>
+  </div>
+  
   <div className="proceedings-highlights">
     <h2>Publication Highlights</h2>
     <ul className="highlight-list">
       <li>✅ Peer-reviewed submission process</li>
       <li>✅ Conference Proceedings with ISBN</li>
       <li>✅ Potential inclusion in Scopus/SCI indexed journals</li>
-      
     </ul>
   </div>
 
@@ -65,7 +75,10 @@ const ConferenceProceedings = () => {
     </div>
   </div>
 
+  {/* Associated Journals */}
+  
 </section>
+
 <br />
     <br />
     <br />

@@ -67,6 +67,46 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   min-width: 0;
 }
+.proceedings-side-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.proceedings-highlights,
+.proceedings-timeline,
+.proceedings-journals {
+  flex: 1;
+  min-width: 280px;
+  background-color: #f8f8f8;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.proceedings-journals p {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+}
+
+.journal-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.journal-list li {
+  margin-bottom: 0.7rem;
+  font-size: 1.05rem;
+}
+
+.journal-name {
+  font-weight: bold;
+  font-style: italic;
+  color: #0056b3;
+}
+
 
 /* Highlight List */
 .highlight-list {
