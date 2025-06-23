@@ -36,7 +36,7 @@ const sponsorshipTiers = [
 const eventSponsorships = [
   {
     title: 'Conference Banquet',
-    amount: '₹7,00,000',
+    amount: '₹8,00,000',
     benefits: [
       'Announcement & banner display at the banquet',
       'Complimentary registration for 4 delegates',
@@ -45,7 +45,7 @@ const eventSponsorships = [
   },
   {
     title: 'Dinner Sponsor',
-    amount: '₹4,50,000',
+    amount: '₹5,00,000',
     benefits: [
       'Special announcement and banner display at the dinner',
       'Complimentary registration for 3 delegates',

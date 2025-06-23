@@ -63,7 +63,7 @@ const Programme = () => {
               
 
               <div className="timeline-card">
-                <h3>15<sup>th</sup> October 2025</h3>
+                <h3>25<sup>th</sup> September 2025</h3>
                 <p>Final Paper Submission</p>
               </div>
             </div>

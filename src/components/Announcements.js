@@ -17,39 +17,47 @@ const Announcements = () => {
 
         <section className="announcement-board">
           <div className="announcement-container">
-            
+            {/* Deadline / Full Paper Submission */}
             <ul className="announcement-list">
+<li>
+  <div className="announcement-meta">
+    {/* <span className="announcement-badge info">Info</span> */}
+    <span className="announcement-date">June 11, 2025</span>
+  </div>
+  Deadline for Full Paper Submission is <strong>September 25, 2024</strong>. For registration information, <a href="/stis2025/conference-registration" rel="noopener noreferrer">Click Here</a> for more details.
+</li>
+
             <li>
                 <div className="announcement-meta">
-                  <span className="announcement-badge info">Info</span>
+                  {/* <span className="announcement-badge info">Info</span> */}
                   <span className="announcement-date">April 30, 2025</span>
                 </div>
                 Registration Information Updated < a href='/stis2025/conference-registration'rel="noopener noreferrer"> Click Here</a> for more details.
                     
               </li> <li>
                 <div className="announcement-meta">
-                  <span className="announcement-badge info">Info</span>
+                  {/* <span className="announcement-badge info">Info</span> */}
                   <span className="announcement-date">April 30, 2025</span>
                 </div>
                 Abstract Submission Deadline Extended till May 31st, 2025.< a href='/stis2025/abstract-submission' rel="noopener noreferrer"> Click  here</a> to submit your abstracts.
               </li>
               <li>
                 <div className="announcement-meta">
-                  <span className="announcement-badge new">New</span>
+                  {/* <span className="announcement-badge new">New</span> */}
                   <span className="announcement-date">April 1, 2025</span>
                 </div>
                 Registration details will be updated shortly.
               </li>
               <li>
                 <div className="announcement-meta">
-                  <span className="announcement-badge info">Info</span>
+                  {/* <span className="announcement-badge info">Info</span> */}
                   <span className="announcement-date">March 30, 2025</span>
                 </div>
                 Abstract submission deadline: <strong>30th April, 2025</strong>.
               </li>
               <li>
                 <div className="announcement-meta">
-                  <span className="announcement-badge info">Info</span>
+                  {/* <span className="announcement-badge info">Info</span> */}
                   <span className="announcement-date">March 25, 2025</span>
                 </div>
                 Abstract Template is now available for download.

@@ -103,7 +103,7 @@ const Navbar = () => {
         
 
         <NavLink to="/abstract-submission" onClick={() => handleNavClick("/abstract-submission")}>
-          Submit Abstract
+          Abstract / Paper Submission
         </NavLink>
 
         {userName ? (

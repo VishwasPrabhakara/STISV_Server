@@ -290,6 +290,20 @@ const speakers = [
       url: "",
       imagePath: "/stis2025/assets/speakers_upscaled/Bharat Bhushan.jpg"
     },
+
+     {
+      name: "Youngjo Kang",
+      affiliation: "Department of Materials Science Engineering, Dong-A University",
+      url: "",
+      imagePath: "/stis2025/assets/speakers_upscaled/youngjo kang.jpg"
+    },
+    // Carsten Schwandt
+    {
+      name: "Carsten Schwandt",
+      affiliation: "Gdańsk University of Technology",
+      url: "https://www.linkedin.com/in/carsten-schwandt-1335719/?originalSubdomain=uk",
+      imagePath: "/stis2025/assets/speakers_upscaled/Carsten Schwandt.jpg"
+    },
 ];
 
 
@@ -316,9 +330,9 @@ const HomePage = () => {
       <div class="announcement-wrapper">
  <div class="announcement-track">
   📢 <span class="highlight-flash">Abstract Submission Closed</span>
-  &nbsp;&nbsp;&nbsp; • Abstract submissions are now closed
+  
   &nbsp;&nbsp;&nbsp; • Acceptance notifications will be sent by <span class="highlight-flash">25th June 2025</span>
-  &nbsp;&nbsp;&nbsp; • Final paper submission: <span class="highlight-flash">15th October 2025</span>
+  &nbsp;&nbsp;&nbsp; • Final paper submission: <span class="highlight-flash">25th September 2025</span>
   &nbsp;&nbsp;&nbsp; • Registration details have been updated
 </div>
 </div>
@@ -344,20 +358,63 @@ const HomePage = () => {
             </a>
           </p>
 
+
+          {/* Adding on left side */}
+
+{/* 🐦 Early Bird Registration Ribbon */}
+<aside class="slanted-ribbon slanted-left" aria-label="Early Bird Deadline">
+  <div class="content">
+    <ul>
+      <li tabindex="0">
+        <div class="deadline-title">Early Bird Registration Deadline</div>
+        <div class="cal-cell">
+          <div class="cal-month">Jul</div>
+          <div class="cal-day">15</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+            <li tabindex="0">
+        <div class="deadline-title">Full Paper Submission Deadline</div>
+        <div class="cal-cell">
+          <div class="cal-month">Sep</div>
+          <div class="cal-day">25</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+
+
           {/* 📄 Abstract Available Note */}
-          <p className="abstract-template-note">
-           Abstract Template is now available for download. 
-          </p>
+          <aside class="slanted-ribbon" aria-label="Upcoming Deadlines">
+  <div class="content">
+    <ul>
+      <li tabindex="0">
+        <div class="deadline-title"><s style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>Abstract Submission</s></div>
+        <div class="cal-cell">
+          <div class="cal-month"><s style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>May</s></div>
+          <div class="cal-day"><s  style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>31</s></div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+      
+      <li tabindex="0">
+        <div class="deadline-title">Acceptance Notification</div>
+        <div class="cal-cell">
+          <div class="cal-month">Jun</div>
+          <div class="cal-day">25</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>     
+    </ul>
+  </div>
+</aside>
 
           {/* Call to Action Buttons */}
           <div className="cta-buttons">
-            <a
-              href="/stis2025/assets/Abstract-Template.docx"
-              className="cta-btn cta-download"
-              download
-            >
-              Download Abstract Template
-            </a>
+           
             <a
               href="/stis2025/register"
               className="cta-btn cta-register"

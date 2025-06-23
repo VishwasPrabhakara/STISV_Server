@@ -279,6 +279,52 @@ button:hover {
 }
 
 /* ============================
+   Grid Layout for Abstract Rows
+============================ */
+
+/* 1. Apply grid layout to the container of rows */
+.abstract-status-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem 2rem; /* row-gap and column-gap */
+}
+
+/* 2. Force headline, code row, success box, and action row to span full width */
+.abstract-status-container > h2,
+.abstract-code-row,
+.success-message,
+.main-action-row,
+.error-message {
+  grid-column: 1 / -1;
+}
+
+/* 3. Make .abstract-row cards styled better in columns */
+.abstract-row {
+  background-color: #fdfdfd;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* 4. Ensure authors table spans full width */
+.authors-table {
+  width: 100%;
+}
+
+/* 5. Mobile override: revert to one column layout */
+@media (max-width: 768px) {
+  .abstract-status-container {
+    display: block;
+  }
+
+  .abstract-row {
+    margin-bottom: 1.5rem;
+  }
+}
+
+
+/* ============================
    Responsive
 ============================ */
 @media (max-width: 768px) {

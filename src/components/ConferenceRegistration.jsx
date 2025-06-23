@@ -105,7 +105,7 @@ const ConferenceRegistration = () => {
           <p className="note">
             <strong>
               <span className="red-asterisk">**</span> Note:
-            </strong> Students need to upload their  valid <strong>Institute ID</strong> and <strong>Bonafide Certificate</strong> from Institute / University.
+            </strong> Students need to upload their  valid <strong>Institute ID card</strong> which clearly displays the <strong>expiry date</strong>.
           </p>
 
           <p className="note">

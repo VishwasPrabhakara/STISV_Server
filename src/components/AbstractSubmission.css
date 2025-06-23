@@ -54,7 +54,7 @@
   display: inline-block;
   white-space: nowrap;
   padding-left: 100%;
-  animation: scrollText 15s linear infinite;
+  animation: scrollText 30s linear infinite;
   color: darkred;
   font-weight: bold;
 }
@@ -72,6 +72,224 @@
   }
   50% {
     opacity: 0.7;
+  }
+}
+
+.abstract-submission {
+  /* CSS variables scoped here */
+  --ribbon-width: 200px;
+  --ribbon-bg: #e74c3c;
+  --text-color: #ffffff;
+  --font-main: "Segoe UI", Roboto, sans-serif;
+  --skew-angle: 5deg;
+  --slide-duration: 0.5s;
+  --fade-delay-step: 0.1s;
+  --cal-cell-size: 40px;
+  --cal-bg: #ffffff;
+  --cal-border: #e74c3c;
+  --cal-month-size: 0.6rem;
+  --cal-day-size: 1rem;
+  --hover-shift: -10px;
+  --hover-bg-light: rgba(255, 255, 255, 0.1);
+  --hover-title-underline: #f1c40f;
+  font-family: var(--font-main);
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    right: calc(-1 * var(--ribbon-width));
+  }
+  to {
+    right: 0;
+  }
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseCal {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Slanted Ribbon Container */
+.abstract-submission .slanted-ribbon {
+  position: fixed;
+  top: 40%;
+  right: 0;
+  width: var(--ribbon-width);
+  padding-right: 50px;
+  background: var(--ribbon-bg);
+  transform: skewY(var(--skew-angle));
+  transform-origin: top right;
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  z-index: 1000;
+  animation: slideIn var(--slide-duration) ease-out;
+  user-select: none; /* prevent text selection on ribbon */
+}
+
+/* Counter-skew inner content */
+.abstract-submission .slanted-ribbon .content {
+  transform: skewY(calc(-1 * var(--skew-angle)));
+  padding: 20px;
+}
+
+.abstract-submission .slanted-ribbon ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.abstract-submission .slanted-ribbon li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  animation: fadeInItem 0.4s ease forwards;
+  transition: background 0.2s, transform 0.2s;
+  cursor: default;
+  outline: none;
+}
+
+.abstract-submission .slanted-ribbon li:nth-child(1) {
+  animation-delay: calc(var(--fade-delay-step) * 1);
+}
+.abstract-submission .slanted-ribbon li:nth-child(2) {
+  animation-delay: calc(var(--fade-delay-step) * 2);
+}
+.abstract-submission .slanted-ribbon li:nth-child(3) {
+  animation-delay: calc(var(--fade-delay-step) * 3);
+}
+.abstract-submission .slanted-ribbon li:nth-child(4) {
+  animation-delay: calc(var(--fade-delay-step) * 4);
+}
+
+.abstract-submission .slanted-ribbon li:last-child {
+  border-bottom: none;
+}
+
+.abstract-submission .slanted-ribbon li:hover,
+.abstract-submission .slanted-ribbon li:focus {
+  background: var(--hover-bg-light);
+  transform: translateX(var(--hover-shift));
+  outline: none;
+}
+
+.abstract-submission .slanted-ribbon li:hover .deadline-title,
+.abstract-submission .slanted-ribbon li:focus .deadline-title {
+  text-decoration: none var(--hover-title-underline) 2px;
+}
+
+.abstract-submission .slanted-ribbon .deadline-title {
+  color: var(--text-color);
+  font-size: 1.15rem;
+  font-weight: 600;
+  transition: text-decoration 0.2s;
+  user-select: none;
+}
+
+/* Mini calendar cell */
+.abstract-submission .cal-cell {
+  width: var(--cal-cell-size);
+  height: var(--cal-cell-size);
+  background: var(--cal-bg);
+  border: 2px solid var(--cal-border);
+  border-radius: 4px;
+  display: flex;
+  margin-left: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  line-height: 1;
+  animation: pulseCal 2s ease-in-out infinite;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.abstract-submission .cal-cell:hover {
+  background: var(--hover-bg-light);
+  transform: translateY(-2px);
+}
+
+.abstract-submission .cal-month {
+  font-size: var(--cal-month-size);
+  color: var(--cal-border);
+}
+
+.abstract-submission .cal-day {
+  font-size: var(--cal-day-size);
+  color: var(--cal-border);
+}
+
+/* Hover icon */
+.abstract-submission .hover-icon {
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-left: 0.5rem;
+  user-select: none;
+}
+
+.abstract-submission .slanted-ribbon li:hover .hover-icon,
+.abstract-submission .slanted-ribbon li:focus .hover-icon {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .abstract-submission .slanted-ribbon {
+    top: 10%;
+    width: 160px;
+  }
+  .abstract-submission .slanted-ribbon .deadline-title {
+    font-size: 0.9rem;
+  }
+  .abstract-submission .cal-cell {
+    width: 32px;
+    height: 32px;
+  }
+  .abstract-submission .cal-month {
+    font-size: 0.5rem;
+  }
+  .abstract-submission .cal-day {
+    font-size: 0.8rem;
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .abstract-submission .slanted-ribbon {
+    animation: none;
+  }
+  .abstract-submission .slanted-ribbon li {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .abstract-submission .cal-cell {
+    animation: none;
   }
 }
 

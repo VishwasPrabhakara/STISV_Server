@@ -239,29 +239,24 @@ import Footer from "./Footer";
       url: "https://mme.iitm.ac.in/faculty-inner.php?id=26&fc=1",
       imagePath: "/stis2025/assets/speakers_upscaled/Dr. Sabita Sarkar.jpeg"
     },
-
     {
       name: "A.K. Shukla",
       affiliation: "IIT Madras, India",
       url: "https://mme.iitm.ac.in/faculty-inner.php?id=25&fc=1",
       imagePath: "/stis2025/assets/speakers_upscaled/AK Shukla.jpeg"
     },
-  
     {
       name: "Haijuan Wang",
       affiliation: "University of Science and Technology, Beijing, China",
       url: "https://scholar.google.com/citations?user=JB_hNRgAAAAJ&hl=zh-CN",
       imagePath: "/stis2025/assets/speakers_upscaled/Prof. Haijuan Wang.jpeg"
     },
-
-    // added
     {
       name: "Warren Flentje",
       affiliation: "CSIRO, Australia",
       url: "https://people.csiro.au/f/w/warren-flentje",
       imagePath: "/stis2025/assets/speakers_upscaled/Warren.png"
     },
-
     {
       name: "Viswanathan Nurni",
       affiliation: "Sajjan Jindal Steel Chair Professor",
@@ -279,6 +274,18 @@ import Footer from "./Footer";
       affiliation: "Tata Steel Downstream Products Limited",
       url: "",
       imagePath: "/stis2025/assets/speakers_upscaled/Bharat Bhushan.jpg"
+    },
+    {
+      name: "Youngjo Kang",
+      affiliation: "Department of Materials Science Engineering, Dong-A University",
+      url: "",
+      imagePath: "/stis2025/assets/speakers_upscaled/youngjo kang.jpg"
+    },
+    {
+      name: "Carsten Schwandt",
+      affiliation: "Gdańsk University of Technology",
+      url: "https://www.linkedin.com/in/carsten-schwandt-1335719/?originalSubdomain=uk",
+      imagePath: "/stis2025/assets/speakers_upscaled/Carsten Schwandt.jpg"
     },
   ];
   

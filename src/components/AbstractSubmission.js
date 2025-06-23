@@ -67,8 +67,13 @@ const AbstractSubmission = () => {
       <div className='abstract-submission'>
         <div className="marquee-banner" >
           <div className="marquee-text">
-            Abstract Submission Closed! — The deadline was May 31, 2025 — Thank you for your interest!
-          </div>
+           <span>Abstract Submission Closed</span>
+  
+  &nbsp;&nbsp;&nbsp; • Acceptance notifications will be sent by <span class="highlight-flash">25th June 2025</span>
+  
+    &nbsp;&nbsp;&nbsp;  • Thank you for your interest in submitting your work. 
+    &nbsp;&nbsp;&nbsp;  • Please keep visiting this website for information on future events and conferences.
+<br/>          </div>
         </div>
 
         <div className="abstract-submission-wrapper">
@@ -79,6 +84,67 @@ const AbstractSubmission = () => {
               <br></br>Abstract submissions are now closed. Thank you to everyone who submitted abstracts. <br/> Your submission is currently under review, and you will receive an update by June 25, 2025.
             </p>
           </header>
+
+
+{/* ADDED */}
+{/* 🐦 Early Bird Registration Ribbon */}
+{/* <aside class="slanted-ribbon slanted-left" aria-label="Early Bird Deadline">
+  <div class="content">
+    <ul>
+      <li tabindex="0">
+        <div class="deadline-title">Early Bird Registration Deadline</div>
+        <div class="cal-cell">
+          <div class="cal-month">Jul</div>
+          <div class="cal-day">15</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+            <li tabindex="0">
+        <div class="deadline-title">Full Paper Submission Deadline</div>
+        <div class="cal-cell">
+          <div class="cal-month">Oct</div>
+          <div class="cal-day">15</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+    </ul>
+  </div>
+</aside> */}
+
+{/* ADDED OVER */}
+
+  <aside class="slanted-ribbon" aria-label="Upcoming Deadlines">
+  <div class="content">
+    <ul>
+      <li tabindex="0">
+        <div class="deadline-title"><s style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>Abstract Submission</s></div>
+        <div class="cal-cell">
+          <div class="cal-month"><s style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>May</s></div>
+          <div class="cal-day"><s  style={{ textDecorationColor: "black", textDecorationThickness:"2px" }}>31</s></div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+      
+      <li tabindex="0">
+        <div class="deadline-title">Acceptance Notification</div>
+        <div class="cal-cell">
+          <div class="cal-month">Jun</div>
+          <div class="cal-day">25</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+      <li tabindex="0">
+        <div class="deadline-title">Deadline / Full Paper Submission</div>
+        <div class="cal-cell">
+          <div class="cal-month">Sep</div>
+          <div class="cal-day">25</div>
+        </div>
+        <span class="hover-icon">»</span>
+      </li>
+     
+    </ul>
+  </div>
+</aside>
 
           <div className="note-box">
             <strong>Note: One registered author can present only one paper/poster</strong>

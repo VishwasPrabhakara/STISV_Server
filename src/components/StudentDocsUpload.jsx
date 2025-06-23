@@ -125,15 +125,7 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
               />
             </label>
 
-            <label>
-              Bonafide Certificate ({cat}):
-              <input
-                type="file"
-                accept=".doc,.docx,image/jpeg,image/png"
-                onChange={handleFileChange(cat, "bonafideFile")}
-                required
-              />
-            </label>
+           
           </fieldset>
         ))}
 

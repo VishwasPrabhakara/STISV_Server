@@ -52,6 +52,347 @@
   100% { transform: translateX(-100%); }
 }
 
+/* place this in your global CSS (e.g. App.css or index.css) */
+:root {
+  /* Ribbon dimensions and positioning */
+  --ribbon-width: 180px;
+  --ribbon-padding: 40px;
+  --ribbon-top-offset: 6%;
+  
+  /* Colors and styling */
+  --ribbon-bg: #e74c3c;
+  --text-color: #ffffff;
+  --font-main: "Segoe UI", Roboto, sans-serif;
+  
+  /* Animation and interaction */
+  --skew-angle: 5deg;
+  --slide-duration: 0.5s;
+  --fade-delay-step: 0.1s;
+  --pulse-duration: 2s;
+  --hover-shift: -10px;
+  --hover-bg-light: rgba(255, 255, 255, 0.1);
+  --hover-title-underline: #f1c40f;
+  
+  /* Calendar styling */
+  --cal-cell-size: 40px;
+  --cal-bg: #ffffff;
+  --cal-border: #e74c3c;
+  --cal-month-size: 0.6rem;
+  --cal-day-size: 1rem;
+}
+
+/* === ANIMATIONS === */
+@keyframes slideInRight {
+  from { 
+    right: calc(-1 * var(--ribbon-width)); 
+    opacity: 0;
+  }
+  to { 
+    right: 0; 
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    left: calc(-1 * var(--ribbon-width)); 
+    opacity: 0;
+  }
+  to { 
+    left: 0; 
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInItem {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes pulseCal {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.1); 
+  }
+}
+
+/* === BASE RIBBON STYLES === */
+.slanted-ribbon {
+  position: fixed;
+  top: var(--ribbon-top-offset);
+  width: var(--ribbon-width);
+  background: var(--ribbon-bg);
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-family: var(--font-main);
+}
+
+/* === RIGHT-SIDE RIBBON (DEFAULT) === */
+.slanted-ribbon:not(.slanted-left) {
+  right: 0;
+  padding-right: var(--ribbon-padding);
+  transform: skewY(var(--skew-angle));
+  transform-origin: top right;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  animation: slideInRight var(--slide-duration) ease-out;
+}
+
+.slanted-ribbon:not(.slanted-left) .content {
+  transform: skewY(calc(-1 * var(--skew-angle)));
+}
+
+.slanted-ribbon:not(.slanted-left) li:hover,
+.slanted-ribbon:not(.slanted-left) li:focus {
+  transform: translateX(var(--hover-shift));
+}
+
+/* === LEFT-SIDE RIBBON === */
+.slanted-ribbon.slanted-left {
+  left: 0;
+  padding-left: var(--ribbon-padding);
+  transform: skewY(calc(-1 * var(--skew-angle)));
+  transform-origin: top left;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  animation: slideInLeft var(--slide-duration) ease-out;
+}
+
+.slanted-ribbon.slanted-left .content {
+  transform: skewY(var(--skew-angle));
+}
+
+.slanted-ribbon.slanted-left li:hover,
+.slanted-ribbon.slanted-left li:focus {
+  transform: translateX(calc(-1 * var(--hover-shift)));
+}
+
+/* === RIBBON CONTENT === */
+.slanted-ribbon .content {
+  padding: 0.5rem 0;
+}
+
+.slanted-ribbon ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slanted-ribbon li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  animation: fadeInItem 0.4s ease forwards;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+/* Staggered fade-in animation for list items */
+.slanted-ribbon li:nth-child(1) { animation-delay: calc(var(--fade-delay-step) * 1); }
+.slanted-ribbon li:nth-child(2) { animation-delay: calc(var(--fade-delay-step) * 2); }
+.slanted-ribbon li:nth-child(3) { animation-delay: calc(var(--fade-delay-step) * 3); }
+.slanted-ribbon li:nth-child(4) { animation-delay: calc(var(--fade-delay-step) * 4); }
+.slanted-ribbon li:nth-child(5) { animation-delay: calc(var(--fade-delay-step) * 5); }
+.slanted-ribbon li:nth-child(6) { animation-delay: calc(var(--fade-delay-step) * 6); }
+.slanted-ribbon li:nth-child(7) { animation-delay: calc(var(--fade-delay-step) * 7); }
+.slanted-ribbon li:nth-child(8) { animation-delay: calc(var(--fade-delay-step) * 8); }
+
+.slanted-ribbon li:last-child {
+  border-bottom: none;
+}
+
+/* Hover and focus states */
+.slanted-ribbon li:hover,
+.slanted-ribbon li:focus {
+  background: var(--hover-bg-light);
+  outline: none;
+}
+
+/* === TEXT STYLING === */
+.slanted-ribbon .deadline-title {
+  color: var(--text-color);
+  font-size: 1.15rem;
+  font-weight: 600;
+  transition: text-decoration 0.2s ease;
+  margin: 0;
+}
+
+.slanted-ribbon li:hover .deadline-title,
+.slanted-ribbon li:focus .deadline-title {
+  text-decoration: underline;
+  text-decoration-color: var(--hover-title-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+/* === CALENDAR CELL === */
+.cal-cell {
+  width: var(--cal-cell-size);
+  height: var(--cal-cell-size);
+  background: var(--cal-bg);
+  border: 2px solid var(--cal-border);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 10px;
+  animation: pulseCal var(--pulse-duration) ease-in-out infinite;
+  transition: background 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cal-cell:hover {
+  background: var(--hover-bg-light);
+  transform: translateY(-2px);
+}
+
+.cal-month {
+  font-size: var(--cal-month-size);
+  color: var(--cal-border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cal-day {
+  font-size: var(--cal-day-size);
+  color: var(--cal-border);
+}
+
+/* === HOVER ICON === */
+.hover-icon {
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: 0.5rem;
+  pointer-events: none;
+}
+
+.slanted-ribbon li:hover .hover-icon,
+.slanted-ribbon li:focus .hover-icon {
+  opacity: 1;
+}
+
+/* === ACCESSIBILITY === */
+.slanted-ribbon li:focus-visible {
+  outline: 2px solid var(--hover-title-underline);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .slanted-ribbon {
+    animation: none;
+  }
+  
+  .slanted-ribbon li {
+    animation: none;
+    opacity: 1;
+  }
+  
+  .cal-cell {
+    animation: none;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+/* added for ribbons on left and right side */
+@media (max-width: 768px) {
+  .slanted-ribbon {
+    display: none !important;
+  }
+}
+
+/* added for ribbons on left and right side ended */
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  :root {
+    --ribbon-width: 160px;
+    --ribbon-padding: 30px;
+    --ribbon-top-offset: 8%;
+    --cal-cell-size: 35px;
+    --cal-month-size: 0.55rem;
+    --cal-day-size: 0.9rem;
+  }
+  
+  .slanted-ribbon .deadline-title {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --ribbon-width: 140px;
+    --ribbon-padding: 25px;
+    --ribbon-top-offset: 10%;
+    --cal-cell-size: 32px;
+    --cal-month-size: 0.5rem;
+    --cal-day-size: 0.8rem;
+  }
+  
+  .slanted-ribbon .deadline-title {
+    font-size: 0.9rem;
+  }
+  
+  .slanted-ribbon li {
+    padding: 0.25rem 0.4rem;
+  }
+}
+
+/* === HIGH CONTRAST MODE === */
+@media (prefers-contrast: high) {
+  :root {
+    --ribbon-bg: #000000;
+    --text-color: #ffffff;
+    --cal-border: #ffffff;
+    --hover-bg-light: rgba(255, 255, 255, 0.3);
+  }
+}
+
+  /* Disable animations if reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    .slanted-ribbon {
+      animation: none;
+    }
+    .slanted-ribbon li {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .cal-cell {
+      animation: none;
+    }
+  }
+
+/* keyframes to toggle opacity for a “flashing” effect */
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+
 /* Hero Section */
 .hero-section {
   background: url('https://github.com/kmranimesh/Web-dev-toolkit/blob/main/home.jpg?raw=true') no-repeat center center/cover !important;
@@ -109,7 +450,7 @@
 /* Conference Info */
 .conference-info {
   margin: 1rem auto;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: white;
 }
@@ -335,8 +676,10 @@
 
   .conference-info,
   .abstract-announcement {
-    font-size: 0.95rem;
+    font-size: 2.15rem;
   }
+
+
 
   .abstract-template-note {
     font-size: 0.75rem;
