@@ -59,10 +59,10 @@ const Navbar = () => {
           {userName ? (
   <div className="navbar-user-dropdown">
     <div className="user-badge">
-      {userName.split(" ").map(w => w[0]).join("").toUpperCase()}
+      Welcome, {userName.toUpperCase()}
     </div>
     <div className="user-dropdown-menu">
-      <div className="user-name">Hello, {userName.split(" ")[0]}</div>
+      
       <NavLink to="/abstract-submission" onClick={() => handleNavClick("/abstract-submission")}>
         My Abstract Submissions
       </NavLink>

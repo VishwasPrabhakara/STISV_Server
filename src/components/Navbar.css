@@ -25,13 +25,12 @@
   border-radius: 50%;
   padding: 10px;
   font-weight: bold;
-  width: 100px;
+  width: fit-content;
   height: 10px;
   text-align: center;
-  line-height: 10px;
+  line-height: 20px;
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
 }
@@ -39,7 +38,7 @@
 .user-dropdown-menu {
   display: none;
   position: absolute;
-  top: 45px;
+  top: 25px;
   right: 0;
   background-color: white;
   border: 1px solid #ddd;

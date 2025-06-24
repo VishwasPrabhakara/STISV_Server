@@ -128,7 +128,7 @@
 
 /* Slanted Ribbon Container */
 .abstract-submission .slanted-ribbon {
-  position: fixed;
+  position: absolute;
   top: 45%;
   left: 0;
   width: var(--ribbon-width);
