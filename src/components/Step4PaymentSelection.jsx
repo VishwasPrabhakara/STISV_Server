@@ -353,6 +353,17 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
           </>
         )}
 
+        {paymentMode && (
+          <>
+            {paymentMode==="bank" && (
+              <div className="upload-alert-box">
+                <strong>
+                  <span className="red-asterisk">* </span>Please upload the transaction ID and payment receipt (screenshot) after completing the bank transfer. This is required to verify and process your registration on our end.
+                </strong>
+              </div>
+
+            )}
+
         {paymentMode==="bank" && (
           <div className="bank-details">
             <h3>Bank Details for Transfer</h3>
@@ -377,14 +388,7 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
 
         {error && <p className="error-message">{error}</p>}
 
-        {paymentMode && (
-          <>
-            {paymentMode==="bank" && (
-              <p className="bank-note">
-                ⚠️ Please ensure that you transfer the amount to the provided bank account and then click proceed.<br></br>
-                <span className="red-asterisk">* </span>Please upload the transaction ID and payment receipt (screenshot or PDF) after completing the bank transfer. This is required to verify and process your registration on our end.
-              </p>
-            )}
+        
             <button
               className="payment-button"
               onClick={handlePayment}

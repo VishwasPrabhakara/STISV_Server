@@ -15,6 +15,19 @@
   max-width: 700px; 
 }
 
+.upload-alert-box {
+  background-color: #fff3cd; /* light yellow */
+  border-left: 6px solid #ffc107; /* amber border */
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #856404; /* dark amber/brown for visibility */
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+
 /* === Asterisk & Notes === */
 .red-asterisk {
   color: red;
