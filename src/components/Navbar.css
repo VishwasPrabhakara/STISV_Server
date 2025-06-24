@@ -12,6 +12,67 @@
     z-index: 1000;
   }
   
+
+  .navbar-user-dropdown {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.user-badge {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  font-weight: bold;
+  width: 100px;
+  height: 10px;
+  text-align: center;
+  line-height: 10px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+  min-width: 160px;
+  border-radius: 4px;
+}
+
+.navbar-user-dropdown:hover .user-dropdown-menu {
+  display: block;
+}
+
+.user-dropdown-menu a,
+.user-dropdown-menu .logout-btn {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.user-dropdown-menu a:hover,
+.user-dropdown-menu .logout-btn:hover {
+  background-color: #f2f2f2;
+}
+
+.user-name {
+  font-weight: bold;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+}
+
   /* === Top Line: Brand & Auth === */
   .navbar-top {
     max-width: 1300px;

@@ -57,17 +57,30 @@ const Navbar = () => {
         {/* Desktop Auth Buttons */}
         <div className="navbar-auth">
           {userName ? (
-            <div className="navbar-user">
-              <span className="user-badge">
-                {userName.split(" ").map(w => w[0]).join("").toUpperCase()}
-              </span>
-              <a className="logout-btn" onClick={handleLogout}>Logout</a>
-            </div>
-          ) : (
-            <NavLink to="/login-signup" onClick={() => handleNavClick("/login-signup")}>
-              Login / Signup
-            </NavLink>
-          )}
+  <div className="navbar-user-dropdown">
+    <div className="user-badge">
+      {userName.split(" ").map(w => w[0]).join("").toUpperCase()}
+    </div>
+    <div className="user-dropdown-menu">
+      <div className="user-name">Hello, {userName.split(" ")[0]}</div>
+      <NavLink to="/abstract-submission" onClick={() => handleNavClick("/abstract-submission")}>
+        My Abstract Submissions
+      </NavLink>
+      <NavLink to="/registration-form" onClick={() => handleNavClick("/registration-form")}>
+        Registration Payment
+      </NavLink>
+      <NavLink to="/payment-receipts" onClick={() => handleNavClick("/payment-receipts")}>
+        My Receipts
+      </NavLink>
+      <div className="logout-btn" onClick={handleLogout}>Logout</div>
+    </div>
+  </div>
+) : (
+  <NavLink to="/login-signup" onClick={() => handleNavClick("/login-signup")}>
+    Login / Signup
+  </NavLink>
+)}
+
         </div>
 
         {/* Mobile Toggle Button */}
