@@ -132,7 +132,7 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
           Upload Documents for {pendingUploadCategory.key}
         </h2>
         <p>
-          Please upload your Student ID and Bonafide Certificate for this category.
+          Please upload your Student ID  for this category.
         </p>
         <StudentDocsUpload
           categories={[pendingUploadCategory.key]}

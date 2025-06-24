@@ -1,4 +1,3 @@
-// StudentDocsUpload.jsx
 import React, { useState, useMemo } from "react";
 import axios from "axios";
 import "./StudentDocsUpload.css";
@@ -6,27 +5,25 @@ import "./StudentDocsUpload.css";
 const API_BASE_URL = "https://stisv.onrender.com";
 
 const StudentDocsUpload = ({ categories, onUploadDone }) => {
-  // build an initial empty map for each category
+  // build an initial empty map for each category (only idFile now)
   const initialFiles = useMemo(() =>
     categories.reduce((acc, cat) => {
-      acc[cat] = { idFile: null, bonafideFile: null };
+      acc[cat] = { idFile: null }; // bonafideFile removed
       return acc;
     }, {}), [categories]
   );
 
   const [filesByCat, setFilesByCat] = useState(initialFiles);
-  const [results, setResults]       = useState([]);
-  const [uploading, setUploading]   = useState(false);
-  const [error, setError]           = useState("");
+  const [results, setResults] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-  // clear everything so form comes back
   const handleEdit = () => {
     setResults([]);
     setError("");
     setFilesByCat(initialFiles);
   };
 
-  // handle selecting files
   const handleFileChange = (cat, field) => e => {
     setFilesByCat(f => ({
       ...f,
@@ -41,9 +38,9 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
 
     // validate
     for (let cat of categories) {
-      const { idFile, bonafideFile } = filesByCat[cat];
-      if (!idFile || !bonafideFile) {
-        setError(`Please upload both files for "${cat}".`);
+      const { idFile } = filesByCat[cat];
+      if (!idFile) {
+        setError(`Please upload Student ID for "${cat}".`);
         return;
       }
     }
@@ -53,8 +50,7 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
     const catList = [];
     categories.forEach(cat => {
       formData.append("docs", filesByCat[cat].idFile);
-      formData.append("docs", filesByCat[cat].bonafideFile);
-      catList.push(cat, cat);
+      catList.push(cat); // only one entry per category
     });
     formData.append("categories", JSON.stringify(catList));
 
@@ -73,7 +69,7 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
     }
   };
 
-  // if uploaded, show results + Edit / Continue
+  // if uploaded, show results
   if (results.length) {
     return (
       <div className="student-upload-container">
@@ -106,33 +102,29 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
     );
   }
 
-  // else render the upload form
+  // render upload form
   return (
     <div className="student-upload-container">
-     
       <form onSubmit={handleSubmit} className="student-upload-form">
         {categories.map(cat => (
           <fieldset className="category-block" key={cat}>
             <legend>{cat}</legend>
-
             <label>
-              Student ID ({cat}):
+              Upload Student ID ({cat}):
               <input
                 type="file"
-                accept=".doc,.docx,image/jpeg,image/png"
+                accept=".pdf,.doc,.docx,image/jpeg,image/png"
                 onChange={handleFileChange(cat, "idFile")}
                 required
               />
             </label>
-
-           
           </fieldset>
         ))}
 
         {error && <p className="error-message">{error}</p>}
 
         <button type="submit" disabled={uploading}>
-          {uploading ? "Uploading…" : "Submit Documents"}
+          {uploading ? "Uploading…" : "Submit Document"}
         </button>
       </form>
     </div>
