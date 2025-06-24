@@ -272,6 +272,14 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
           <strong>"RESCONS SOLUTIONS PVT. LTD."</strong>
         </div>
 
+        {paymentMode === "bank" && (
+          <div className="upload-alert-box">
+            <strong>
+              <span className="red-asterisk">* </span>Please upload the transaction ID and payment receipt (screenshot) after completing the bank transfer. This is required to verify and process your registration on our end.
+            </strong>
+          </div>
+        )}
+
         {paymentMode && (
           <>
             <div className="columns-container">
@@ -355,14 +363,7 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
 
         {paymentMode && (
           <>
-            {paymentMode==="bank" && (
-              <div className="upload-alert-box">
-                <strong>
-                  <span className="red-asterisk">* </span>Please upload the transaction ID and payment receipt (screenshot) after completing the bank transfer. This is required to verify and process your registration on our end.
-                </strong>
-              </div>
-
-            )}
+            
 
         {paymentMode==="bank" && (
           <div className="bank-details">
