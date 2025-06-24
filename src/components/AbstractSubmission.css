@@ -6,7 +6,7 @@
 .abstract-submission-wrapper {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
+  padding: 1.5rem 0.75rem;
   font-family: 'Segoe UI', sans-serif;
   color: #1a1a1a;
 }
@@ -256,6 +256,51 @@
 .abstract-submission .slanted-ribbon li:focus .hover-icon {
   opacity: 1;
 }
+
+.submission-info-sections {
+  display: flex;
+  margin-top: -1.5rem!important;
+  justify-content: space-between;
+  align-items: flex-start!important; /* Aligns top of all boxes */
+  flex-wrap: nowrap!important; /* Keep them in a row */
+  gap: 2rem;
+  margin-left: -8rem;
+}
+
+.submission-info-sections section {
+  flex: 1;
+  min-width: 400px;
+  height: max-content;
+  padding: 1.2rem;
+  align-self: flex-start;
+  justify-content: flex-start;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.section-subtitle {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  color: #003366;
+}
+
+.journal-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.journal-list li {
+  margin-bottom: 0.6rem;
+  font-size: 1.05rem;
+}
+
+.journal-name {
+  font-weight: bold;
+  font-style: italic;
+  color: #0056b3;
+}
+
 
 /* Responsive */
 @media (max-width: 600px) {

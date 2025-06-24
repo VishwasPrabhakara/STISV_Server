@@ -15,6 +15,12 @@
   max-width: 700px; 
 }
 
+/* === Asterisk & Notes === */
+.red-asterisk {
+  color: red;
+  font-weight: bold;
+}
+
 
 /* Main Container */
 .step4-container {

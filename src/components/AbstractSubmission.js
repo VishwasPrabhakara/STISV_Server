@@ -211,37 +211,54 @@ const AbstractSubmission = () => {
 
           {/* === Additional Info Sections === */}
           <div className="submission-info-sections">
-            <section className="abstract-instructions">
-              <h2 className="section-subtitle">Instructions to Authors</h2>
-              <ul>
-                <li>🔹 Abstracts must be within <strong>250 words</strong>.</li>
-                <li>🔹 Provide full contact details and affiliations.</li>
-                <li>🔹 All abstracts will undergo peer review.</li>
-                <li>🔹 Use only the official template provided.</li>
-              </ul>
-              <a
-                href="/stis2025/assets/Abstract-Template.docx"
-                className="template-download"
-                download
-              >
-                Download Abstract Template
-              </a>
-            </section>
+  {/* Instructions Section */}
+  
+  <section className="abstract-journals">
+    <h2 className="section-subtitle">Associated Journals</h2>
+    <ul className="journal-list">
+      <li>🔹 <span className="journal-name">Ironmaking & Steelmaking</span></li>
+      <li>🔹 <span className="journal-name">Materials and Manufacturing Processes</span></li>
+      <li>🔹 <span className="journal-name">Surface Engineering</span></li>
+      <li>🔹 <span className="journal-name">Steel Research International</span></li>
+    </ul>
+  </section>
+  
+  <section className="abstract-instructions">
+    <h2 className="section-subtitle">Instructions to Authors</h2>
+    <ul>
+      <li>🔹 Abstracts must be within <strong>250 words</strong>.</li>
+      <li>🔹 Provide full contact details and affiliations.</li>
+      <li>🔹 All abstracts will undergo peer review.</li>
+      <li>🔹 Use only the official template provided.</li>
+    </ul>
+    <a
+      href="/stis2025/assets/Abstract-Template.docx"
+      className="template-download"
+      download
+    >
+      Download Abstract Template
+    </a>
+  </section>
 
-            <section className="abstract-contact">
-              <h2 className="section-subtitle">Need Help?</h2>
-              <p>
-                For submission-related queries, contact us at: <br />
-                <a href="mailto:stis.mte@iisc.ac.in" className="email-link">
-                  stis.mte@iisc.ac.in
-                </a>
-                <br /> or <br />
-                <button className="btn btn-primary" onClick={handleRedirect}>
-                  Contact Us
-                </button>
-              </p>
-            </section>
-          </div>
+  {/* Contact Section */}
+  <section className="abstract-contact">
+    <h2 className="section-subtitle">Need Help?</h2>
+    <p>
+      For submission-related queries, contact us at: <br />
+      <a href="mailto:stis.mte@iisc.ac.in" className="email-link">
+        stis.mte@iisc.ac.in
+      </a>
+      <br /> or <br />
+      <button className="btn btn-primary" onClick={handleRedirect}>
+        Contact Us
+      </button>
+    </p>
+  </section>
+
+  {/* Journals Section */}
+  
+</div>
+
         </div>
       </div>
       <br />

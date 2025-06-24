@@ -381,7 +381,8 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
           <>
             {paymentMode==="bank" && (
               <p className="bank-note">
-                ⚠️ Please ensure that you transfer the amount to the provided bank account and then click proceed.
+                ⚠️ Please ensure that you transfer the amount to the provided bank account and then click proceed.<br></br>
+                <span className="red-asterisk">* </span>Please upload the transaction ID and payment receipt (screenshot or PDF) after completing the bank transfer. This is required to verify and process your registration on our end.
               </p>
             )}
             <button
