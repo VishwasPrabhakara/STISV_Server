@@ -13,58 +13,75 @@
   }
   
 
-  .navbar-user-dropdown {
+
+/* container */
+.navbar-user-dropdown {
   position: relative;
   display: inline-block;
-  cursor: pointer;
+  /* make focusable if you want the focus-within fallback */
+  outline: none;
 }
 
+/* the badge that you click */
 .user-badge {
   background-color: #0056b3;
-  color: white;
+  color: #fff;
   border-radius: 50%;
   padding: 10px;
   font-weight: bold;
-  width: fit-content;
-  height: 10px;
-  text-align: center;
-  line-height: 20px;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
+/* hide the menu by default */
 .user-dropdown-menu {
-  display: none;
   position: absolute;
-  top: 25px;
+  top: calc(100% + 0.25rem);
   right: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  z-index: 999;
   min-width: 160px;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  
+  /* hidden state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.navbar-user-dropdown:hover .user-dropdown-menu {
-  display: block;
+/* show when .open is added via JS */
+.navbar-user-dropdown.open .user-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
+/* optional pure-CSS fallback: focus the container (requires tabindex="0" on the div) */
+.navbar-user-dropdown:focus-within .user-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* menu items */
 .user-dropdown-menu a,
 .user-dropdown-menu .logout-btn {
   display: block;
   padding: 10px 15px;
   color: #333;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .user-dropdown-menu a:hover,
 .user-dropdown-menu .logout-btn:hover {
   background-color: #f2f2f2;
 }
+
 
 .user-name {
   font-weight: bold;
