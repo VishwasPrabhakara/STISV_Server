@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# 🏛️ STISV_Server — STIS-V 2025 Conference Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Full-stack platform powering the **Fifth International Conference on the Science & Technology of Ironmaking and Steelmaking (STIS-V) 2025** at the Indian Institute of Science, Bengaluru.
 
-## Available Scripts
+**Live Site:** https://materials.iisc.ac.in/stis2025/
 
-In the project directory, you can run:
+Built end-to-end — frontend, backend, database, and PDF generation — for a real international academic conference hosted by IISc's Department of Materials Engineering.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## What it does
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+A complete conference management platform with public-facing content pages and a backend handling delegate workflows:
 
-### `npm test`
+### Public site
+- **About** — conference scope, history, organizers
+- **Programme** — multi-day session schedule with speaker tracks
+- **Conference Registration** — multi-tier delegate registration with payment metadata capture
+- **Proceedings** — publication submission and tracking
+- **Venue & Location** — IISc campus details and arrival info
+- **Tours & Social Events** — optional add-on registration
+- **Sponsors** — multi-tier sponsor showcase
+- **Announcements** — live updates from the organizing committee
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend services
+- **Registration API** — validates and stores delegate submissions
+- **MongoDB-backed storage** — delegates, sessions, sponsors, announcements
+- **PDF generation** — auto-generated registration confirmations and certificates using NotoSans (multilingual support)
+- **Admin endpoints** — for the organizing committee to manage submissions
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠️ Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Frontend**
+- **React** (Create React App)
+- **JavaScript · CSS · HTML**
+- Responsive multi-page layout
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Backend**
+- **Node.js + Express** — REST API
+- **MongoDB** — document store for delegates, sessions, sponsors
+- **PDF generation** — server-side document rendering with NotoSans-Regular font for Unicode/multilingual support
 
-### `npm run eject`
+**Infrastructure**
+- Deployed on IISc Materials Engineering's web infrastructure
+- Served at `materials.iisc.ac.in/stis2025/`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📁 Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+STISV_Server/
+├── public/              # Static frontend assets
+├── server/              # Express API, MongoDB connection, routes
+├── src/                 # React frontend
+│   ├── components/      # Reusable UI components
+│   └── pages/           # About, Programme, Registration, etc.
+├── NotoSans-Regular.ttf # Font asset for server-side PDF rendering
+├── package.json
+└── README.md
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 🏃 Run Locally
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or Atlas connection string)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Setup
 
-### Code Splitting
+```bash
+git clone https://github.com/VishwasPrabhakara/STISV_Server.git
+cd STISV_Server
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Create a `.env` file in the `server/` directory:
 
-### Analyzing the Bundle Size
+```env
+MONGO_URI=mongodb://localhost:27017/stisv
+PORT=5000
+NODE_ENV=development
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Run
 
-### Making a Progressive Web App
+```bash
+# Start the backend
+cd server
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# In another terminal, start the React frontend
+cd ..
+npm start
+```
 
-### Advanced Configuration
+Frontend at `http://localhost:3000`, backend at `http://localhost:5000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 💡 Why this matters
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Most conference websites are static. STIS-V 2025 needed a real platform — registration with validation, organizer dashboards, document generation, multilingual support for international delegates from across Asia, Europe, and the Americas. This repo is the working system that ran the conference.
 
-### `npm run build` fails to minify
+105+ commits of iterative development driven by real organizer requirements — schedule changes, registration tier additions, sponsor onboarding, last-minute announcements during the event.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🌐 The Conference
+
+**STIS-V 2025** is a major international forum bringing together researchers and industry leaders in ironmaking and steelmaking. Hosted by the **Department of Materials Engineering at the Indian Institute of Science, Bengaluru**.
+
+[Visit the live site →](https://materials.iisc.ac.in/stis2025/)
+
+---
+
+## 📝 Built By
+
+**Vishwas Prabhakara** — Project Assistant, Centre for Sustainable Technologies, IISc Bengaluru.
+
+Built end-to-end as part of his role supporting IISc events and research infrastructure.
+
+[GitHub](https://github.com/VishwasPrabhakara) · [LinkedIn](https://www.linkedin.com/in/vishwas-prabhakara-2050821b6/)
+
+---
+
+## 📄 License
+
+Built for the Indian Institute of Science — STIS-V 2025 organizing committee. All rights reserved.
