@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config/api";
 
 const AdminDashboard = () => {
   const [abstracts, setAbstracts] = useState([]);
@@ -15,7 +16,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchAbstracts = async () => {
       try {
-        const response = await axios.get("https://stisv.onrender.com/get-all-abstracts", {
+        const response = await axios.get(`${API_BASE_URL}/get-all-abstracts`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem("adminToken")}` }
         });
 
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
   const updateStatus = async (uid, abstractCode, status) => {
     try {
       const remarkText = remarks[abstractCode] || "";
-      await axios.put("https://stisv.onrender.com/admin/update-abstract-status", {
+      await axios.put(`${API_BASE_URL}/admin/update-abstract-status`, {
         uid,
         abstractCode,
         status,

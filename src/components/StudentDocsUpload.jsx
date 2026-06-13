@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from "react";
 import axios from "axios";
 import "./StudentDocsUpload.css";
-
-const API_BASE_URL = "https://stisv.onrender.com";
+import { API_BASE_URL } from "../config/api";
 
 const StudentDocsUpload = ({ categories, onUploadDone }) => {
   // build an initial empty map for each category (only idFile now)
@@ -59,7 +58,12 @@ const StudentDocsUpload = ({ categories, onUploadDone }) => {
       const res = await axios.post(
         `${API_BASE_URL}/api/upload-student-docs`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
       );
       setResults(res.data.uploaded);
     } catch (err) {

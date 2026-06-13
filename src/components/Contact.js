@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Contact.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config/api";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const Contact = () => {
         setIsSubmitting(true);
 
         try {
-            const response = await axios.post("https://stisv.onrender.com/submit-query", formData);
+            const response = await axios.post(`${API_BASE_URL}/submit-query`, formData);
             setResponseMessage(response.data.message);
             setFormData({ name: "", email: "", message: "" });
         } catch (error) {

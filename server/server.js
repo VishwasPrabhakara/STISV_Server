@@ -3,42 +3,26 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const cors = require("cors");
+const { corsOptions } = require("./config/cors");
+const { requireOwner, verifyAdminToken, verifyToken } = require("./middleware/auth");
+const { verifyHmac } = require("./utils/signatures");
+
+const isStrongPassword = (password) =>
+  typeof password === "string"
+  && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
 // Initialize app FIRST
 const app = express();
-app.options("*", cors());
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://stisv.vercel.app",
-    "https://stisv.onrender.com",
-    "https://materials.iisc.ac.in",
-     "https://materials.iisc.ac.in/stis2025",
-    "https://stisv-1.onrender.com"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  next();
-});
+const configuredCors = corsOptions();
+app.options("*", cors(configuredCors));
+app.use(cors(configuredCors));
  
 app.post("/razorpay-webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
   const signature = req.headers["x-razorpay-signature"];
 
   try {
-    const expectedSignature = crypto.createHmac("sha256", secret).update(req.body).digest("hex");
-    if (signature !== expectedSignature) {
+    if (!verifyHmac(req.body, signature, secret)) {
       return res.status(400).json({ status: "unauthorized" });
     }
 
@@ -163,7 +147,7 @@ STIS-V 2025 Organizing Team`,
 
   } catch (err) {
     console.error("❌ Webhook error:", err);
-    res.status(200).json({ status: "error handled" });
+    res.status(500).json({ status: "processing failed" });
   }
 });
 
@@ -205,9 +189,6 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER, 
     pass: process.env.EMAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false,
-  },
 });
 
 
@@ -244,45 +225,16 @@ const upload = multer({
 // Middleware
 app.use(express.json());
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-
-// Middleware to verify JWT token
-const verifyToken = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "Token is not valid" });
-  }
-};
-
-const verifyAdminToken = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.role !== "admin") {
-      return res.status(403).json({ message: "Forbidden: Not an Admin" });
-    }
-    req.admin = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
-  }
-};
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -349,6 +301,9 @@ const userSchema = new mongoose.Schema({
     timestamp: String,
   }],
 
+  resetPasswordToken: { type: String, select: false },
+  resetPasswordExpires: { type: Date, select: false },
+
   payments: [{
     paymentId: String,
     orderId: String,
@@ -362,31 +317,13 @@ const userSchema = new mongoose.Schema({
 });
 
 const TransactionSchema = new mongoose.Schema({
+  uid: { type: String, required: true, index: true },
   transactionId: { type: String, required: true },
   receiptUrl: { type: String, required: true }, // ✅ Add this
   submittedAt: { type: Date, default: Date.now },
 });
 
 const Transaction = mongoose.model("Transaction", TransactionSchema);
-
-// API Route to Save Transaction ID
-app.post("/save-transaction-id", async (req, res) => {
-  const { transactionId } = req.body;
-
-  if (!transactionId) {
-    return res.status(400).json({ error: "Transaction ID is required" });
-  }
-
-  try {
-    const newTransaction = new Transaction({ transactionId });
-    await newTransaction.save();
-
-    res.status(200).json({ message: "Transaction ID saved successfully" });
-  } catch (err) {
-    console.error("Error saving transaction:", err);
-    res.status(500).json({ error: "Server error, please try again later." });
-  }
-});
 
 const User = mongoose.model("User", userSchema);
 app.post("/register", async (req, res) => {
@@ -395,6 +332,12 @@ app.post("/register", async (req, res) => {
 
     if (!email || !password || !phone || !givenName || !fullName || !country || !affiliation) {
       return res.status(400).json({ message: "All required fields must be filled" });
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        message: "Password must contain uppercase, lowercase, number, and special characters.",
+      });
     }
 
     const existingUser = await User.findOne({ email });
@@ -467,10 +410,10 @@ async function sendRegistrationEmails(email, givenName, fullName, familyName, ph
 }
 
 // ✅ Clean user info fetch (GET)
-app.get("/user-info/:uid", async (req, res) => {
+app.get("/user-info/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const { uid } = req.params;
-    const user = await User.findOne({ uid });
+    const user = await User.findOne({ uid }).select("-password -__v");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -483,10 +426,27 @@ app.get("/user-info/:uid", async (req, res) => {
   }
 });
 // ✅ Clean user update (PUT)
-app.put("/user-info/update/:uid", async (req, res) => {
+app.put("/user-info/update/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const { uid } = req.params;
-    const updateData = req.body; // whatever fields frontend sends
+    const allowedFields = new Set([
+      "title",
+      "givenName",
+      "familyName",
+      "fullName",
+      "phone",
+      "designation",
+      "address",
+      "country",
+      "zipcode",
+      "affiliation",
+      "dietaryPreferenceAuthor",
+      "otherDietaryPreference",
+      "accompanyingPersons",
+    ]);
+    const updateData = Object.fromEntries(
+      Object.entries(req.body).filter(([key]) => allowedFields.has(key))
+    );
     if (updateData.dietaryPreferenceAuthor === "Other" && updateData.otherDietaryPreference) {
       updateData.dietaryPreferenceAuthor = updateData.otherDietaryPreference;
       delete updateData.otherDietaryPreference;
@@ -512,7 +472,12 @@ app.put("/user-info/update/:uid", async (req, res) => {
     await user.save();
     console.log(`✅ User updated successfully: ${uid}`);
 
-    res.status(200).json({ message: "User info updated successfully", user });
+    const safeUser = user.toObject();
+    delete safeUser.password;
+    delete safeUser.resetPasswordToken;
+    delete safeUser.resetPasswordExpires;
+
+    res.status(200).json({ message: "User info updated successfully", user: safeUser });
 
   } catch (error) {
     console.error("❌ Error updating user info:", error);
@@ -547,6 +512,7 @@ cloudinaryStudent.config({
 // POST /api/upload-student-docs
 app.post(
   "/api/upload-student-docs",
+  verifyToken,
   studentUpload.array("docs"),
   async (req, res) => {
     try {
@@ -558,7 +524,7 @@ app.post(
       const uploads = await Promise.all(
         req.files.map((file, idx) => {
           // Keep the full original filename (with extension)
-          const originalName = file.originalname; // e.g. "myID.pdf"
+          const extension = path.extname(file.originalname).toLowerCase();
           // Build a safe folder name per category
           const folder = `student_docs/${
             categories[idx]
@@ -570,12 +536,12 @@ app.post(
           return new Promise((resolve, reject) => {
             const stream = cloudinaryStudent.uploader.upload_stream(
               {
-                resource_type: "raw",      // handle PDFs, DOCXs, JPGs, PNGs, etc.
-                folder,                    // dynamic folder per category
-                use_filename: true,        // keep the file name
-                unique_filename: false,    // no random suffix
-                public_id: originalName,   // full originalName including extension
-                overwrite: true            // allow re‐upload under same public_id
+                resource_type: "raw",
+                folder: `${folder}/${req.user.uid}`,
+                use_filename: false,
+                unique_filename: true,
+                public_id: `${uuidv4()}${extension}`,
+                overwrite: false,
               },
               (err, result) => {
                 if (err) return reject(err);
@@ -633,12 +599,17 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/create-order", async (req, res) => {
+app.post("/create-order", verifyToken, async (req, res) => {
   try {
     const { amount, currency } = req.body;
+    const numericAmount = Number(amount);
+
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0 || !["INR", "USD"].includes(currency)) {
+      return res.status(400).json({ message: "A valid amount and currency are required." });
+    }
 
     const options = {
-      amount: amount * 100,
+      amount: Math.round(numericAmount * 100),
       currency,
       receipt: `receipt_${Date.now()}`,
     };
@@ -651,7 +622,7 @@ app.post("/create-order", async (req, res) => {
   }
 });
 
-app.post("/save-payment", async (req, res) => {
+app.post("/save-payment", verifyToken, async (req, res) => {
   try {
     const {
       razorpay_payment_id,
@@ -670,8 +641,16 @@ app.post("/save-payment", async (req, res) => {
       return res.status(400).json({ message: "Missing required payment fields." });
     }
 
+    const signaturePayload = `${razorpay_order_id}|${razorpay_payment_id}`;
+    if (!verifyHmac(signaturePayload, razorpay_signature, process.env.RAZORPAY_KEY_SECRET)) {
+      return res.status(400).json({ message: "Invalid payment signature." });
+    }
+
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found." });
+    if (user.uid !== req.user.uid) {
+      return res.status(403).json({ message: "Payment does not belong to the authenticated user." });
+    }
 
     const alreadyExists = user.payments.find(p => p.paymentId === razorpay_payment_id);
     if (alreadyExists) return res.status(409).json({ message: "Payment already recorded." });
@@ -724,6 +703,16 @@ app.post("/save-payment", async (req, res) => {
         totalAmount: base + gst + platform
       };
     });
+
+    if (feeDetails.some((fee) => fee.totalAmount <= 0)) {
+      return res.status(400).json({ message: "Invalid registration category." });
+    }
+
+    const currencies = new Set(feeDetails.map((fee) => fee.currency));
+    const expectedAmount = feeDetails.reduce((total, fee) => total + fee.totalAmount, 0);
+    if (currencies.size !== 1 || !Number.isFinite(Number(amount)) || Number(amount) !== expectedAmount) {
+      return res.status(400).json({ message: "Payment amount does not match the selected categories." });
+    }
 
     // Push to user.payments
     user.payments.push({
@@ -784,7 +773,7 @@ STIS-V 2025 Organizing Team`,
 
 
 
-app.get("/get-payments/:uid", verifyToken, async (req, res) => {
+app.get("/get-payments/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const user = await User.findOne({ uid: req.params.uid });
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -801,10 +790,15 @@ app.get("/get-payments/:uid", verifyToken, async (req, res) => {
 
 
 
-app.post("/payment-failed", async (req, res) => {
+app.post("/payment-failed", verifyToken, async (req, res) => {
   const { email, orderId, reason } = req.body;
   if (!email || !orderId) {
     return res.status(400).json({ message: "Missing details" });
+  }
+
+  const user = await User.findOne({ uid: req.user.uid });
+  if (!user || user.email !== email) {
+    return res.status(403).json({ message: "Payment does not belong to the authenticated user." });
   }
 
   console.warn(`⚠️ Payment failed for ${email}. OrderID: ${orderId}. Reason: ${reason}`);
@@ -832,38 +826,87 @@ STIS-V 2025 Team`
 
 
 
-// Reset Password Route
-app.post("/reset-password", async (req, res) => {
+app.post("/request-password-reset", async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { email } = req.body;
+    const genericResponse = {
+      message: "If an account exists for that email, a password reset link has been sent.",
+    };
 
-    if (!email || !newPassword) {
-      return res.status(400).json({ message: "Email and new password are required" });
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
     }
 
-    // Check if the user exists in the database
     const user = await User.findOne({ email });
-
     if (!user) {
-      return res.status(404).json({ message: "User not found. Please register first." });
+      return res.status(200).json(genericResponse);
     }
 
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update the password
-    user.password = hashedPassword;
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+    user.resetPasswordExpires = Date.now() + 30 * 60 * 1000;
     await user.save();
 
-    res.json({ message: "Password reset successful. You can now log in with your new password." });
+    const frontendUrl = (process.env.FRONTEND_URL || "https://materials.iisc.ac.in/stis2025").replace(/\/$/, "");
+    const resetUrl = `${frontendUrl}/forgot-password?uid=${encodeURIComponent(user.uid)}&token=${token}`;
 
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "STIS-V 2025 password reset",
+      text: `A password reset was requested for your STIS-V 2025 account.
+
+Use this link within 30 minutes:
+${resetUrl}
+
+If you did not request this change, you can ignore this email.`,
+    });
+
+    return res.status(200).json(genericResponse);
   } catch (error) {
-    console.error("Error resetting password:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error requesting password reset:", error);
+    return res.status(500).json({ message: "Unable to send a reset link." });
   }
 });
 
-app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (req, res) => {
+app.post("/reset-password", async (req, res) => {
+  try {
+    const { uid, token, newPassword } = req.body;
+
+    if (!uid || !token || !newPassword) {
+      return res.status(400).json({ message: "Reset token and new password are required." });
+    }
+
+    if (!isStrongPassword(newPassword)) {
+      return res.status(400).json({
+        message: "Password must contain uppercase, lowercase, number, and special characters.",
+      });
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      uid,
+      resetPasswordToken: tokenHash,
+      resetPasswordExpires: { $gt: Date.now() },
+    }).select("+resetPasswordToken +resetPasswordExpires");
+
+    if (!user) {
+      return res.status(400).json({ message: "The password reset link is invalid or has expired." });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    return res.json({ message: "Password reset successful. You can now log in." });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({ message: "Unable to reset the password." });
+  }
+});
+
+app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), requireOwner("body", "uid"), async (req, res) => {
   console.log("🔥 /submit-abstract endpoint hit");
 
   try {
@@ -888,9 +931,6 @@ app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (
       return res.status(400).json({ message: "Abstract file is required" });
     }
 
-    console.log("🧾 Request Body:", req.body);
-    console.log("📎 File received:", req.file.originalname);
-
     const generateAbstractCode = () => {
       return `STIS_${Math.floor(1000 + Math.random() * 9000)}`;
     };
@@ -899,16 +939,16 @@ app.post("/submit-abstract", verifyToken, upload.single("abstractFile"), async (
 
    const uploadToCloudinary = () => {
     return new Promise((resolve, reject) => {
-    const originalName = req.file.originalname; // e.g. MyAbstract.docx
+    const extension = path.extname(req.file.originalname).toLowerCase();
 
     const stream = cloudinary.uploader.upload_stream(
       {
         resource_type: "raw",              // ✅ Required for .docx, .pdf, etc.
         folder: "abstracts",               // ✅ Optional folder
-        use_filename: true,                // ✅ Use original file name
-        unique_filename: false,            // ✅ Prevent random string
-        public_id: originalName,           // ✅ Keep full name including extension
-        overwrite: true                    // ✅ Avoid conflict on same name
+        use_filename: false,
+        unique_filename: true,
+        public_id: `${req.user.uid}_${uuidv4()}${extension}`,
+        overwrite: false
       },
       (error, result) => {
         if (error) {
@@ -1076,7 +1116,7 @@ cloudinaryReceipts.config({
   api_secret: process.env.CLOUDINARY_RECEIPT_API_SECRET,
 });
     
-app.post("/upload-receipt", imageUpload.single("receiptFile"), async (req, res) => {
+app.post("/upload-receipt", verifyToken, imageUpload.single("receiptFile"), async (req, res) => {
   const { transactionId } = req.body;
 
   if (!transactionId || !req.file) {
@@ -1089,10 +1129,10 @@ app.post("/upload-receipt", imageUpload.single("receiptFile"), async (req, res) 
         {
           resource_type: "image",
     folder: "receipts",
-    use_filename: true,
-    unique_filename: false,
-    public_id: req.file.originalname,
-    overwrite: true
+    use_filename: false,
+    unique_filename: true,
+    public_id: `receipt_${req.user.uid}_${uuidv4()}`,
+    overwrite: false
         },
         (error, result) => {
           if (error) reject(error);
@@ -1107,6 +1147,7 @@ app.post("/upload-receipt", imageUpload.single("receiptFile"), async (req, res) 
     const result = await uploadToCloudinary();
 
     const newTransaction = new Transaction({
+      uid: req.user.uid,
       transactionId,
       receiptUrl: result.secure_url
     });
@@ -1157,7 +1198,7 @@ app.post("/submit-query", async (req, res) => {
   }
 });
 
-app.get("/get-all-abstracts", async (req, res) => {
+app.get("/get-all-abstracts", verifyAdminToken, async (req, res) => {
   try {
     const abstracts = await User.find({}, "uid fullName email abstractSubmissions"); // ← FIXED HERE
     res.json({ abstracts });
@@ -1170,7 +1211,7 @@ app.get("/get-all-abstracts", async (req, res) => {
 
 
 
-app.put("/update-abstract", verifyToken, upload.single("abstractFile"), async (req, res) => {
+app.put("/update-abstract", verifyToken, upload.single("abstractFile"), requireOwner("body", "uid"), async (req, res) => {
   try {
     const { uid, abstractCode } = req.body;
 
@@ -1201,10 +1242,10 @@ app.put("/update-abstract", verifyToken, upload.single("abstractFile"), async (r
         {
           resource_type: "raw",
           folder: "abstracts",
-          use_filename: true,
-          unique_filename: false,
-          public_id: req.file.originalname,
-          overwrite: true
+          use_filename: false,
+          unique_filename: true,
+          public_id: `${req.user.uid}_${uuidv4()}${path.extname(req.file.originalname).toLowerCase()}`,
+          overwrite: false
         },
         (error, result) => {
           if (error) return reject(error);
@@ -1383,7 +1424,10 @@ app.put("/admin/update-abstract-status", verifyAdminToken, async (req, res) => {
 
    
 
-    res.json({ message: `Abstract ${status} successfully`, user });
+    res.json({
+      message: `Abstract ${status} successfully`,
+      abstract: user.abstractSubmissions[abstractIndex],
+    });
 
   } catch (error) {
     console.error("❌ Error updating abstract status:", error);
@@ -1395,7 +1439,7 @@ app.put("/admin/update-abstract-status", verifyAdminToken, async (req, res) => {
 
 
 
-app.post("/finalize-abstract", verifyToken, async (req, res) => {
+app.post("/finalize-abstract", verifyToken, requireOwner("body", "uid"), async (req, res) => {
   try {
     const { uid, abstractCode } = req.body;
 
@@ -1435,7 +1479,7 @@ await updateGoogleSheet(user, updatedAbstract);
 
 
 
-app.delete("/delete-abstract-file", verifyToken, async (req, res) => {
+app.delete("/delete-abstract-file", verifyToken, requireOwner("body", "uid"), async (req, res) => {
   try {
     const { uid } = req.body;
     const user = await User.findOne({ uid });
@@ -1460,7 +1504,7 @@ app.delete("/delete-abstract-file", verifyToken, async (req, res) => {
 });
 
 // Get User Abstract
-app.get("/get-abstract/:uid", verifyToken, async (req, res) => {
+app.get("/get-abstract/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const user = await User.findOne({ uid: req.params.uid });
     if (!user) {
@@ -1476,7 +1520,7 @@ app.get("/get-abstract/:uid", verifyToken, async (req, res) => {
 
 
 // Delete Abstract File
-app.delete("/delete-abstract-file/:uid", verifyToken, async (req, res) => {
+app.delete("/delete-abstract-file/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const { abstractCode } = req.body;
     const abstract = user.abstractSubmissions.find(abs => abs.abstractCode === abstractCode);
@@ -1515,7 +1559,7 @@ app.use((error, req, res, next) => {
 });
 
 // ✅ FIX: Get all abstracts submitted by a user
-app.get("/get-abstracts-by-user/:uid", verifyToken, async (req, res) => {
+app.get("/get-abstracts-by-user/:uid", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   try {
     const user = await User.findOne({ uid: req.params.uid });
     if (!user) {
@@ -1530,7 +1574,7 @@ app.get("/get-abstracts-by-user/:uid", verifyToken, async (req, res) => {
 });
 
 // ✅ Get abstract by UID + Abstract Code
-app.get("/get-abstract-by-code/:uid/:code", verifyToken, async (req, res) => {
+app.get("/get-abstract-by-code/:uid/:code", verifyToken, requireOwner("params", "uid"), async (req, res) => {
   const { uid, code } = req.params;
   try {
     const user = await User.findOne({ uid });

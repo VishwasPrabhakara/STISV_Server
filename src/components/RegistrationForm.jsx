@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -10,8 +10,8 @@ import Step4PaymentSelection from "./Step4PaymentSelection";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "./RegistrationForm.css";
+import { API_BASE_URL, authConfig } from "../config/api";
 
-const API_BASE_URL = "https://stisv.onrender.com";
 const steps = ["Author Details", "Abstract Details", "Accompanying Person", "Payment"];
 
 const RegistrationForm = () => {
@@ -53,7 +53,7 @@ const RegistrationForm = () => {
 
   const fetchUserInfo = async (uid) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
+      const response = await axios.get(`${API_BASE_URL}/user-info/${uid}`, authConfig());
       if (response.data) {
         setFormData(prev => ({ ...prev, ...response.data }));
       }
@@ -68,7 +68,11 @@ const RegistrationForm = () => {
     try {
       const storedUid = sessionStorage.getItem("uid");
       if (!storedUid) return;
-      await axios.put(`${API_BASE_URL}/user-info/update/${storedUid}`, updatedFields);
+      await axios.put(
+        `${API_BASE_URL}/user-info/update/${storedUid}`,
+        updatedFields,
+        authConfig()
+      );
     } catch (error) {
       console.error("❌ Error updating user info:", error.message);
     }
@@ -91,9 +95,9 @@ const RegistrationForm = () => {
     if (step > 0) setStep(prev => prev - 1);
   };
 
-  const updateFormData = (newData) => {
+  const updateFormData = useCallback((newData) => {
     setFormData(prev => ({ ...prev, ...newData }));
-  };
+  }, []);
 
   const handleSubmitFinalForm = async () => {
     try {

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "./ConRegistration.css";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 
 const ConferenceRegistration = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const ConferenceRegistration = () => {
     setMessage("");
     setLoading(true);
     try {
-      const response = await axios.post("https://stisv.onrender.com/login", {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         email,
         password,
       });
@@ -113,4 +114,3 @@ const ConferenceRegistration = () => {
 };
 
 export default ConferenceRegistration;
-

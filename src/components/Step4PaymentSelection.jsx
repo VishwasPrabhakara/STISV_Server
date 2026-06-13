@@ -6,8 +6,7 @@ import StudentDocsUpload from "./StudentDocsUpload";
 import "./StudentDocsUpload.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCopy } from "@fortawesome/free-solid-svg-icons";
-
-const API_BASE_URL = "https://stisv.onrender.com";
+import { API_BASE_URL, authConfig } from "../config/api";
 
 const Step4PaymentSelection = ({ formData, updateFormData }) => {
   const [paymentMode, setPaymentMode] = useState("");
@@ -122,7 +121,7 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
         i.category.startsWith("Student")
       ))
     );
-  }, [selectedItems]);
+  }, [selectedItems, updateFormData]);
 
   // ── NEW EARLY-RETURN: if one student category is pending upload
   if (pendingUploadCategory && !uploadDone) {
@@ -187,7 +186,11 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
         name:  sessionStorage.getItem("fullName"),
         phone: sessionStorage.getItem("phone")
       };
-      const order = await axios.post(`${API_BASE_URL}/create-order`,{ amount, currency });
+      const order = await axios.post(
+        `${API_BASE_URL}/create-order`,
+        { amount, currency },
+        authConfig()
+      );
       const options = {
         key:      "rzp_live_VBcFKiPwDUl4SE",
         amount:   order.data.amount,
@@ -209,18 +212,22 @@ const Step4PaymentSelection = ({ formData, updateFormData }) => {
         handler: async (resp) => {
           setIsRedirecting(true);
           try {
-            await axios.post(`${API_BASE_URL}/save-payment`, {
-              razorpay_payment_id: resp.razorpay_payment_id,
-              razorpay_order_id:   resp.razorpay_order_id,
-              razorpay_signature:  resp.razorpay_signature,
-              email: userData.email,
-              name:  userData.name,
-              phone: userData.phone,
-              categoriesSelected: selectedItems,
-              currency,
-              amount,
-              paymentMode
-            });
+            await axios.post(
+              `${API_BASE_URL}/save-payment`,
+              {
+                razorpay_payment_id: resp.razorpay_payment_id,
+                razorpay_order_id: resp.razorpay_order_id,
+                razorpay_signature: resp.razorpay_signature,
+                email: userData.email,
+                name: userData.name,
+                phone: userData.phone,
+                categoriesSelected: selectedItems,
+                currency,
+                amount,
+                paymentMode,
+              },
+              authConfig()
+            );
             window.location.href = `/stis2025/payment-success?paymentId=${resp.razorpay_payment_id}`;
           } catch(e) {
             if (e.response?.status===409) {

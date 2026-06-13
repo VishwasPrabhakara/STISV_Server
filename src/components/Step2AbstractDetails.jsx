@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./Step2AbstractDetails.css";
 
 const Step2AbstractDetails = ({ formData, updateFormData, setAbstractsError }) => {
   const [selectedAbstractIndex, setSelectedAbstractIndex] = useState(0);
   const [error, setError] = useState("");
 
-  const abstracts = formData.abstractSubmissions || [];
+  const abstracts = useMemo(
+    () => formData.abstractSubmissions || [],
+    [formData.abstractSubmissions]
+  );
 
   // ✅ Universal function to check duplicates
   const checkForDuplicatePresenters = (abstractList) => {

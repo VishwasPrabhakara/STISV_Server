@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./AbstractSubmissionButton.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config/api";
 
 const themes = [
   "Fundamentals of Iron and Steelmaking.",
@@ -113,7 +114,7 @@ const SubmitAbstractForm = () => {
     submitFormData.append("uid", uid);
 
     try {
-      const response = await fetch("https://stisv.onrender.com/submit-abstract", {
+      const response = await fetch(`${API_BASE_URL}/submit-abstract`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: submitFormData,

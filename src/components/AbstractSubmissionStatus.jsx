@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { API_BASE_URL } from "../config/api";
 
 // Deadline for finalization (May 31, 2025 11:59:59 PM)
 const DEADLINE = new Date("2025-05-31T23:59:59");
@@ -14,7 +15,7 @@ const AbstractSubmissionStatus = () => {
   const [abstract, setAbstract] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [finalizing, setFinalizing] = useState(false);
+  const [, setFinalizing] = useState(false);
   const [showFinalizedMessage, setShowFinalizedMessage] = useState(false);
 
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ const AbstractSubmissionStatus = () => {
 
   // Fetch abstract (latest by user or by code), then force‐finalize if past deadline
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const uid = localStorage.getItem("uid");
+    const token = sessionStorage.getItem("token");
+    const uid = sessionStorage.getItem("uid");
     const isLoggedIn = uid && token;
 
     if (!isLoggedIn) {
@@ -39,8 +40,8 @@ const AbstractSubmissionStatus = () => {
     const fetchAbstract = async () => {
       try {
         const url = abstractCodeParam
-          ? `https://stisv.onrender.com/get-abstract-by-code/${uid}/${abstractCodeParam}`
-          : `https://stisv.onrender.com/get-abstracts-by-user/${uid}`;
+          ? `${API_BASE_URL}/get-abstract-by-code/${uid}/${abstractCodeParam}`
+          : `${API_BASE_URL}/get-abstracts-by-user/${uid}`;
 
         const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
@@ -92,11 +93,11 @@ const AbstractSubmissionStatus = () => {
       const autoFinalize = async () => {
         setFinalizing(true);
         try {
-          const uid = localStorage.getItem("uid");
-          const token = localStorage.getItem("token");
+          const uid = sessionStorage.getItem("uid");
+          const token = sessionStorage.getItem("token");
 
           await axios.post(
-            "https://stisv.onrender.com/finalize-abstract",
+            `${API_BASE_URL}/finalize-abstract`,
             { uid, abstractCode: abstract.abstractCode },
             { headers: { Authorization: `Bearer ${token}` } }
           );

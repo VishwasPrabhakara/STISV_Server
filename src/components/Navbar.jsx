@@ -206,7 +206,9 @@ const Navbar = () => {
                 <span className="user-badge">
                   {userName.split(" ").map(w => w[0]).join("").toUpperCase()}
                 </span>
-                <a className="logout-btn" onClick={handleLogout}>Logout</a>
+                <button type="button" className="logout-btn" onClick={handleLogout}>
+                  Logout
+                </button>
               </div>
             ) : (
               <NavLink to="/login-signup" onClick={() => handleNavClick("/login-signup")}>

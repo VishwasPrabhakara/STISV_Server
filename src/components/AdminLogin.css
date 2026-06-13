@@ -102,9 +102,13 @@
 }
 
 .forgot-password {
+  background: none;
+  border: 0;
+  padding: 0;
   text-decoration: none;
   color: #003566;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .forgot-password:hover {

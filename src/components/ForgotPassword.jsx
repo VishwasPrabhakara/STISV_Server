@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 import "./ForgotPassword.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 
 const ForgotPassword = () => {
+  const [searchParams] = useSearchParams();
+  const resetToken = searchParams.get("token");
+  const uid = searchParams.get("uid");
+  const isResetStep = Boolean(resetToken && uid);
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,10 +28,22 @@ const ForgotPassword = () => {
     return regex.test(password);
   };
 
-  const handleResetPassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
+
+    if (!isResetStep) {
+      try {
+        const response = await axios.post(`${API_BASE_URL}/request-password-reset`, { email });
+        setMessage(response.data.message);
+      } catch (error) {
+        setMessage(error.response?.data?.message || "Failed to send the reset link.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
     if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match!");
@@ -41,8 +58,9 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await axios.post("https://stisv.onrender.com/reset-password", {
-        email,
+      const response = await axios.post(`${API_BASE_URL}/reset-password`, {
+        uid,
+        token: resetToken,
         newPassword,
       });
 
@@ -59,10 +77,10 @@ const ForgotPassword = () => {
     <>
       <Navbar />
     <div className="forgot-password-page">
-      <h2 className="forgot-title">Reset Password</h2>
+      <h2 className="forgot-title">{isResetStep ? "Choose a New Password" : "Reset Password"}</h2>
       <div className={`forgot-container ${loading ? "blur" : ""}`}>
-        <form onSubmit={handleResetPassword} className="forgot-form">
-          <div className="floating-label">
+        <form onSubmit={handleSubmit} className="forgot-form">
+          {!isResetStep && <div className="floating-label">
             <input
               type="email"
               id="email"
@@ -72,9 +90,9 @@ const ForgotPassword = () => {
               required
             />
             <label htmlFor="email">Email Address</label>
-          </div>
+          </div>}
 
-          <div className="floating-label password-field">
+          {isResetStep && <div className="floating-label password-field">
             <input
               type={showNewPassword ? "text" : "password"}
               id="new-password"
@@ -90,9 +108,9 @@ const ForgotPassword = () => {
             >
               {showNewPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-          </div>
+          </div>}
 
-          <div className="floating-label password-field">
+          {isResetStep && <div className="floating-label password-field">
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirm-password"
@@ -108,10 +126,10 @@ const ForgotPassword = () => {
             >
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-          </div>
+          </div>}
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Resetting..." : "Reset Password"}
+            {loading ? "Please wait..." : isResetStep ? "Reset Password" : "Email Reset Link"}
           </button>
 
           {message && <p className="message">{message}</p>}
@@ -127,7 +145,7 @@ const ForgotPassword = () => {
       {loading && (
         <div className="overlay">
           <div className="loader"></div>
-          <p style={{ color: "#fff", marginTop: "1rem" }}>Resetting Password...</p>
+          <p style={{ color: "#fff", marginTop: "1rem" }}>Please wait...</p>
         </div>
       )}
     </div>

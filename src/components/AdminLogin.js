@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./AdminLogin.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config/api";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -18,11 +19,8 @@ const AdminLogin = () => {
   // ✅ Autofill if previously saved
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedAdminEmail");
-    const savedPassword = localStorage.getItem("rememberedAdminPassword");
-
-    if (savedEmail && savedPassword) {
+    if (savedEmail) {
       setEmail(savedEmail);
-      setPassword(savedPassword);
       setRememberMe(true);
     }
   }, []);
@@ -33,21 +31,20 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://stisv.onrender.com/admin/login", {
+      const response = await axios.post(`${API_BASE_URL}/admin/login`, {
         email,
         password,
       });
 
       sessionStorage.setItem("adminToken", response.data.token);
 
-      // ✅ Remember email & password
+      // Remember only the email. Passwords must stay in the password manager.
       if (rememberMe) {
         localStorage.setItem("rememberedAdminEmail", email);
-        localStorage.setItem("rememberedAdminPassword", password);
       } else {
         localStorage.removeItem("rememberedAdminEmail");
-        localStorage.removeItem("rememberedAdminPassword");
       }
+      localStorage.removeItem("rememberedAdminPassword");
 
       navigate("/admin-dashboard");
     } catch {
@@ -103,9 +100,13 @@ const AdminLogin = () => {
                 />
                 Remember me
               </label>
-              <a href="#" className="forgot-password">
-                Forgot Password?
-              </a>
+              <button
+                type="button"
+                className="forgot-password"
+                onClick={() => navigate("/contact")}
+              >
+                Contact support
+              </button>
             </div>
 
             <button type="submit" className="admin-login-btn" disabled={loading}>

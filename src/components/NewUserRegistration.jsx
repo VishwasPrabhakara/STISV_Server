@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Select from "react-select";
 import countryList from "react-select-country-list";
+import { API_BASE_URL } from "../config/api";
 
 const options = countryList().getData();
 
@@ -72,7 +73,7 @@ const NewUserRegistration = () => {
     setMessage("");
 
     try {
-      const response = await fetch("https://stisv.onrender.com/register", {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

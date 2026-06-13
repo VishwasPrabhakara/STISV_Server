@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "./MemberAccess.css";
+import { API_BASE_URL } from "../config/api";
 
 const MemberAccess = () => {
   const navigate = useNavigate();
@@ -21,10 +22,8 @@ const MemberAccess = () => {
 
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("rememberedEmail");
-    const rememberedPassword = localStorage.getItem("rememberedPassword");
-    if (rememberedEmail && rememberedPassword) {
+    if (rememberedEmail) {
       setEmail(rememberedEmail);
-      setPassword(rememberedPassword);
       setRememberMe(true);
     }
   }, []);
@@ -35,14 +34,13 @@ const MemberAccess = () => {
 
     if (rememberMe) {
       localStorage.setItem("rememberedEmail", email);
-      localStorage.setItem("rememberedPassword", password);
     } else {
       localStorage.removeItem("rememberedEmail");
-      localStorage.removeItem("rememberedPassword");
     }
+    localStorage.removeItem("rememberedPassword");
 
     try {
-      const response = await axios.post("https://stisv.onrender.com/login", {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         email,
         password,
       });
@@ -58,9 +56,8 @@ const MemberAccess = () => {
         sessionStorage.setItem("country", country);
         sessionStorage.setItem("phone", phone);
 
-        // ✅ Also store in localStorage (fallback for pages like PaymentSuccess)
-        localStorage.setItem("token", token);
-        localStorage.setItem("uid", uid);
+        localStorage.removeItem("token");
+        localStorage.removeItem("uid");
 
         // ✅ Redirect user
         navigate(

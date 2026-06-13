@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { ref, onValue, runTransaction } from 'firebase/database';
@@ -6,9 +6,7 @@ import { database } from '../firebase/firebase-config';
 import './Footer.css';
 
 const Footer = () => {
-  const [visitorCount, setVisitorCount] = useState(0);
   const [displayCount, setDisplayCount] = useState(0);
-  const countingRef = useRef(null);
 
   useEffect(() => {
     const countRef = ref(database, 'visitors/count');
@@ -16,7 +14,6 @@ const Footer = () => {
 
     onValue(countRef, (snapshot) => {
       const count = snapshot.val() || 0;
-      setVisitorCount(count);
       setDisplayCount(count);
     });
 
@@ -24,8 +21,6 @@ const Footer = () => {
       runTransaction(countRef, (current) => (current || 0) + 1);
       sessionStorage.setItem(sessionKey, 'true');
     }
-
-    return () => clearInterval(countingRef.current);
   }, []);
 
   return (

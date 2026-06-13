@@ -4,8 +4,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import {
   MapPin,
-  Clock,
-  Info,
   Coffee,
   Wifi,
   Car,
@@ -13,10 +11,6 @@ import {
   Utensils,
   Dumbbell,
   Heart,
-  CalendarCheck,
-  AlertCircle,
-  BadgeCheck,
-  Bath,
   Home,
   ShieldCheck,
   ExternalLink

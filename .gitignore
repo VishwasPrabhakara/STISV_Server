@@ -9,8 +9,10 @@
 
 
 /server/config/sheets-key.json
+/server/config/serviceAccountKey.json
 node_modules/
 server/node_modules/
+.vs/
 
 # production
 /build
@@ -28,8 +30,3 @@ yarn-debug.log*
 yarn-error.log*
 
 /STIS_FINAL
-
-
-s e r v e r / c o n f i g / s h e e t s - k e y . j s o n 
- 
- 

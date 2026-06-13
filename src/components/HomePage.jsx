@@ -3,20 +3,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import './HomePage.css';
 
-const calculateTimeRemaining = (endTime) => {
-  const now = new Date().getTime();
-  const diff = endTime - now;
-
-  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-
-  return {
-    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((diff / (1000 * 60)) % 60),
-    seconds: Math.floor((diff / 1000) % 60),
-  };
-};
-
 const speakers = [
   {
     name: " Hiroshi Nogami",
@@ -308,18 +294,10 @@ const speakers = [
 
 
 const HomePage = () => {
-  const [timeRemaining, setTimeRemaining] = useState({});
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
-    const endTime = new Date('2025-12-09T00:00:00').getTime();
-    const update = () => setTimeRemaining(calculateTimeRemaining(endTime));
-
-    update();
-    const interval = setInterval(update, 1000);
     setFadeIn(true);
-
-    return () => clearInterval(interval);
   }, []);
 
   return (

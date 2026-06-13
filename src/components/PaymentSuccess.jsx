@@ -10,6 +10,7 @@ import dollarSymbol from "../assets/symbols/dollar.jpeg";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
+import { API_BASE_URL, authConfig } from "../config/api";
 
 countries.registerLocale(enLocale);
 
@@ -23,8 +24,7 @@ const PaymentSuccess = () => {
   const status = new URLSearchParams(location.search).get("status") || "success";
 
   const uid = sessionStorage.getItem("uid");
-  const token = localStorage.getItem("token");
-  const API_BASE_URL = "https://stisv.onrender.com";
+  const token = sessionStorage.getItem("token");
 
   // Format phone to international E.164 display
   const formatPhoneInternational = (rawPhone, userCountry = "India") => {
@@ -56,7 +56,7 @@ const PaymentSuccess = () => {
         return;
       }
       try {
-        const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
+        const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`, authConfig());
         const user = res.data;
         if (user && user.payments?.length > 0) {
           const latest = user.payments[user.payments.length - 1];

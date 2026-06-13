@@ -4,6 +4,7 @@ import axios from 'axios';
 import './AbstractSubmission.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { API_BASE_URL } from '../config/api';
 
 const AbstractSubmission = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AbstractSubmission = () => {
     if (token && uid) {
       setIsAuthenticated(true);
       axios
-        .get(`https://stisv.onrender.com/get-abstracts-by-user/${uid}`, {
+        .get(`${API_BASE_URL}/get-abstracts-by-user/${uid}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {

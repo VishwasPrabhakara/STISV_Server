@@ -10,6 +10,7 @@ import dollarSymbol from "../assets/symbols/dollar.jpeg";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
+import { API_BASE_URL, authConfig } from "../config/api";
 
 countries.registerLocale(enLocale);
 
@@ -19,8 +20,7 @@ const AllPayments = () => {
   const [error, setError] = useState(null);
 
   const uid = sessionStorage.getItem("uid");
-  const token = localStorage.getItem("token");
-  const API_BASE_URL = "https://stisv.onrender.com";
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -31,7 +31,7 @@ const AllPayments = () => {
       }
 
       try {
-        const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`);
+        const res = await axios.get(`${API_BASE_URL}/user-info/${uid}`, authConfig());
         const user = res.data;
 
         if (user?.payments?.length > 0) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Step3AccompanyingDetails.css";
 
 const Step3AccompanyingDetails = ({ formData, updateFormData }) => {

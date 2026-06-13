@@ -3,8 +3,7 @@ import axios from "axios";
 import "./BankPaymentLink.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-
-const API_BASE_URL = "https://stisv.onrender.com";
+import { API_BASE_URL } from "../config/api";
 
 const BankPaymentTransaction = () => {
   const [transactionId, setTransactionId] = useState("");
@@ -43,7 +42,10 @@ const BankPaymentTransaction = () => {
         `${API_BASE_URL}/upload-receipt`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
         }
       );
 
